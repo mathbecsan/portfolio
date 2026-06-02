@@ -116,7 +116,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
       {/* ═══════════════════════════════════════════════════
           SECTION 1 — Hero (full viewport)
       ═══════════════════════════════════════════════════ */}
-      <section className="relative flex flex-col overflow-hidden" style={{ height: "100vh", padding: "3vh 6vw" }}>
+      <section className="relative flex flex-col overflow-hidden" style={{ minHeight: "100vh", height: "100svh", padding: "3vh 6vw 2vh" }}>
 
         {/* Three.js — right half only */}
         <div ref={mountRef} className="absolute inset-0 z-0 pointer-events-none" style={{ left: "45%" }} />
@@ -167,80 +167,71 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
       </section>
 
       {/* ═══════════════════════════════════════════════════
-          SECTION 2 — Profile card (full viewport, no gap)
+          SECTION 2 — Profile (full-bleed, no card)
       ═══════════════════════════════════════════════════ */}
-      <section id="about" className="relative flex items-center justify-center overflow-hidden"
-        style={{ minHeight: "100vh", background: "#0a0a0a", padding: "6vh 6vw" }}>
+      <section id="about" ref={cardRef} className="relative overflow-hidden" style={{ background: "#F5E6C0" }}>
 
-        {/* Subtle grid continues */}
-        <div className="absolute inset-0 pointer-events-none"
-          style={{ backgroundImage: "linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px)", backgroundSize: "100px 100%" }} />
+        {/* Bauhaus banner — full width */}
+        <div style={{
+          width: "100%",
+          height: "clamp(100px, 14vw, 180px)",
+          backgroundImage: "url('/bauhaus-pattern.svg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center top",
+          animation: cardVisible ? "fadeUp 0.7s ease 0s both" : "none",
+        }} />
 
-        {/* Full-width profile card */}
-        <div ref={cardRef} className="relative z-10 w-full" style={{ borderRadius: 18, overflow: "hidden", boxShadow: "0 0 0 1px rgba(255,255,255,0.08)" }}>
-
-          {/* Top: Bauhaus banner */}
+        {/* Text + photo row */}
+        <div style={{
+          display: "flex",
+          flexDirection: "row",
+          flexWrap: "wrap",
+          minHeight: "clamp(260px, 30vw, 420px)",
+        }}>
+          {/* Left — text */}
           <div style={{
-            position: "relative",
-            height: "clamp(130px, 18vw, 240px)",
-            backgroundImage: "url('/bauhaus-pattern.png')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            animation: cardVisible ? "fadeUp 0.7s ease 0s both" : "none",
+            flex: "1 1 280px",
+            padding: "clamp(24px, 5vw, 60px) clamp(20px, 6vw, 72px)",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            gap: "clamp(6px, 1vw, 14px)",
+            animation: cardVisible ? "fadeLeft 0.7s ease 0.15s both" : "none",
           }}>
-            <img src="/mb-logo.png" alt="MB"
-              style={{ position: "absolute", top: 20, left: 20, width: "clamp(48px, 5.5vw, 72px)", height: "clamp(48px, 5.5vw, 72px)", borderRadius: 8 }} />
+            <p style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontSize: "clamp(16px, 2.2vw, 28px)", color: "#6B1A1A", margin: 0 }}>
+              I&apos;m a
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              <span style={{
+                display: "inline-block", alignSelf: "flex-start",
+                background: "#111", color: "#fff",
+                fontFamily: "monospace", fontWeight: 900,
+                fontSize: "clamp(24px, 4vw, 56px)",
+                letterSpacing: "0.04em",
+                padding: "2px 14px 6px",
+              }}>UX/UI</span>
+              <span style={{
+                display: "inline-block", alignSelf: "flex-start",
+                background: "#CC1F1A", color: "#fff",
+                fontFamily: "monospace", fontWeight: 900,
+                fontSize: "clamp(24px, 4vw, 56px)",
+                letterSpacing: "0.04em",
+                padding: "2px 14px 6px",
+              }}>ENGINEER</span>
+            </div>
+            <p style={{ fontFamily: "monospace", fontSize: "clamp(11px, 1.2vw, 16px)", color: "#6B1A1A", marginTop: 8, letterSpacing: "0.03em" }}>
+              From Lambayeque, Peru. 🇵🇪
+            </p>
           </div>
 
-          {/* Bottom: text + photo */}
-          <div style={{ display: "flex", minHeight: "clamp(200px, 28vw, 380px)" }}>
-
-            {/* Left — orange content */}
-            <div style={{
-              flex: 1,
-              background: "#E07340",
-              padding: "clamp(24px, 4vw, 52px)",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              gap: "clamp(8px, 1.2vw, 16px)",
-              animation: cardVisible ? "fadeLeft 0.7s ease 0.15s both" : "none",
-            }}>
-              <p className="font-mono text-white/90" style={{ fontSize: "clamp(15px, 1.8vw, 24px)" }}>I&apos;m</p>
-              <h2 className="font-mono font-bold text-white leading-tight" style={{ fontSize: "clamp(20px, 2.6vw, 36px)" }}>
-                Full-Stack Developer
-              </h2>
-              <p className="font-mono text-white/80 leading-relaxed" style={{ fontSize: "clamp(12px, 1.2vw, 17px)", maxWidth: 480 }}>
-                who builds accessible user interfaces to create experiences
-                at the intersection of HCI, design, and AI.
-              </p>
-              <div className="flex flex-wrap gap-2 mt-1">
-                {["About","Projects","Impact Metrics","Resume","Contact"].map((label, i) => (
-                  <a key={label}
-                    href={label === "Contact" ? "mailto:mathias@stanford.edu" : `#${label.toLowerCase().replace(" ","-")}`}
-                    className="font-mono border border-white/40 text-white/90 rounded-full hover:bg-white hover:text-[#E07340] transition-all duration-200"
-                    style={{
-                      padding: "7px 18px",
-                      fontSize: "clamp(10px, 0.95vw, 13px)",
-                      letterSpacing: "0.04em",
-                      animation: cardVisible ? `fadeUp 0.5s ease ${0.3 + i * 0.07}s both` : "none",
-                    }}>
-                    {label}
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            {/* Right — photo */}
-            <div style={{
-              width: "clamp(200px, 30vw, 420px)",
-              flexShrink: 0,
-              overflow: "hidden",
-              animation: cardVisible ? "fadeRight 0.7s ease 0.2s both" : "none",
-            }}>
-              <img src="/mathias-photo.jpg" alt="Mathias Becerra"
-                style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} />
-            </div>
+          {/* Right — photo */}
+          <div style={{
+            flex: "0 0 clamp(200px, 38vw, 500px)",
+            overflow: "hidden",
+            animation: cardVisible ? "fadeRight 0.7s ease 0.2s both" : "none",
+          }}>
+            <img src="/profile-picture.png" alt="Mathias Becerra"
+              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" }} />
           </div>
         </div>
       </section>

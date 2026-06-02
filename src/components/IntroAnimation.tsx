@@ -195,17 +195,17 @@ export default function IntroAnimation({ onComplete }: IntroAnimationProps) {
         transition: "bottom 1.0s cubic-bezier(0.16,1,0.3,1) 0.05s, right 1.0s cubic-bezier(0.16,1,0.3,1) 0.05s, opacity 0.6s ease 0.05s",
       }}/>
 
-      {/* ── MATHBECSAN logo — real image, transparent bg ──── */}
+      {/* ── MATHBECSAN logo ───────────────────────────────── */}
       <div style={{
         position: "absolute", inset: 0,
         display: "flex", alignItems: "center", justifyContent: "center",
         pointerEvents: "none",
       }}>
         <img
-          src="/logo-mathbecsan.png"
+          src="/brand-logo.png"
           alt="MATHBECSAN"
           style={{
-            width: "min(88vw, 960px)",
+            width: "min(72vw, 700px)",
             height: "auto",
             opacity: logoIn ? 1 : 0,
             transform: logoIn ? "translateY(0px)" : "translateY(40px)",
