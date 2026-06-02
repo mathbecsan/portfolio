@@ -4,15 +4,15 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
 const GREETINGS = [
-  { text: "allinllachu.", lang: "Quechua"    },
-  { text: "hello.",       lang: "English"    },
-  { text: "bonjour.",     lang: "French"     },
-  { text: "hola.",        lang: "Spanish"    },
-  { text: "ciao.",        lang: "Italian"    },
+  { text: "Allinllachu.", lang: "Quechua"    },
+  { text: "Hello.",       lang: "English"    },
+  { text: "Bonjour.",     lang: "French"     },
+  { text: "Hola.",        lang: "Spanish"    },
+  { text: "Ciao.",        lang: "Italian"    },
   { text: "你好.",         lang: "Mandarin"   },
-  { text: "merhaba.",     lang: "Turkish"    },
-  { text: "hei.",         lang: "Norwegian"  },
-  { text: "olá.",         lang: "Portuguese" },
+  { text: "Merhaba.",     lang: "Turkish"    },
+  { text: "Hei.",         lang: "Norwegian"  },
+  { text: "Olá.",         lang: "Portuguese" },
 ];
 
 // ── Three.js — subtle rotating wireframes in right half ────────
@@ -145,14 +145,11 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
           </div>
         </nav>
 
-        {/* Hero */}
-        <div className="flex-1 flex flex-col justify-center">
+        {/* Hero + Bio — all together, vertically centered */}
+        <div className="flex-1 flex flex-col justify-center gap-0">
 
           {/* Greeting */}
-          <div
-            className="overflow-hidden"
-            style={{ lineHeight: 1.05 }}
-          >
+          <div className="overflow-hidden" style={{ lineHeight: 1.05 }}>
             <span
               key={animKey}
               className="block font-mono text-[#f0ede6] whitespace-nowrap"
@@ -160,9 +157,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
                 fontSize: "clamp(48px, 8.5vw, 130px)",
                 opacity: exiting ? 0 : 1,
                 transform: exiting ? "translateY(-30px)" : "translateY(0)",
-                transition: exiting
-                  ? "opacity 0.3s ease, transform 0.3s ease"
-                  : "none",
+                transition: exiting ? "opacity 0.3s ease, transform 0.3s ease" : "none",
                 animation: !exiting ? "greetingIn 0.5s cubic-bezier(0.22,1,0.36,1) forwards" : "none",
               }}
             >
@@ -171,51 +166,44 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
           </div>
 
           {/* i'm */}
-          <p
-            className="font-mono text-[#f0ede6] leading-none mt-1"
-            style={{ fontSize: "clamp(36px, 6vw, 96px)" }}
-          >
+          <p className="font-mono text-[#f0ede6] leading-none mt-1"
+            style={{ fontSize: "clamp(36px, 6vw, 96px)" }}>
             i&apos;m
           </p>
 
           {/* Name */}
-          <h1
-            className="font-mono font-bold text-[#f0ede6] leading-none tracking-tight"
-            style={{ fontSize: "clamp(48px, 8vw, 128px)" }}
-          >
+          <h1 className="font-mono font-bold text-[#f0ede6] leading-none tracking-tight"
+            style={{ fontSize: "clamp(48px, 8vw, 128px)" }}>
             mathias.
           </h1>
 
           {/* Language label */}
-          <p className="mt-3 font-mono text-xs tracking-[0.3em] uppercase text-[#f0ede6]/25">
+          <p className="mt-2 font-mono text-xs tracking-[0.3em] uppercase text-[#f0ede6]/25">
             {GREETINGS[idx].lang}
           </p>
-        </div>
 
-        {/* Bio + CTA */}
-        <div className="pt-8 pb-4 max-w-[600px]">
-          <p
-            className="font-mono text-[#f0ede6]/70 leading-relaxed"
-            style={{ fontSize: "clamp(13px, 1.2vw, 17px)" }}
-          >
-            I&apos;m a software engineer studying Symbolic Systems at Stanford.
-            My passion is creating experiences at the intersection of
-            technology, language, and human connection.
-          </p>
-
-          <div className="mt-8 flex items-center gap-8">
-            <a
-              href="mailto:mathias@stanford.edu"
-              className="font-mono border border-[#f0ede6]/40 rounded-full hover:bg-[#f0ede6] hover:text-[#0d0d0d] hover:border-[#f0ede6] transition-all duration-300 text-[#f0ede6]"
-              style={{ padding: "12px 28px", fontSize: "clamp(13px, 1.1vw, 16px)" }}
-            >
-              → say hi
-            </a>
-            <span className="font-mono text-[10px] tracking-[0.3em] text-[#f0ede6]/20 uppercase">
-              Stanford, CA
-            </span>
+          {/* Bio — directly below language tag, no large gap */}
+          <div className="mt-6 max-w-[600px]">
+            <p className="font-mono text-[#f0ede6]/70 leading-relaxed"
+              style={{ fontSize: "clamp(13px, 1.2vw, 17px)" }}>
+              I&apos;m a software engineer studying Symbolic Systems at Stanford.
+              My passion is creating experiences at the intersection of
+              technology, language, and human connection.
+            </p>
+            <div className="mt-6 flex items-center gap-8">
+              <a href="mailto:mathias@stanford.edu"
+                className="font-mono border border-[#f0ede6]/40 rounded-full hover:bg-[#f0ede6] hover:text-[#0d0d0d] hover:border-[#f0ede6] transition-all duration-300 text-[#f0ede6]"
+                style={{ padding: "12px 28px", fontSize: "clamp(13px, 1.1vw, 16px)" }}>
+                → say hi
+              </a>
+              <span className="font-mono text-[10px] tracking-[0.3em] text-[#f0ede6]/20 uppercase">
+                Stanford, CA
+              </span>
+            </div>
           </div>
+
         </div>
+
 
       </div>
     </div>
