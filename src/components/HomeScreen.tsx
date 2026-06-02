@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type RefObject } from "react";
 import * as THREE from "three";
+import SecondScreen from "./SecondScreen";
 
 const navLinks = ["Home", "About", "Process", "Impact"];
 
@@ -401,6 +402,8 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
           </div>
         </div>
       </section>
+
+      <SecondScreen />
     </div>
   );
 }
