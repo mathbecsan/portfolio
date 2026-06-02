@@ -210,7 +210,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
       ═══════════════════════════════════════════════════ */}
       <section
         className="relative flex flex-col overflow-hidden"
-        style={{ minHeight: "100vh", height: "100svh", padding: "3vh 6vw 2vh" }}
+        style={{ height: "100svh", minHeight: 600, padding: "3vh 6vw 2vh" }}
       >
         {/* Three.js — right half only */}
         <div
@@ -306,7 +306,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
         id="about"
         ref={cardRef}
         className="relative overflow-hidden"
-        style={{ background: "#F5E6C0" }}
+        style={{ background: "#F5E6C0", display: "block", margin: 0, padding: 0 }}
       >
         {/* Bauhaus banner — full width */}
         <div
