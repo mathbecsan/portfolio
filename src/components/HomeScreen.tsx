@@ -22,10 +22,10 @@ const GREETINGS = [
 ];
 
 const ROLES = [
-  { top: "UX/UI",      bottom: "ENGINEER",   topBg: "#111111", bottomBg: "#CC1F1A" },
-  { top: "DATA",       bottom: "SCIENTIST",  topBg: "#0A66FF", bottomBg: "#F5A623" },
-  { top: "PRODUCT",    bottom: "DESIGNER",   topBg: "#222222", bottomBg: "#E63329" },
-  { top: "FULLSTACK",  bottom: "DEVELOPER",  topBg: "#111111", bottomBg: "#2A9D8F" },
+  { src: "/first-screen/role-uxui.svg",      label: "UX/UI Engineer"      },
+  { src: "/first-screen/role-data.svg",      label: "Data Scientist"      },
+  { src: "/first-screen/role-product.svg",   label: "Product Designer"    },
+  { src: "/first-screen/role-fullstack.svg", label: "Fullstack Developer" },
 ];
 
 // ── Three.js ───────────────────────────────────────────────────
@@ -338,66 +338,31 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
               animation: cardVisible ? "fadeLeft 0.7s ease 0.15s both" : "none",
             }}
           >
-            <p
-              style={{
-                fontFamily: "Georgia, serif",
-                fontStyle: "italic",
-                fontSize: "clamp(16px, 2.2vw, 28px)",
-                color: "#6B1A1A",
-                margin: 0,
-              }}
-            >
-              I&apos;m a
-            </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-              <span key={`top-${roleAnimKey}`}
-                style={{
-                  alignSelf: "flex-start",
-                  background: ROLES[roleIdx].topBg,
-                  color: "#fff",
-                  fontFamily: "monospace",
-                  fontWeight: 900,
-                  fontSize: "clamp(26px, 4.5vw, 68px)",
-                  letterSpacing: "0.04em",
-                  padding: "4px 16px 8px",
-                  display: "inline-block",
-                  opacity: exiting ? 0 : 1,
-                  transform: exiting ? "translateY(-12px)" : "translateY(0)",
-                  transition: "opacity 0.28s ease, transform 0.28s ease",
-                }}
-              >
-                {ROLES[roleIdx].top}
-              </span>
-              <span key={`bot-${roleAnimKey}`}
-                style={{
-                  alignSelf: "flex-start",
-                  background: ROLES[roleIdx].bottomBg,
-                  color: "#fff",
-                  fontFamily: "monospace",
-                  fontWeight: 900,
-                  fontSize: "clamp(26px, 4.5vw, 68px)",
-                  letterSpacing: "0.04em",
-                  padding: "4px 16px 8px",
-                  display: "inline-block",
-                  opacity: exiting ? 0 : 1,
-                  transform: exiting ? "translateY(-12px)" : "translateY(0)",
-                  transition: "opacity 0.28s ease 0.04s, transform 0.28s ease 0.04s",
-                }}
-              >
-                {ROLES[roleIdx].bottom}
-              </span>
+            <img src="/first-screen/ima.svg" alt="I'm a"
+              style={{ width: "clamp(80px, 12vw, 160px)", height: "auto", display: "block" }} />
+            {/* Role SVG — fixed aspect ratio, swaps on cycle */}
+            <div style={{ position: "relative", width: "clamp(200px, 38vw, 460px)", aspectRatio: "855/427" }}>
+              {ROLES.map((role, i) => (
+                <img
+                  key={role.src}
+                  src={role.src}
+                  alt={role.label}
+                  style={{
+                    position: i === 0 ? "relative" : "absolute",
+                    top: 0, left: 0,
+                    width: "100%",
+                    height: "auto",
+                    display: "block",
+                    opacity: roleIdx === i ? (exiting ? 0 : 1) : 0,
+                    transform: roleIdx === i ? (exiting ? "translateY(-10px)" : "translateY(0)") : "translateY(10px)",
+                    transition: "opacity 0.32s ease, transform 0.32s ease",
+                    pointerEvents: roleIdx === i ? "auto" : "none",
+                  }}
+                />
+              ))}
             </div>
-            <p
-              style={{
-                fontFamily: "monospace",
-                fontSize: "clamp(11px, 1.2vw, 16px)",
-                color: "#6B1A1A",
-                marginTop: 8,
-                letterSpacing: "0.03em",
-              }}
-            >
-              From Lambayeque, Peru. 🇵🇪
-            </p>
+            <img src="/first-screen/from-peru.svg" alt="From Lambayeque, Peru."
+              style={{ width: "clamp(140px, 22vw, 280px)", height: "auto", display: "block", marginTop: 8 }} />
           </div>
 
           {/* Right — photo */}
