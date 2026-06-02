@@ -1,23 +1,21 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
-// ── Greetings in different languages ────────────────────────────
 const GREETINGS = [
-  { text: "allinllachu.", lang: "Quechua" },
-  { text: "hello.",       lang: "English" },
-  { text: "bonjour.",     lang: "French" },
-  { text: "hola.",        lang: "Spanish" },
-  { text: "ciao.",        lang: "Italian" },
-  { text: "你好.",         lang: "Mandarin" },
-  { text: "merhaba.",     lang: "Turkish" },
-  { text: "hei.",         lang: "Norwegian" },
+  { text: "allinllachu.", lang: "Quechua"    },
+  { text: "hello.",       lang: "English"    },
+  { text: "bonjour.",     lang: "French"     },
+  { text: "hola.",        lang: "Spanish"    },
+  { text: "ciao.",        lang: "Italian"    },
+  { text: "你好.",         lang: "Mandarin"   },
+  { text: "merhaba.",     lang: "Turkish"    },
+  { text: "hei.",         lang: "Norwegian"  },
   { text: "olá.",         lang: "Portuguese" },
-  { text: "سلام.",        lang: "Farsi" },
 ];
 
-// ── Three.js background ─────────────────────────────────────────
+// ── Three.js — subtle rotating wireframes in right half ────────
 function useThreeBackground(mountRef: React.RefObject<HTMLDivElement | null>) {
   useEffect(() => {
     const mount = mountRef.current;
@@ -33,23 +31,20 @@ function useThreeBackground(mountRef: React.RefObject<HTMLDivElement | null>) {
     mount.appendChild(renderer.domElement);
 
     const scene  = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, W / H, 0.1, 100);
-    camera.position.z = 8;
+    const camera = new THREE.PerspectiveCamera(55, W / H, 0.1, 100);
+    camera.position.z = 9;
 
-    // Wireframe geometries — Bauhaus colors, very subtle
     const shapes: THREE.Mesh[] = [];
     const defs = [
-      { geo: new THREE.IcosahedronGeometry(1.8, 1),  color: 0xE63329, x:  5, y:  2.5, z: -2,  rx: 0.003, ry: 0.005 },
-      { geo: new THREE.OctahedronGeometry(1.4),       color: 0x2952A3, x: -5, y: -2.5, z: -3,  rx: 0.004, ry: 0.003 },
-      { geo: new THREE.TorusGeometry(1.2, 0.3, 8, 24),color: 0xF5A623, x:  5.5, y: -3, z: -4,  rx: 0.006, ry: 0.002 },
-      { geo: new THREE.BoxGeometry(1.6, 1.6, 1.6),    color: 0xf0ede6, x: -5.5, y: 3,  z: -5,  rx: 0.002, ry: 0.006 },
+      { geo: new THREE.IcosahedronGeometry(1.6, 1), color: 0xE63329, x:  3.5, y:  2,   z: -2,  rx: 0.003, ry: 0.005 },
+      { geo: new THREE.TorusGeometry(1.1, 0.3, 8, 24), color: 0xF5A623, x:  4,   y: -2.5, z: -3,  rx: 0.005, ry: 0.002 },
+      { geo: new THREE.OctahedronGeometry(1.3),      color: 0x2952A3, x:  2,   y: -0.5, z: -4,  rx: 0.002, ry: 0.004 },
     ];
 
     defs.forEach(d => {
-      const mat  = new THREE.MeshBasicMaterial({ color: d.color, wireframe: true, opacity: 0.12, transparent: true });
+      const mat  = new THREE.MeshBasicMaterial({ color: d.color, wireframe: true, opacity: 0.14, transparent: true });
       const mesh = new THREE.Mesh(d.geo, mat);
       mesh.position.set(d.x, d.y, d.z);
-      // store rotation speeds in userData
       mesh.userData = { rx: d.rx, ry: d.ry };
       scene.add(mesh);
       shapes.push(mesh);
@@ -58,17 +53,13 @@ function useThreeBackground(mountRef: React.RefObject<HTMLDivElement | null>) {
     let raf: number;
     const animate = () => {
       raf = requestAnimationFrame(animate);
-      shapes.forEach(m => {
-        m.rotation.x += m.userData.rx;
-        m.rotation.y += m.userData.ry;
-      });
+      shapes.forEach(m => { m.rotation.x += m.userData.rx; m.rotation.y += m.userData.ry; });
       renderer.render(scene, camera);
     };
     animate();
 
     const onResize = () => {
-      const w = mount.clientWidth;
-      const h = mount.clientHeight;
+      const w = mount.clientWidth, h = mount.clientHeight;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
@@ -84,145 +75,144 @@ function useThreeBackground(mountRef: React.RefObject<HTMLDivElement | null>) {
   }, [mountRef]);
 }
 
-// ── Greeting text with slide animation ─────────────────────────
-function GreetingText({ text, state }: { text: string; state: "enter" | "visible" | "exit" }) {
-  const style: React.CSSProperties = {
-    display: "block",
-    transform:
-      state === "enter"   ? "translateY(100%)" :
-      state === "exit"    ? "translateY(-110%)" :
-      "translateY(0)",
-    opacity: state === "visible" ? 1 : 0,
-    transition:
-      state === "enter"   ? "none" :
-      state === "exit"    ? "transform 0.45s cubic-bezier(0.55,0,1,0.45), opacity 0.3s ease" :
-      "transform 0.55s cubic-bezier(0,0,0.2,1), opacity 0.4s ease",
-  };
-  return <span style={style}>{text}</span>;
-}
-
 // ── Main HomeScreen ─────────────────────────────────────────────
 export default function HomeScreen({ visible }: { visible: boolean }) {
   const mountRef  = useRef<HTMLDivElement>(null);
-  const [idx,      setIdx]      = useState(0);
-  const [animState, setAnimState] = useState<"enter" | "visible" | "exit">("enter");
+  const [idx,       setIdx]      = useState(0);
+  const [animKey,   setAnimKey]  = useState(0); // re-mount span to retrigger CSS anim
+  const [exiting,   setExiting]  = useState(false);
   const [contentIn, setContentIn] = useState(false);
 
   useThreeBackground(mountRef);
 
-  // Fade in content when screen becomes visible
   useEffect(() => {
-    if (visible) setTimeout(() => setContentIn(true), 200);
+    if (visible) setTimeout(() => setContentIn(true), 100);
   }, [visible]);
-
-  // Kick off first greeting
-  useEffect(() => {
-    const t = setTimeout(() => setAnimState("visible"), 50);
-    return () => clearTimeout(t);
-  }, []);
 
   // Cycle greetings
   useEffect(() => {
-    if (animState !== "visible") return;
-    const hold = setTimeout(() => {
-      // exit
-      setAnimState("exit");
+    const interval = setInterval(() => {
+      setExiting(true);
       setTimeout(() => {
         setIdx(prev => (prev + 1) % GREETINGS.length);
-        setAnimState("enter");
-        setTimeout(() => setAnimState("visible"), 40);
-      }, 480);
-    }, 2000);
-    return () => clearTimeout(hold);
-  }, [animState, idx]);
+        setAnimKey(prev => prev + 1);
+        setExiting(false);
+      }, 380);
+    }, 2200);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div
       className="relative min-h-screen bg-[#0d0d0d] overflow-hidden"
-      style={{
-        opacity: contentIn ? 1 : 0,
-        transition: "opacity 0.8s ease",
-      }}
+      style={{ opacity: contentIn ? 1 : 0, transition: "opacity 0.8s ease" }}
     >
-      {/* Three.js background */}
-      <div ref={mountRef} className="absolute inset-0 z-0 pointer-events-none" />
+      {/* CSS keyframe for greeting slide-in */}
+      <style>{`
+        @keyframes greetingIn {
+          from { transform: translateY(110%); opacity: 0; }
+          to   { transform: translateY(0);    opacity: 1; }
+        }
+      `}</style>
 
-      {/* Subtle vertical grid lines */}
+      {/* Three.js — right side only */}
+      <div
+        ref={mountRef}
+        className="absolute inset-0 z-0 pointer-events-none"
+        style={{ left: "45%" }}  /* only covers right half so it never overlaps text */
+      />
+
+      {/* Subtle vertical lines */}
       <div className="absolute inset-0 z-[1] pointer-events-none"
         style={{
           backgroundImage: "linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)",
-          backgroundSize: "120px 100%",
+          backgroundSize: "100px 100%",
         }}
       />
 
       {/* ── Content ─────────────────────────────────────────── */}
-      <div className="relative z-10 flex flex-col min-h-screen px-[5vw] py-[4vh]">
+      <div className="relative z-10 flex flex-col min-h-screen" style={{ padding: "3vh 6vw" }}>
 
-        {/* Top nav */}
-        <nav className="flex justify-between items-center mb-auto">
-          <span className="font-mono text-[#f0ede6]/30 text-sm tracking-widest uppercase">
+        {/* Nav */}
+        <nav className="flex justify-between items-center w-full mb-8">
+          <span className="font-mono text-[#f0ede6]/30 text-xs tracking-[0.25em] uppercase">
             mathbecsan
           </span>
-          <div className="flex gap-8 font-mono text-sm text-[#f0ede6]/40 tracking-wide">
-            <a href="#work"    className="hover:text-[#f0ede6] transition-colors">work</a>
-            <a href="#about"   className="hover:text-[#f0ede6] transition-colors">about</a>
-            <a href="#contact" className="hover:text-[#f0ede6] transition-colors">contact</a>
+          <div className="flex gap-10 font-mono text-sm text-[#f0ede6]/40 tracking-wide">
+            {["work","about","contact"].map(l => (
+              <a key={l} href={`#${l}`} className="hover:text-[#f0ede6] transition-colors">{l}</a>
+            ))}
           </div>
         </nav>
 
         {/* Hero */}
-        <div className="flex-1 flex flex-col justify-center pt-[6vh]">
-          {/* Greeting — animated */}
+        <div className="flex-1 flex flex-col justify-center">
+
+          {/* Greeting */}
           <div
-            className="overflow-hidden leading-none"
-            style={{ fontSize: "clamp(64px, 11vw, 160px)" }}
+            className="overflow-hidden"
+            style={{ lineHeight: 1.05 }}
           >
-            <GreetingText text={GREETINGS[idx].text} state={animState} />
+            <span
+              key={animKey}
+              className="block font-mono text-[#f0ede6] whitespace-nowrap"
+              style={{
+                fontSize: "clamp(48px, 8.5vw, 130px)",
+                opacity: exiting ? 0 : 1,
+                transform: exiting ? "translateY(-30px)" : "translateY(0)",
+                transition: exiting
+                  ? "opacity 0.3s ease, transform 0.3s ease"
+                  : "none",
+                animation: !exiting ? "greetingIn 0.5s cubic-bezier(0.22,1,0.36,1) forwards" : "none",
+              }}
+            >
+              {GREETINGS[idx].text}
+            </span>
           </div>
 
           {/* i'm */}
-          <div
+          <p
             className="font-mono text-[#f0ede6] leading-none mt-1"
-            style={{ fontSize: "clamp(48px, 8vw, 120px)" }}
+            style={{ fontSize: "clamp(36px, 6vw, 96px)" }}
           >
             i&apos;m
-          </div>
+          </p>
 
           {/* Name */}
-          <div
+          <h1
             className="font-mono font-bold text-[#f0ede6] leading-none tracking-tight"
-            style={{ fontSize: "clamp(56px, 9.5vw, 140px)" }}
+            style={{ fontSize: "clamp(48px, 8vw, 128px)" }}
           >
             mathias.
-          </div>
+          </h1>
 
-          {/* Language tag */}
-          <div className="mt-3 font-mono text-xs tracking-[0.25em] uppercase text-[#f0ede6]/25">
+          {/* Language label */}
+          <p className="mt-3 font-mono text-xs tracking-[0.3em] uppercase text-[#f0ede6]/25">
             {GREETINGS[idx].lang}
-          </div>
+          </p>
         </div>
 
         {/* Bio + CTA */}
-        <div className="mt-auto pb-[4vh]">
+        <div className="pt-8 pb-4 max-w-[600px]">
           <p
-            className="font-mono text-[#f0ede6]/75 leading-relaxed max-w-[640px]"
-            style={{ fontSize: "clamp(14px, 1.4vw, 20px)" }}
+            className="font-mono text-[#f0ede6]/70 leading-relaxed"
+            style={{ fontSize: "clamp(13px, 1.2vw, 17px)" }}
           >
             I&apos;m a software engineer studying Symbolic Systems at Stanford.
             My passion is creating experiences at the intersection of
             technology, language, and human connection.
           </p>
 
-          <div className="mt-8 flex items-center gap-6">
+          <div className="mt-8 flex items-center gap-8">
             <a
               href="mailto:mathias@stanford.edu"
-              className="font-mono border border-[#f0ede6]/40 rounded-full px-8 py-3 text-[#f0ede6] hover:bg-[#f0ede6] hover:text-[#0d0d0d] transition-all duration-300"
-              style={{ fontSize: "clamp(14px, 1.2vw, 18px)" }}
+              className="font-mono border border-[#f0ede6]/40 rounded-full hover:bg-[#f0ede6] hover:text-[#0d0d0d] hover:border-[#f0ede6] transition-all duration-300 text-[#f0ede6]"
+              style={{ padding: "12px 28px", fontSize: "clamp(13px, 1.1vw, 16px)" }}
             >
               → say hi
             </a>
-            <span className="font-mono text-xs tracking-widest text-[#f0ede6]/20 uppercase">
-              stanford, ca
+            <span className="font-mono text-[10px] tracking-[0.3em] text-[#f0ede6]/20 uppercase">
+              Stanford, CA
             </span>
           </div>
         </div>
