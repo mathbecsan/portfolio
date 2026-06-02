@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import IntroAnimation from "@/components/IntroAnimation";
+import HomeScreen from "@/components/HomeScreen";
 
 type Stage = "preloader" | "intro" | "home";
 
@@ -34,8 +35,8 @@ export default function Home() {
           setPercent(100);
           requestAnimationFrame(() => {
             setWipePhase("in");
-            setTimeout(() => setWipePhase("out"), 650);
-            setTimeout(() => setStage("intro"), 1300);
+            setTimeout(() => setWipePhase("out"), 300);
+            setTimeout(() => setStage("intro"), 620);
           });
         }
       }
@@ -54,20 +55,7 @@ export default function Home() {
   return (
     <>
       {/* ── Layer 0: Home screen ─────────────────────────── */}
-      <main
-        className="min-h-screen flex flex-col items-center justify-center transition-opacity duration-700"
-        style={{
-          opacity: stage === "home" ? 1 : 0,
-          pointerEvents: stage === "home" ? "auto" : "none",
-        }}
-      >
-        <h1 className="text-[clamp(40px,8vw,96px)] font-bold tracking-tight leading-none">
-          mathias becerra
-        </h1>
-        <p className="text-[13px] tracking-[0.2em] uppercase text-[#f0ede6]/40 mt-6">
-          software engineer · san francisco
-        </p>
-      </main>
+      <HomeScreen visible={stage === "home"} />
 
       {/* ── Layer 1: Logo intro animation ────────────────── */}
       {stage === "intro" && (
@@ -90,7 +78,7 @@ export default function Home() {
                 : wipeOutActive ? "scaleY(0)"
                 : "scaleY(0)",
               transition: wipeInActive
-                ? "transform 0.65s cubic-bezier(0.76,0,0.24,1)"
+                ? "transform 0.3s cubic-bezier(0.76,0,0.24,1)"
                 : "none",
             }}
           />
