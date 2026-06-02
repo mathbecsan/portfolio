@@ -361,14 +361,19 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
                 />
               ))}
             </div>
-            <img src="/first-screen/from-peru.svg" alt="From Lambayeque, Peru."
-              style={{ width: "clamp(140px, 22vw, 280px)", height: "auto", display: "block", marginTop: 8 }} />
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 8 }}>
+              <img src="/first-screen/from-peru.svg" alt="From Lambayeque, Peru."
+                style={{ width: "clamp(120px, 18vw, 240px)", height: "auto", display: "block" }} />
+              <img src="/first-screen/peruflag.svg" alt="Peru flag"
+                style={{ width: "clamp(24px, 3vw, 40px)", height: "auto", display: "block" }} />
+            </div>
           </div>
 
-          {/* Right — photo */}
+          {/* Right — photo, taller */}
           <div
             style={{
-              flex: "0 0 clamp(200px, 38vw, 500px)",
+              flex: "0 0 clamp(240px, 44vw, 580px)",
+              minHeight: "clamp(300px, 40vw, 560px)",
               overflow: "hidden",
               animation: cardVisible ? "fadeRight 0.7s ease 0.2s both" : "none",
             }}
