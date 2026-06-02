@@ -4,26 +4,29 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
 const GREETINGS = [
-  { text: "Allinllachu.", lang: "Quechua"    },
-  { text: "Hello.",       lang: "English"    },
-  { text: "Bonjour.",     lang: "French"     },
-  { text: "Hola.",        lang: "Spanish"    },
-  { text: "Ciao.",        lang: "Italian"    },
-  { text: "你好.",         lang: "Mandarin"   },
-  { text: "Merhaba.",     lang: "Turkish"    },
-  { text: "Hei.",         lang: "Norwegian"  },
-  { text: "Olá.",         lang: "Portuguese" },
+  { text: "Allinllachu.", lang: "Quechua",   script: "Latin"    },
+  { text: "Hello.",       lang: "English",   script: "Latin"    },
+  { text: "Bonjour.",     lang: "French",    script: "Latin"    },
+  { text: "Hola.",        lang: "Spanish",   script: "Latin"    },
+  { text: "こんにちは。",    lang: "Japanese",  script: "Kanji"    },
+  { text: "مرحباً.",      lang: "Arabic",    script: "Arabic"   },
+  { text: "안녕하세요.",     lang: "Korean",    script: "Hangul"   },
+  { text: "नमस्ते.",      lang: "Hindi",     script: "Devanagari"},
+  { text: "Привет.",      lang: "Russian",   script: "Cyrillic" },
+  { text: "שָׁלוֹם.",     lang: "Hebrew",    script: "Hebrew"   },
+  { text: "Merhaba.",     lang: "Turkish",   script: "Latin"    },
+  { text: "Olá.",         lang: "Portuguese",script: "Latin"    },
+  { text: "สวัสดี.",       lang: "Thai",      script: "Thai"     },
+  { text: "Habari.",      lang: "Swahili",   script: "Latin"    },
+  { text: "Hei.",         lang: "Norwegian", script: "Latin"    },
 ];
 
-// ── Three.js — subtle rotating wireframes in right half ────────
+// ── Three.js background ────────────────────────────────────────
 function useThreeBackground(mountRef: React.RefObject<HTMLDivElement | null>) {
   useEffect(() => {
     const mount = mountRef.current;
     if (!mount) return;
-
-    const W = mount.clientWidth;
-    const H = mount.clientHeight;
-
+    const W = mount.clientWidth, H = mount.clientHeight;
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(W, H);
@@ -35,19 +38,16 @@ function useThreeBackground(mountRef: React.RefObject<HTMLDivElement | null>) {
     camera.position.z = 9;
 
     const shapes: THREE.Mesh[] = [];
-    const defs = [
-      { geo: new THREE.IcosahedronGeometry(1.6, 1), color: 0xE63329, x:  3.5, y:  2,   z: -2,  rx: 0.003, ry: 0.005 },
-      { geo: new THREE.TorusGeometry(1.1, 0.3, 8, 24), color: 0xF5A623, x:  4,   y: -2.5, z: -3,  rx: 0.005, ry: 0.002 },
-      { geo: new THREE.OctahedronGeometry(1.3),      color: 0x2952A3, x:  2,   y: -0.5, z: -4,  rx: 0.002, ry: 0.004 },
-    ];
-
-    defs.forEach(d => {
-      const mat  = new THREE.MeshBasicMaterial({ color: d.color, wireframe: true, opacity: 0.14, transparent: true });
+    [
+      { geo: new THREE.IcosahedronGeometry(1.6, 1), color: 0xE63329, x: 3.5,  y: 2,    z: -2,  rx: 0.003, ry: 0.005 },
+      { geo: new THREE.TorusGeometry(1.1, 0.3, 8, 24), color: 0xF5A623, x: 4,   y: -2.5, z: -3,  rx: 0.005, ry: 0.002 },
+      { geo: new THREE.OctahedronGeometry(1.3),     color: 0x2952A3, x: 2,    y: -0.5, z: -4,  rx: 0.002, ry: 0.004 },
+    ].forEach(d => {
+      const mat  = new THREE.MeshBasicMaterial({ color: d.color, wireframe: true, opacity: 0.13, transparent: true });
       const mesh = new THREE.Mesh(d.geo, mat);
       mesh.position.set(d.x, d.y, d.z);
       mesh.userData = { rx: d.rx, ry: d.ry };
-      scene.add(mesh);
-      shapes.push(mesh);
+      scene.add(mesh); shapes.push(mesh);
     });
 
     let raf: number;
@@ -60,36 +60,43 @@ function useThreeBackground(mountRef: React.RefObject<HTMLDivElement | null>) {
 
     const onResize = () => {
       const w = mount.clientWidth, h = mount.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
+      camera.aspect = w / h; camera.updateProjectionMatrix(); renderer.setSize(w, h);
     };
     window.addEventListener("resize", onResize);
-
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", onResize);
-      renderer.dispose();
-      if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);
-    };
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", onResize); renderer.dispose(); if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement); };
   }, [mountRef]);
+}
+
+// ── MB Logo mark ───────────────────────────────────────────────
+function MBLogo() {
+  return (
+    <div className="flex items-center gap-3">
+      <div
+        className="flex items-center justify-center font-mono font-bold text-white text-sm"
+        style={{ width: 36, height: 36, background: "#2952A3", borderRadius: 4, letterSpacing: "0.05em" }}
+      >
+        MB
+      </div>
+      <span className="font-mono font-bold text-[#f0ede6] text-sm tracking-widest uppercase">
+        Mathias Becerra
+      </span>
+    </div>
+  );
 }
 
 // ── Main HomeScreen ─────────────────────────────────────────────
 export default function HomeScreen({ visible }: { visible: boolean }) {
-  const mountRef  = useRef<HTMLDivElement>(null);
+  const mountRef   = useRef<HTMLDivElement>(null);
   const [idx,       setIdx]      = useState(0);
-  const [animKey,   setAnimKey]  = useState(0); // re-mount span to retrigger CSS anim
+  const [animKey,   setAnimKey]  = useState(0);
   const [exiting,   setExiting]  = useState(false);
   const [contentIn, setContentIn] = useState(false);
 
   useThreeBackground(mountRef);
 
-  useEffect(() => {
-    if (visible) setTimeout(() => setContentIn(true), 100);
-  }, [visible]);
+  useEffect(() => { if (visible) setTimeout(() => setContentIn(true), 100); }, [visible]);
 
-  // Cycle greetings
+  // Faster cycling — 1500ms hold
   useEffect(() => {
     const interval = setInterval(() => {
       setExiting(true);
@@ -97,17 +104,18 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
         setIdx(prev => (prev + 1) % GREETINGS.length);
         setAnimKey(prev => prev + 1);
         setExiting(false);
-      }, 380);
-    }, 2200);
+      }, 320);
+    }, 1500);
     return () => clearInterval(interval);
   }, []);
 
+  const isRTL = ["Arabic", "Hebrew"].includes(GREETINGS[idx].lang);
+
   return (
     <div
-      className="relative min-h-screen bg-[#0d0d0d] overflow-hidden"
+      className="bg-[#0d0d0d] overflow-x-hidden"
       style={{ opacity: contentIn ? 1 : 0, transition: "opacity 0.8s ease" }}
     >
-      {/* CSS keyframe for greeting slide-in */}
       <style>{`
         @keyframes greetingIn {
           from { transform: translateY(110%); opacity: 0; }
@@ -115,97 +123,126 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
         }
       `}</style>
 
-      {/* Three.js — right side only */}
-      <div
-        ref={mountRef}
-        className="absolute inset-0 z-0 pointer-events-none"
-        style={{ left: "45%" }}  /* only covers right half so it never overlaps text */
-      />
+      {/* ── SECTION 1: Hero (full viewport) ─────────────────── */}
+      <section className="relative min-h-screen flex flex-col overflow-hidden" style={{ padding: "3vh 6vw" }}>
 
-      {/* Subtle vertical lines */}
-      <div className="absolute inset-0 z-[1] pointer-events-none"
-        style={{
-          backgroundImage: "linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)",
-          backgroundSize: "100px 100%",
-        }}
-      />
+        {/* Three.js — right side only */}
+        <div ref={mountRef} className="absolute inset-0 z-0 pointer-events-none" style={{ left: "45%" }} />
 
-      {/* ── Content ─────────────────────────────────────────── */}
-      <div className="relative z-10 flex flex-col min-h-screen" style={{ padding: "3vh 6vw" }}>
+        {/* Vertical grid lines */}
+        <div className="absolute inset-0 z-[1] pointer-events-none"
+          style={{ backgroundImage: "linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)", backgroundSize: "100px 100%" }} />
 
         {/* Nav */}
-        <nav className="flex justify-between items-center w-full mb-8">
-          <span className="font-mono text-[#f0ede6]/30 text-xs tracking-[0.25em] uppercase">
-            mathbecsan
-          </span>
-          <div className="flex gap-10 font-mono text-sm text-[#f0ede6]/40 tracking-wide">
-            {["work","about","contact"].map(l => (
-              <a key={l} href={`#${l}`} className="hover:text-[#f0ede6] transition-colors">{l}</a>
+        <nav className="relative z-10 flex justify-between items-center w-full mb-auto pb-4">
+          <MBLogo />
+          <div className="flex gap-8 font-mono text-xs text-[#f0ede6]/40 tracking-[0.2em] uppercase">
+            {["Home","About","Process","Impact"].map((l, i) => (
+              <a key={l} href={`#${l.toLowerCase()}`}
+                className="hover:text-[#f0ede6] transition-colors"
+                style={i === 0 ? { color: "#f0ede6", borderBottom: "1px solid #E63329", paddingBottom: 2 } : {}}>
+                {l}
+              </a>
             ))}
           </div>
         </nav>
 
-        {/* Hero + Bio — all together, vertically centered */}
-        <div className="flex-1 flex flex-col justify-center gap-0">
+        {/* Hero text */}
+        <div className="relative z-10 flex-1 flex flex-col justify-center">
 
           {/* Greeting */}
-          <div className="overflow-hidden" style={{ lineHeight: 1.05 }}>
+          <div className="overflow-hidden" style={{ lineHeight: 1.05, direction: isRTL ? "rtl" : "ltr" }}>
             <span
               key={animKey}
-              className="block font-mono text-[#f0ede6] whitespace-nowrap"
+              className="block font-mono text-[#f0ede6]"
               style={{
-                fontSize: "clamp(48px, 8.5vw, 130px)",
+                fontSize: "clamp(44px, 8vw, 120px)",
                 opacity: exiting ? 0 : 1,
-                transform: exiting ? "translateY(-30px)" : "translateY(0)",
-                transition: exiting ? "opacity 0.3s ease, transform 0.3s ease" : "none",
-                animation: !exiting ? "greetingIn 0.5s cubic-bezier(0.22,1,0.36,1) forwards" : "none",
+                transform: exiting ? "translateY(-28px)" : undefined,
+                transition: exiting ? "opacity 0.28s ease, transform 0.28s ease" : "none",
+                animation: !exiting ? "greetingIn 0.42s cubic-bezier(0.22,1,0.36,1) forwards" : "none",
               }}
             >
               {GREETINGS[idx].text}
             </span>
           </div>
 
-          {/* i'm */}
-          <p className="font-mono text-[#f0ede6] leading-none mt-1"
-            style={{ fontSize: "clamp(36px, 6vw, 96px)" }}>
+          <p className="font-mono text-[#f0ede6] leading-none mt-1" style={{ fontSize: "clamp(32px, 5.5vw, 88px)" }}>
             i&apos;m
           </p>
-
-          {/* Name */}
-          <h1 className="font-mono font-bold text-[#f0ede6] leading-none tracking-tight"
-            style={{ fontSize: "clamp(48px, 8vw, 128px)" }}>
+          <h1 className="font-mono font-bold text-[#f0ede6] leading-none tracking-tight" style={{ fontSize: "clamp(44px, 7.5vw, 118px)" }}>
             mathias.
           </h1>
 
           {/* Language label */}
-          <p className="mt-2 font-mono text-xs tracking-[0.3em] uppercase text-[#f0ede6]/25">
-            {GREETINGS[idx].lang}
+          <p className="mt-3 font-mono text-[10px] tracking-[0.35em] uppercase text-[#f0ede6]/25">
+            {GREETINGS[idx].lang} · {GREETINGS[idx].script}
           </p>
+        </div>
 
-          {/* Bio — directly below language tag, no large gap */}
-          <div className="mt-6 max-w-[600px]">
-            <p className="font-mono text-[#f0ede6]/70 leading-relaxed"
-              style={{ fontSize: "clamp(13px, 1.2vw, 17px)" }}>
-              I&apos;m a software engineer studying Symbolic Systems at Stanford.
-              My passion is creating experiences at the intersection of
-              technology, language, and human connection.
-            </p>
-            <div className="mt-6 flex items-center gap-8">
-              <a href="mailto:mathias@stanford.edu"
-                className="font-mono border border-[#f0ede6]/40 rounded-full hover:bg-[#f0ede6] hover:text-[#0d0d0d] hover:border-[#f0ede6] transition-all duration-300 text-[#f0ede6]"
-                style={{ padding: "12px 28px", fontSize: "clamp(13px, 1.1vw, 16px)" }}>
-                → say hi
-              </a>
-              <span className="font-mono text-[10px] tracking-[0.3em] text-[#f0ede6]/20 uppercase">
-                Stanford, CA
-              </span>
+        {/* Scroll hint */}
+        <div className="relative z-10 flex items-center gap-3 pb-2" style={{ opacity: 0.3 }}>
+          <div style={{ width: 1, height: 40, background: "#f0ede6" }} />
+          <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-[#f0ede6]">scroll</span>
+        </div>
+      </section>
+
+      {/* ── SECTION 2: About / Bio (scrolls into view) ──────── */}
+      <section id="about" className="relative min-h-[60vh] flex flex-col justify-center" style={{ padding: "8vh 6vw" }}>
+
+        {/* Hairline divider */}
+        <div style={{ width: "100%", height: 1, background: "rgba(240,237,230,0.08)", marginBottom: "6vh" }} />
+
+        <div className="flex flex-col gap-8 max-w-[680px]">
+
+          {/* MB logo + name large */}
+          <div className="flex items-center gap-4">
+            <div
+              className="flex items-center justify-center font-mono font-bold text-white"
+              style={{ width: 52, height: 52, background: "#2952A3", borderRadius: 6, fontSize: 18, letterSpacing: "0.05em" }}
+            >
+              MB
+            </div>
+            <div>
+              <p className="font-mono text-[#f0ede6] font-bold tracking-wide" style={{ fontSize: "clamp(18px, 2vw, 26px)" }}>
+                Mathias Becerra
+              </p>
+              <p className="font-mono text-[#f0ede6]/30 text-xs tracking-widest uppercase mt-0.5">
+                Software Engineer · Stanford University
+              </p>
             </div>
           </div>
 
+          {/* Bio */}
+          <p className="font-mono text-[#f0ede6]/70 leading-relaxed" style={{ fontSize: "clamp(14px, 1.3vw, 18px)" }}>
+            I&apos;m studying Symbolic Systems (Human-Centered AI) at Stanford.
+            My passion is creating experiences at the intersection of technology,
+            language, and human connection — from language preservation tools
+            to AI-powered learning platforms.
+          </p>
+
+          {/* Action buttons */}
+          <div className="flex flex-wrap gap-3">
+            {[
+              { label: "About",          href: "#about"   },
+              { label: "Projects",       href: "#work"    },
+              { label: "Impact Metrics", href: "#impact"  },
+              { label: "Resume",         href: "/resume"  },
+              { label: "Contact",        href: "mailto:mathias@stanford.edu" },
+            ].map(btn => (
+              <a
+                key={btn.label}
+                href={btn.href}
+                className="font-mono border border-[#f0ede6]/25 text-[#f0ede6]/70 rounded-full hover:border-[#f0ede6]/70 hover:text-[#f0ede6] hover:bg-[#f0ede6]/5 transition-all duration-250"
+                style={{ padding: "9px 22px", fontSize: "clamp(11px, 1vw, 14px)", letterSpacing: "0.05em" }}
+              >
+                {btn.label}
+              </a>
+            ))}
+          </div>
         </div>
+      </section>
 
-
-      </div>
     </div>
   );
 }
