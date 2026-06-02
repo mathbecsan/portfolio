@@ -190,55 +190,102 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
       {/* ── SECTION 2: About / Bio (scrolls into view) ──────── */}
       <section id="about" className="relative min-h-[60vh] flex flex-col justify-center" style={{ padding: "8vh 6vw" }}>
 
-        {/* Hairline divider */}
-        <div style={{ width: "100%", height: 1, background: "rgba(240,237,230,0.08)", marginBottom: "6vh" }} />
+        {/* ── Profile card ───────────────────────────────── */}
+        <div style={{
+          borderRadius: 16,
+          overflow: "hidden",
+          maxWidth: 860,
+          boxShadow: "0 0 0 1px rgba(255,255,255,0.07)",
+        }}>
 
-        <div className="flex flex-col gap-8 max-w-[680px]">
-
-          {/* MB logo + name large */}
-          <div className="flex items-center gap-4">
-            <div
-              className="flex items-center justify-center font-mono font-bold text-white"
-              style={{ width: 52, height: 52, background: "#2952A3", borderRadius: 6, fontSize: 18, letterSpacing: "0.05em" }}
-            >
-              MB
-            </div>
-            <div>
-              <p className="font-mono text-[#f0ede6] font-bold tracking-wide" style={{ fontSize: "clamp(18px, 2vw, 26px)" }}>
-                Mathias Becerra
-              </p>
-              <p className="font-mono text-[#f0ede6]/30 text-xs tracking-widest uppercase mt-0.5">
-                Software Engineer · Stanford University
-              </p>
-            </div>
+          {/* Top: Bauhaus pattern banner + MB logo */}
+          <div style={{
+            position: "relative",
+            height: "clamp(120px, 16vw, 200px)",
+            backgroundImage: "url('/bauhaus-pattern.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "center top",
+          }}>
+            <img
+              src="/mb-logo.png"
+              alt="MB"
+              style={{
+                position: "absolute",
+                top: 16,
+                left: 16,
+                width: "clamp(44px, 5vw, 64px)",
+                height: "clamp(44px, 5vw, 64px)",
+                borderRadius: 8,
+              }}
+            />
           </div>
 
-          {/* Bio */}
-          <p className="font-mono text-[#f0ede6]/70 leading-relaxed" style={{ fontSize: "clamp(14px, 1.3vw, 18px)" }}>
-            I&apos;m studying Symbolic Systems (Human-Centered AI) at Stanford.
-            My passion is creating experiences at the intersection of technology,
-            language, and human connection — from language preservation tools
-            to AI-powered learning platforms.
-          </p>
+          {/* Bottom: dark + orange bg, text left, photo right */}
+          <div style={{
+            display: "flex",
+            background: "#111",
+            minHeight: "clamp(180px, 22vw, 280px)",
+          }}>
+            {/* Text left */}
+            <div style={{
+              flex: 1,
+              padding: "clamp(20px, 3vw, 40px)",
+              background: "#E07340",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              gap: 8,
+            }}>
+              <p className="font-mono text-white" style={{ fontSize: "clamp(14px, 1.6vw, 22px)", opacity: 0.9 }}>
+                I&apos;m
+              </p>
+              <h2 className="font-mono font-bold text-white leading-tight" style={{ fontSize: "clamp(18px, 2.2vw, 30px)" }}>
+                Full-Stack Developer
+              </h2>
+              <p className="font-mono text-white/80 leading-relaxed" style={{ fontSize: "clamp(12px, 1.1vw, 16px)", maxWidth: 340 }}>
+                who builds accessible user interfaces to create experiences
+                at the intersection of HCI, design, and AI.
+              </p>
 
-          {/* Action buttons */}
-          <div className="flex flex-wrap gap-3">
-            {[
-              { label: "About",          href: "#about"   },
-              { label: "Projects",       href: "#work"    },
-              { label: "Impact Metrics", href: "#impact"  },
-              { label: "Resume",         href: "/resume"  },
-              { label: "Contact",        href: "mailto:mathias@stanford.edu" },
-            ].map(btn => (
-              <a
-                key={btn.label}
-                href={btn.href}
-                className="font-mono border border-[#f0ede6]/25 text-[#f0ede6]/70 rounded-full hover:border-[#f0ede6]/70 hover:text-[#f0ede6] hover:bg-[#f0ede6]/5 transition-all duration-250"
-                style={{ padding: "9px 22px", fontSize: "clamp(11px, 1vw, 14px)", letterSpacing: "0.05em" }}
-              >
-                {btn.label}
-              </a>
-            ))}
+              {/* Action buttons */}
+              <div className="flex flex-wrap gap-2 mt-2">
+                {[
+                  { label: "About",          href: "#about"  },
+                  { label: "Projects",       href: "#work"   },
+                  { label: "Impact",         href: "#impact" },
+                  { label: "Resume",         href: "/resume" },
+                  { label: "Contact",        href: "mailto:mathias@stanford.edu" },
+                ].map(btn => (
+                  <a
+                    key={btn.label}
+                    href={btn.href}
+                    className="font-mono border border-white/40 text-white/90 rounded-full hover:bg-white hover:text-[#E07340] transition-all duration-200"
+                    style={{ padding: "6px 16px", fontSize: "clamp(10px, 0.9vw, 13px)", letterSpacing: "0.04em" }}
+                  >
+                    {btn.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* Photo right */}
+            <div style={{
+              width: "clamp(160px, 22vw, 280px)",
+              flexShrink: 0,
+              overflow: "hidden",
+              background: "#0d0d0d",
+            }}>
+              <img
+                src="/mathias-photo.jpg"
+                alt="Mathias Becerra"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  objectPosition: "center top",
+                }}
+              />
+            </div>
           </div>
         </div>
       </section>
