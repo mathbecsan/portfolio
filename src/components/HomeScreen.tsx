@@ -22,9 +22,9 @@ const GREETINGS = [
 ];
 
 const ROLES = [
-  { src: "/first-screen/role-uxui.svg",      label: "UX/UI Engineer"      },
-  { src: "/first-screen/role-data.svg",      label: "Data Scientist"      },
-  { src: "/first-screen/role-product.svg",   label: "Product Designer"    },
+  { src: "/first-screen/role-uxui.svg", label: "UX/UI Engineer" },
+  { src: "/first-screen/role-data.svg", label: "Data Scientist" },
+  { src: "/first-screen/role-product.svg", label: "Product Designer" },
   { src: "/first-screen/role-fullstack.svg", label: "Fullstack Developer" },
 ];
 
@@ -308,12 +308,25 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
         style={{ background: "#F5E6C0" }}
       >
         {/* Bauhaus banner — full width */}
-        <div style={{ width: "100%", height: "clamp(100px, 14vw, 180px)", overflow: "hidden", animation: cardVisible ? "fadeUp 0.7s ease 0s both" : "none" }}>
+        <div
+          style={{
+            width: "100%",
+            height: "clamp(100px, 14vw, 180px)",
+            overflow: "hidden",
+            animation: cardVisible ? "fadeUp 0.7s ease 0s both" : "none",
+          }}
+        >
           <img
             src="/bauhaus-pattern.svg"
             aria-hidden="true"
             alt=""
-            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" }}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center top",
+              display: "block",
+            }}
           />
         </div>
 
@@ -338,10 +351,23 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
               animation: cardVisible ? "fadeLeft 0.7s ease 0.15s both" : "none",
             }}
           >
-            <img src="/first-screen/ima.svg" alt="I'm a"
-              style={{ width: "clamp(80px, 12vw, 160px)", height: "auto", display: "block" }} />
+            <img
+              src="/first-screen/ima.svg"
+              alt="I'm a"
+              style={{
+                width: "clamp(80px, 12vw, 160px)",
+                height: "auto",
+                display: "block",
+              }}
+            />
             {/* Role SVG — fixed aspect ratio, swaps on cycle */}
-            <div style={{ position: "relative", width: "clamp(200px, 38vw, 460px)", aspectRatio: "855/427" }}>
+            <div
+              style={{
+                position: "relative",
+                width: "clamp(200px, 38vw, 460px)",
+                aspectRatio: "855/427",
+              }}
+            >
               {ROLES.map((role, i) => (
                 <img
                   key={role.src}
@@ -349,31 +375,58 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
                   alt={role.label}
                   style={{
                     position: i === 0 ? "relative" : "absolute",
-                    top: 0, left: 0,
+                    top: 0,
+                    left: 0,
                     width: "100%",
                     height: "auto",
                     display: "block",
                     opacity: roleIdx === i ? (exiting ? 0 : 1) : 0,
-                    transform: roleIdx === i ? (exiting ? "translateY(-10px)" : "translateY(0)") : "translateY(10px)",
+                    transform:
+                      roleIdx === i
+                        ? exiting
+                          ? "translateY(-10px)"
+                          : "translateY(0)"
+                        : "translateY(10px)",
                     transition: "opacity 0.32s ease, transform 0.32s ease",
                     pointerEvents: roleIdx === i ? "auto" : "none",
                   }}
                 />
               ))}
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 8 }}>
-              <img src="/first-screen/from-peru.svg" alt="From Lambayeque, Peru."
-                style={{ width: "clamp(120px, 18vw, 240px)", height: "auto", display: "block" }} />
-              <img src="/first-screen/peruflag.svg" alt="Peru flag"
-                style={{ width: "clamp(24px, 3vw, 40px)", height: "auto", display: "block" }} />
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                marginTop: 8,
+              }}
+            >
+              <img
+                src="/first-screen/from-peru.svg"
+                alt="From Lambayeque, Peru."
+                style={{
+                  width: "clamp(120px, 18vw, 240px)",
+                  height: "auto",
+                  display: "block",
+                }}
+              />
+              <img
+                src="/first-screen/peruflag.svg"
+                alt="Peru flag"
+                style={{
+                  width: "clamp(24px, 3vw, 40px)",
+                  height: "auto",
+                  display: "block",
+                }}
+              />
             </div>
           </div>
 
-          {/* Right — photo, taller */}
+          {/* Right — photo */}
           <div
             style={{
-              flex: "0 0 clamp(240px, 44vw, 580px)",
-              minHeight: "clamp(300px, 40vw, 560px)",
+              flex: "0 0 clamp(280px, 36vw, 560px)",
+              minHeight: "clamp(320px, 36vw, 560px)",
               overflow: "hidden",
               animation: cardVisible ? "fadeRight 0.7s ease 0.2s both" : "none",
             }}
@@ -385,7 +438,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
                 width: "100%",
                 height: "100%",
                 objectFit: "cover",
-                objectPosition: "center top",
+                objectPosition: "50% 18%",
                 display: "block",
               }}
             />
