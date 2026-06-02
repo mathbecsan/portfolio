@@ -330,107 +330,17 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
           />
         </div>
 
-        {/* Text + photo row */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "wrap",
-            minHeight: "clamp(260px, 30vw, 420px)",
-          }}
-        >
-          {/* Left — text */}
-          <div
-            style={{
-              flex: "1 1 280px",
-              padding: "clamp(24px, 5vw, 60px) clamp(20px, 6vw, 72px)",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              gap: "clamp(6px, 1vw, 14px)",
-              animation: cardVisible ? "fadeLeft 0.7s ease 0.15s both" : "none",
-            }}
-          >
-            <img
-              src="/first-screen/ima.svg"
-              alt="I'm a"
-              style={{
-                width: "clamp(80px, 12vw, 160px)",
-                height: "auto",
-                display: "block",
-              }}
-            />
-            {/* Role SVG — fixed aspect ratio, swaps on cycle */}
-            <div
-              style={{
-                position: "relative",
-                width: "clamp(200px, 38vw, 460px)",
-                aspectRatio: "855/427",
-              }}
-            >
-              {ROLES.map((role, i) => (
-                <img
-                  key={role.src}
-                  src={role.src}
-                  alt={role.label}
-                  style={{
-                    position: i === 0 ? "relative" : "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "auto",
-                    display: "block",
-                    opacity: roleIdx === i ? (exiting ? 0 : 1) : 0,
-                    transform:
-                      roleIdx === i
-                        ? exiting
-                          ? "translateY(-10px)"
-                          : "translateY(0)"
-                        : "translateY(10px)",
-                    transition: "opacity 0.32s ease, transform 0.32s ease",
-                    pointerEvents: roleIdx === i ? "auto" : "none",
-                  }}
-                />
-              ))}
-            </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                marginTop: 8,
-              }}
-            >
-              <img
-                src="/first-screen/from-peru.svg"
-                alt="From Lambayeque, Peru."
-                style={{
-                  width: "clamp(120px, 18vw, 240px)",
-                  height: "auto",
-                  display: "block",
-                }}
-              />
-              <img
-                src="/first-screen/peruflag.svg"
-                alt="Peru flag"
-                style={{
-                  width: "clamp(24px, 3vw, 40px)",
-                  height: "auto",
-                  display: "block",
-                }}
-              />
-            </div>
-          </div>
+        {/* Text + photo — photo is absolutely positioned so it fills full height */}
+        <div style={{ position: "relative", height: "clamp(360px, 48vw, 640px)" }}>
 
-          {/* Right — photo */}
-          <div
-            style={{
-              flex: "0 0 clamp(280px, 36vw, 560px)",
-              minHeight: "clamp(320px, 36vw, 560px)",
-              overflow: "hidden",
-              animation: cardVisible ? "fadeRight 0.7s ease 0.2s both" : "none",
-            }}
-          >
+          {/* Photo — fills entire right half */}
+          <div style={{
+            position: "absolute",
+            top: 0, right: 0, bottom: 0,
+            width: "52%",
+            overflow: "hidden",
+            animation: cardVisible ? "fadeRight 0.7s ease 0.2s both" : "none",
+          }}>
             <img
               src="/profile-picture.png"
               alt="Mathias Becerra"
@@ -438,10 +348,56 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
                 width: "100%",
                 height: "100%",
                 objectFit: "cover",
-                objectPosition: "50% 18%",
+                objectPosition: "50% 12%",
                 display: "block",
               }}
             />
+          </div>
+
+          {/* Text — left side, vertically centered */}
+          <div style={{
+            position: "absolute",
+            top: 0, left: 0, bottom: 0,
+            width: "52%",
+            padding: "clamp(20px, 4vw, 56px) clamp(20px, 5vw, 64px)",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            gap: "clamp(8px, 1.2vw, 18px)",
+            animation: cardVisible ? "fadeLeft 0.7s ease 0.15s both" : "none",
+          }}>
+            <img src="/first-screen/ima.svg" alt="I'm a"
+              style={{ width: "clamp(80px, 10vw, 150px)", height: "auto", display: "block" }} />
+
+            {/* Role SVG — all stacked, only active one visible */}
+            <div style={{ position: "relative", width: "clamp(180px, 32vw, 420px)", aspectRatio: "855/427" }}>
+              {ROLES.map((role, i) => (
+                <img
+                  key={role.src}
+                  src={role.src}
+                  alt={role.label}
+                  style={{
+                    position: i === 0 ? "relative" : "absolute",
+                    top: 0, left: 0,
+                    width: "100%", height: "auto",
+                    display: "block",
+                    opacity: roleIdx === i ? (exiting ? 0 : 1) : 0,
+                    transform: roleIdx === i
+                      ? (exiting ? "translateY(-10px)" : "translateY(0)")
+                      : "translateY(10px)",
+                    transition: "opacity 0.32s ease, transform 0.32s ease",
+                    pointerEvents: roleIdx === i ? "auto" : "none",
+                  }}
+                />
+              ))}
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <img src="/first-screen/from-peru.svg" alt="From Lambayeque, Peru."
+                style={{ width: "clamp(110px, 16vw, 220px)", height: "auto", display: "block" }} />
+              <img src="/first-screen/peruflag.svg" alt="Peru flag"
+                style={{ width: "clamp(22px, 2.5vw, 36px)", height: "auto", display: "block" }} />
+            </div>
           </div>
         </div>
       </section>
