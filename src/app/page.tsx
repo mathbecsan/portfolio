@@ -84,11 +84,11 @@ export default function Home() {
             className="absolute inset-0 bg-[#f0ede6]"
             style={{
               zIndex: 1,
-              transformOrigin: wipeOutActive ? "right center" : "left center",
+              transformOrigin: wipeOutActive ? "center bottom" : "center top",
               transform:
-                wipeInActive && !wipeOutActive ? "scaleX(1)"
-                : wipeOutActive ? "scaleX(0)"
-                : "scaleX(0)",
+                wipeInActive && !wipeOutActive ? "scaleY(1)"
+                : wipeOutActive ? "scaleY(0)"
+                : "scaleY(0)",
               transition: wipeInActive
                 ? "transform 0.65s cubic-bezier(0.76,0,0.24,1)"
                 : "none",
