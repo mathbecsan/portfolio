@@ -336,19 +336,19 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
         {/* ② Portrait + text — fixed height, no empty space */}
         <div style={{ position: "relative", height: "clamp(320px, 42vw, 560px)" }}>
 
-          {/* Photo right 56% */}
+          {/* Photo — right 48% */}
           <div style={{
-            position: "absolute", inset: 0, left: "44%", overflow: "hidden",
+            position: "absolute", inset: 0, left: "52%", overflow: "hidden",
             animation: posterVisible ? "fadeRight 0.6s ease 0.1s both" : "none",
           }}>
             <img src="/profile-picture.png" alt="Mathias Becerra"
               style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 8%", display: "block" }} />
           </div>
 
-          {/* Text left 46% */}
+          {/* Text — left 55%, centered vertically */}
           <div style={{
-            position: "absolute", top: 0, left: 0, bottom: 0, width: "46%",
-            padding: "clamp(20px, 3vw, 48px) clamp(20px, 4vw, 56px)",
+            position: "absolute", top: 0, left: 0, bottom: 0, width: "55%",
+            padding: "clamp(20px, 3vw, 48px) clamp(28px, 5vw, 72px)",
             display: "flex", flexDirection: "column", justifyContent: "center",
             gap: "clamp(8px, 1.2vw, 16px)",
             animation: posterVisible ? "fadeLeft 0.6s ease 0.05s both" : "none",
@@ -359,7 +359,8 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
               color: "#6B1A1A", margin: 0,
             }}>I&apos;m a</p>
 
-            <div style={{ position: "relative", width: "clamp(200px, 38vw, 480px)", aspectRatio: "855/427" }}>
+            {/* Role badge — fills the wider column */}
+            <div style={{ position: "relative", width: "min(100%, clamp(240px, 44vw, 540px))", aspectRatio: "855/427" }}>
               {ROLES.map((role, i) => (
                 <img key={role.src} src={role.src} alt={role.label}
                   style={{
