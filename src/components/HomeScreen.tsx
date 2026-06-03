@@ -320,52 +320,46 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
       </div>
 
       {/* ══════════════════════════════════════════════
-          SECTION 2 — Profile card (matches reference)
-          Top bauhaus → portrait fills full height → bottom bauhaus
+          SECTION 2 — Profile card
+          ① Bauhaus top  ② Portrait + text  ③ Bauhaus bottom
       ══════════════════════════════════════════════ */}
       <section id="about" ref={posterRef}
-        style={{ background: "#F5E6C0", margin: 0, padding: 0, display: "flex", flexDirection: "column", minHeight: "100svh" }}>
+        style={{ background: "#F5E6C0", margin: 0, padding: 0, overflow: "hidden" }}>
 
-        {/* ── Top Bauhaus strip — tall, full width ── */}
+        {/* ① Top Bauhaus strip */}
         <div style={{
-          flexShrink: 0,
-          height: "clamp(130px, 16vw, 200px)",
+          height: "clamp(120px, 15vw, 190px)",
           backgroundImage: "url('/bauhaus-pattern.svg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center top",
+          backgroundSize: "cover", backgroundPosition: "center top",
         }} />
 
-        {/* ── Portrait + role — fills all remaining space ── */}
-        <div style={{ flex: 1, position: "relative", minHeight: 300 }}>
+        {/* ② Portrait + text — fixed height, no empty space */}
+        <div style={{ position: "relative", height: "clamp(320px, 42vw, 560px)" }}>
 
-          {/* Photo: right 55%, full height */}
+          {/* Photo right 56% */}
           <div style={{
-            position: "absolute", top: 0, right: 0, bottom: 0, width: "55%",
-            overflow: "hidden",
-            animation: posterVisible ? "fadeRight 0.6s ease 0.15s both" : "none",
+            position: "absolute", inset: 0, left: "44%", overflow: "hidden",
+            animation: posterVisible ? "fadeRight 0.6s ease 0.1s both" : "none",
           }}>
             <img src="/profile-picture.png" alt="Mathias Becerra"
-              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 10%", display: "block" }} />
+              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 8%", display: "block" }} />
           </div>
 
-          {/* Text: left 48%, vertically centered */}
+          {/* Text left 46% */}
           <div style={{
-            position: "absolute", top: 0, left: 0, bottom: 0, width: "48%",
-            padding: "clamp(24px, 4vw, 60px) clamp(24px, 5vw, 72px)",
+            position: "absolute", top: 0, left: 0, bottom: 0, width: "46%",
+            padding: "clamp(20px, 3vw, 48px) clamp(20px, 4vw, 56px)",
             display: "flex", flexDirection: "column", justifyContent: "center",
-            gap: "clamp(10px, 1.4vw, 20px)",
-            animation: posterVisible ? "fadeLeft 0.6s ease 0.1s both" : "none",
+            gap: "clamp(8px, 1.2vw, 16px)",
+            animation: posterVisible ? "fadeLeft 0.6s ease 0.05s both" : "none",
           }}>
-
-            {/* "I'm a" italic */}
             <p style={{
               fontFamily: "Georgia, serif", fontStyle: "italic",
-              fontSize: "clamp(18px, 2.4vw, 32px)",
-              color: "#6B1A1A", margin: 0, fontWeight: 400,
+              fontSize: "clamp(16px, 2.2vw, 28px)",
+              color: "#6B1A1A", margin: 0,
             }}>I&apos;m a</p>
 
-            {/* Role SVGs */}
-            <div style={{ position: "relative", width: "clamp(220px, 40vw, 500px)", aspectRatio: "855/427" }}>
+            <div style={{ position: "relative", width: "clamp(200px, 38vw, 480px)", aspectRatio: "855/427" }}>
               {ROLES.map((role, i) => (
                 <img key={role.src} src={role.src} alt={role.label}
                   style={{
@@ -379,40 +373,44 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
               ))}
             </div>
 
-            {/* Location */}
             <p style={{
-              fontFamily: "monospace",
-              fontSize: "clamp(11px, 1.1vw, 15px)",
+              fontFamily: "monospace", fontSize: "clamp(10px, 1vw, 14px)",
               color: "#6B1A1A", margin: 0, letterSpacing: "0.04em",
-              display: "flex", alignItems: "center", gap: 8,
+              display: "flex", alignItems: "center", gap: 6,
             }}>
               From Lambayeque, Peru.
               <img src="/first-screen/peruflag.svg" alt="Peru flag"
-                style={{ width: "clamp(20px, 2.2vw, 30px)", height: "auto", display: "inline-block", verticalAlign: "middle" }} />
+                style={{ width: "clamp(18px, 2vw, 28px)", height: "auto", display: "inline-block" }} />
             </p>
           </div>
         </div>
 
-        {/* ── Bottom Bauhaus strip — full width ── */}
+        {/* ③ Bottom Bauhaus strip — different pattern */}
         <div style={{
-          flexShrink: 0,
-          height: "clamp(100px, 13vw, 160px)",
-          backgroundImage: "url('/first-screen/bauhaus.svg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center bottom",
+          height: "clamp(120px, 15vw, 190px)",
+          backgroundImage: "url('/screen7/bauhaus-top.svg')",
+          backgroundSize: "cover", backgroundPosition: "center top",
         }} />
       </section>
 
       {/* ══════════════════════════════════════════════
-          SECTION 2b — Mission statement (separate)
+          SECTION 2b — Mission statement
       ══════════════════════════════════════════════ */}
-      <section style={{ background: "#F5E6C0", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "relative", padding: "clamp(48px, 7vw, 96px) clamp(40px, 7vw, 120px) clamp(64px, 8vw, 100px)" }}>
-          <div style={{
-            position: "absolute", top: 0, right: 0, bottom: 0, width: "clamp(24px, 2.5vw, 40px)",
-            backgroundImage: "url('/second-screen/word-4.svg')",
-            backgroundSize: "cover", backgroundPosition: "right center",
-          }} />
+      <section style={{ background: "#F5E6C0", position: "relative", overflow: "hidden", minHeight: "100vh",
+        display: "flex", alignItems: "center" }}>
+
+        {/* Corner decorations */}
+        <img src="/second-screen/word-1.svg" aria-hidden alt=""
+          style={{ position:"absolute", top:0, left:0, width:"clamp(60px,9vw,130px)", zIndex:0 }} />
+        <img src="/second-screen/word-4.svg" aria-hidden alt=""
+          style={{ position:"absolute", top:0, right:0, height:"clamp(60px,9vw,120px)", width:"auto", zIndex:0 }} />
+        <img src="/second-screen/word-2.svg" aria-hidden alt=""
+          style={{ position:"absolute", bottom:0, left:0, width:"clamp(100px,16vw,240px)", zIndex:0 }} />
+        <img src="/second-screen/word-3.svg" aria-hidden alt=""
+          style={{ position:"absolute", bottom:0, right:0, width:"clamp(100px,16vw,240px)", zIndex:0 }} />
+
+        <div style={{ position: "relative", zIndex: 1, width: "100%",
+          padding: "clamp(64px, 9vw, 120px) clamp(40px, 7vw, 120px)" }}>
           <p style={{
             fontFamily: "Georgia, 'Times New Roman', serif", fontWeight: 700,
             fontSize: "clamp(28px, 4.5vw, 68px)", lineHeight: 1.15,
@@ -433,12 +431,6 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
             </span>
             {" products with meticulous attention to detail to create accessible user experiences for social good"}
           </p>
-        </div>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-          <div style={{ width: "clamp(110px, 18vw, 280px)", aspectRatio: "1205/183",
-            backgroundImage: "url('/second-screen/word-2.svg')", backgroundSize: "cover" }} />
-          <div style={{ width: "clamp(110px, 18vw, 280px)", aspectRatio: "914/216",
-            backgroundImage: "url('/second-screen/word-3.svg')", backgroundSize: "cover" }} />
         </div>
       </section>
 
