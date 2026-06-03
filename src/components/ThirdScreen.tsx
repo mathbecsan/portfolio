@@ -9,14 +9,15 @@
 export default function ThirdScreen() {
   return (
     <section style={{ overflow: "hidden" }}>
-
       {/* ── Top Bauhaus strip ── */}
-      <div style={{
-        height: "clamp(100px, 13vw, 170px)",
-        backgroundImage: "url('/bauhaus-pattern.svg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center top",
-      }} />
+      <div
+        style={{
+          height: "clamp(100px, 13vw, 170px)",
+          backgroundImage: "url('/bauhaus-pattern.svg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center top",
+        }}
+      />
 
       {/* ── App.svg layout + overlays ── */}
       <div style={{ position: "relative", lineHeight: 0 }}>
@@ -27,21 +28,25 @@ export default function ThirdScreen() {
         />
 
         {/* ── Mathias photo ── */}
-        <div style={{
-          position: "absolute",
-          left:   "3%",
-          top:    "8%",
-          width:  "43%",
-          bottom: "12%",
-          overflow: "hidden",
-          borderRadius: "clamp(6px, 0.6vw, 12px)",
-        }}>
+        <div
+          style={{
+            position: "absolute",
+            left: "3%",
+            top: "8%",
+            width: "43%",
+            bottom: "12%",
+            overflow: "hidden",
+            borderRadius: "clamp(6px, 0.6vw, 12px)",
+          }}
+        >
           <img
             src="/screen3/mathias-profile.png"
             alt="Mathias Becerra at Stanford"
             style={{
-              width: "100%", height: "100%",
-              objectFit: "cover", objectPosition: "center 15%",
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center 15%",
               display: "block",
             }}
           />
@@ -53,9 +58,9 @@ export default function ThirdScreen() {
           alt="HCI"
           style={{
             position: "absolute",
-            left:   "54.0%",
-            top:    "33.2%",
-            width:  "2.0%",
+            left: "55.0%",
+            top: "34.2%",
+            width: "2.0%",
             height: "auto",
             zIndex: 2,
           }}
@@ -67,9 +72,9 @@ export default function ThirdScreen() {
           alt="HAI"
           style={{
             position: "absolute",
-            left:   "58.2%",
-            top:    "33.2%",
-            width:  "2.0%",
+            left: "59.2%",
+            top: "34.2%",
+            width: "2.0%",
             height: "auto",
             zIndex: 2,
           }}
@@ -82,9 +87,9 @@ export default function ThirdScreen() {
           alt="Stanford University"
           style={{
             position: "absolute",
-            right:  "2%",
-            top:    "14%",
-            width:  "9%",
+            right: "-7%",
+            top: "22%",
+            width: "33%",
             height: "auto",
             zIndex: 2,
           }}
@@ -92,13 +97,15 @@ export default function ThirdScreen() {
       </div>
 
       {/* ── Bottom Bauhaus strip ── */}
-      <div style={{
-        height: "clamp(100px, 13vw, 170px)",
-        backgroundImage: "url('/screen7/bauhaus-top.svg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center top",
-        transform: "scaleY(-1)",
-      }} />
+      <div
+        style={{
+          height: "clamp(100px, 13vw, 170px)",
+          backgroundImage: "url('/screen7/bauhaus-top.svg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center top",
+          transform: "scaleY(-1)",
+        }}
+      />
     </section>
   );
 }
