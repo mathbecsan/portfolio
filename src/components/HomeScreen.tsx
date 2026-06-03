@@ -395,9 +395,9 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
 
       {/* ══════════════════════════════════════════════
           SECTION 2b — Mission statement
-          Dark outer + Bauhaus top + cream text + Bauhaus bottom
+          Cream throughout, Bauhaus strips top + bottom
       ══════════════════════════════════════════════ */}
-      <section style={{ background: "#111", overflow: "hidden" }}>
+      <section style={{ background: "#F5E6C0", overflow: "hidden" }}>
 
         {/* Top Bauhaus strip */}
         <div style={{
@@ -407,14 +407,11 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
           backgroundPosition: "center bottom",
         }} />
 
-        {/* Cream text area */}
-        <div style={{
-          background: "#F5E6C0",
-          padding: "clamp(40px, 6vw, 80px) clamp(32px, 6vw, 80px)",
-        }}>
+        {/* Text — generous padding */}
+        <div style={{ padding: "clamp(64px, 9vw, 120px) clamp(40px, 7vw, 100px)" }}>
           <p style={{
             fontFamily: "Georgia, 'Times New Roman', serif", fontWeight: 700,
-            fontSize: "clamp(24px, 4vw, 58px)", lineHeight: 1.2,
+            fontSize: "clamp(26px, 4.2vw, 62px)", lineHeight: 1.2,
             color: "#1a1a1a", margin: 0,
           }}>
             {"I "}
@@ -430,7 +427,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
           </p>
         </div>
 
-        {/* Bottom Bauhaus strip — flipped for variety */}
+        {/* Bottom Bauhaus strip — mirrored */}
         <div style={{
           height: "clamp(100px, 13vw, 170px)",
           backgroundImage: "url('/bauhaus-2.svg')",
