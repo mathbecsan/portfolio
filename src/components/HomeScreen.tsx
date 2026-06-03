@@ -7,7 +7,6 @@ import FourthScreen from "./FourthScreen";
 import FifthScreen from "./FifthScreen";
 import SixthScreen from "./SixthScreen";
 import SeventhScreen from "./SeventhScreen";
-import FloatingAvatar from "./FloatingAvatar";
 
 const NAV = ["Home", "About", "Process", "Impact"];
 
@@ -36,7 +35,17 @@ const ROLES = [
 
 const WORDS = ["design", "build", "program"];
 
-// ── Three.js background — particle network + mouse parallax ───
+// ── Build a joint pivot group ──────────────────────────────────
+function pivot(x=0,y=0,z=0): THREE.Group {
+  const g = new THREE.Group(); g.position.set(x,y,z); return g;
+}
+function limb(h: number, r: number, col: number, yOff=-h/2): THREE.Mesh {
+  const g = new THREE.CylinderGeometry(r,r,h,14);
+  g.translate(0, yOff, 0);
+  return new THREE.Mesh(g, new THREE.MeshPhongMaterial({ color: col, shininess: 30 }));
+}
+
+// ── Character + particle background ───────────────────────────
 function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
   useEffect(() => {
     const mount = mountRef.current;
@@ -47,124 +56,298 @@ function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(W, H);
     renderer.setClearColor(0x000000, 0);
+    renderer.shadowMap.enabled = true;
     mount.appendChild(renderer.domElement);
 
     const scene  = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(55, W / H, 0.1, 100);
-    camera.position.z = 9;
+    const camera = new THREE.PerspectiveCamera(50, W / H, 0.1, 100);
+    camera.position.set(0, 0, 9);
 
-    // ── Particle field ─────────────────────────────────────────
-    const PARTICLE_COUNT = 120;
-    const pPositions = new Float32Array(PARTICLE_COUNT * 3);
-    const pVelocities: THREE.Vector3[] = [];
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      pPositions[i*3]   = (Math.random()-0.5) * 18;
-      pPositions[i*3+1] = (Math.random()-0.5) * 12;
-      pPositions[i*3+2] = (Math.random()-0.5) * 8 - 4;
-      pVelocities.push(new THREE.Vector3(
-        (Math.random()-0.5)*0.005,
-        (Math.random()-0.5)*0.005,
-        0
-      ));
+    // ── Lights ─────────────────────────────────────────────────
+    scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+    const key = new THREE.DirectionalLight(0xffffff, 1.1);
+    key.position.set(3, 6, 6); scene.add(key);
+    const rim = new THREE.DirectionalLight(0x2952a3, 0.5);
+    rim.position.set(-4, 0, -4); scene.add(rim);
+
+    // ── PARTICLE NETWORK (background) ─────────────────────────
+    const PC = 90;
+    const pPos = new Float32Array(PC * 3);
+    const pVel: THREE.Vector3[] = [];
+    for (let i = 0; i < PC; i++) {
+      pPos[i*3]   = (Math.random()-0.5)*16;
+      pPos[i*3+1] = (Math.random()-0.5)*11;
+      pPos[i*3+2] = (Math.random()-0.5)*6 - 5;
+      pVel.push(new THREE.Vector3((Math.random()-.5)*.004,(Math.random()-.5)*.004,0));
     }
     const pGeo = new THREE.BufferGeometry();
-    pGeo.setAttribute("position", new THREE.BufferAttribute(pPositions, 3));
-    const pMat = new THREE.PointsMaterial({ color: 0xf0ede6, size: 0.055, transparent: true, opacity: 0.55 });
-    const points = new THREE.Points(pGeo, pMat);
-    scene.add(points);
+    pGeo.setAttribute("position", new THREE.BufferAttribute(pPos, 3));
+    scene.add(new THREE.Points(pGeo,
+      new THREE.PointsMaterial({ color: 0xf0ede6, size: 0.048, transparent: true, opacity: 0.38 })));
 
-    // ── Connection lines (updated dynamically) ─────────────────
-    const lineGeo = new THREE.BufferGeometry();
-    const maxLines = PARTICLE_COUNT * 4;
-    const linePos  = new Float32Array(maxLines * 6);
-    lineGeo.setAttribute("position", new THREE.BufferAttribute(linePos, 3));
-    const lineMat = new THREE.LineSegments(
-      lineGeo,
-      new THREE.LineBasicMaterial({ color: 0xf0ede6, transparent: true, opacity: 0.08 })
+    const lGeo = new THREE.BufferGeometry();
+    const lPos = new Float32Array(PC * 4 * 6);
+    lGeo.setAttribute("position", new THREE.BufferAttribute(lPos, 3));
+    const lines = new THREE.LineSegments(lGeo,
+      new THREE.LineBasicMaterial({ color: 0xf0ede6, transparent: true, opacity: 0.07 }));
+    scene.add(lines);
+
+    // ── MATHIAS CHARACTER ──────────────────────────────────────
+    const SKIN  = 0xc68642;
+    const SHIRT = 0x2952a3;  // Bauhaus blue
+    const PANT  = 0x1a1a1a;
+    const SHOE  = 0x111111;
+    const HAIR  = 0x1a0800;
+
+    const char = new THREE.Group();
+    char.position.set(3.8, -0.5, 0);
+    scene.add(char);
+
+    // Torso
+    const torsoGrp = new THREE.Group();
+    char.add(torsoGrp);
+    const torsoMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(0.88, 1.2, 0.52),
+      new THREE.MeshPhongMaterial({ color: SHIRT, shininess: 40 })
     );
-    scene.add(lineMat);
+    torsoMesh.position.y = 0.6;
+    torsoGrp.add(torsoMesh);
 
-    // ── Bauhaus floating shapes ─────────────────────────────────
-    const shapes = [
-      { geo: new THREE.IcosahedronGeometry(1.4, 1), color: 0xe63329, x: 4.2,  y: 2.0,  rx: 0.0025, ry: 0.004  },
-      { geo: new THREE.TorusGeometry(1.0, 0.25, 10, 32), color: 0xf5c500, x: 3.8, y:-2.2, rx: 0.004,  ry: 0.0018 },
-      { geo: new THREE.OctahedronGeometry(1.2),     color: 0x2952a3, x: 1.8,  y:-0.5,  rx: 0.0015, ry: 0.0035 },
-    ].map(d => {
-      const mat  = new THREE.MeshBasicMaterial({ color: d.color, wireframe: true, transparent: true, opacity: 0.16 });
-      const mesh = new THREE.Mesh(d.geo, mat);
-      mesh.position.set(d.x, d.y, -3);
-      mesh.userData = { rx: d.rx, ry: d.ry, ox: d.x, oy: d.y };
-      scene.add(mesh);
-      return mesh;
+    // Collar accent stripe
+    const collar = new THREE.Mesh(
+      new THREE.BoxGeometry(0.9, 0.1, 0.55),
+      new THREE.MeshPhongMaterial({ color: 0xe63329 })
+    );
+    collar.position.y = 1.22;
+    torsoGrp.add(collar);
+
+    // Neck
+    const neck = limb(0.22, 0.14, SKIN, -0.11);
+    neck.position.set(0, 1.32, 0);
+    torsoGrp.add(neck);
+
+    // ── Head group ──────────────────────────────────────────────
+    const headPivot = pivot(0, 1.6, 0);
+    torsoGrp.add(headPivot);
+
+    const headMesh = new THREE.Mesh(
+      new THREE.SphereGeometry(0.42, 28, 22),
+      new THREE.MeshPhongMaterial({ color: SKIN, shininess: 18 })
+    );
+    headMesh.position.y = 0.42;
+    headPivot.add(headMesh);
+
+    // Eyes
+    [[-0.14, 0.0, 0.35],[0.14, 0.0, 0.35]].forEach(([x,y,z]) => {
+      const eye = new THREE.Mesh(
+        new THREE.SphereGeometry(0.065, 10, 8),
+        new THREE.MeshPhongMaterial({ color: 0x111111 })
+      );
+      eye.position.set(x, 0.42 + y, z);
+      headPivot.add(eye);
+      // white highlight
+      const hl = new THREE.Mesh(new THREE.SphereGeometry(0.022,6,6),
+        new THREE.MeshBasicMaterial({ color: 0xffffff }));
+      hl.position.set(x + 0.025, 0.42 + 0.025, z + 0.01);
+      headPivot.add(hl);
     });
 
-    // ── Mouse parallax ─────────────────────────────────────────
-    const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
+    // Hair (4 dark bumps)
+    [[0,0.84,0.06],[0.16,0.78,-0.04],[-0.16,0.78,-0.04],[0,0.76,-0.2]].forEach(([x,y,z]) => {
+      const h = new THREE.Mesh(new THREE.SphereGeometry(0.25,12,10),
+        new THREE.MeshPhongMaterial({ color: HAIR }));
+      h.position.set(x, y, z);
+      headPivot.add(h);
+    });
+
+    // ── Arms ───────────────────────────────────────────────────
+    // Right arm (viewer's left)
+    const rShoulderPivot = pivot( 0.54, 1.1, 0);
+    torsoGrp.add(rShoulderPivot);
+    const rUpperArm = limb(0.56, 0.145, SHIRT, -0.28);
+    rShoulderPivot.add(rUpperArm);
+    const rElbowPivot = pivot(0, -0.56, 0);
+    rShoulderPivot.add(rElbowPivot);
+    const rForeArm = limb(0.50, 0.12, SKIN, -0.25);
+    rElbowPivot.add(rForeArm);
+    const rHandMesh = new THREE.Mesh(new THREE.SphereGeometry(0.13,10,8),
+      new THREE.MeshPhongMaterial({ color: SKIN }));
+    rHandMesh.position.set(0, -0.51, 0);
+    rElbowPivot.add(rHandMesh);
+
+    // Left arm
+    const lShoulderPivot = pivot(-0.54, 1.1, 0);
+    torsoGrp.add(lShoulderPivot);
+    const lUpperArm = limb(0.56, 0.145, SHIRT, -0.28);
+    lShoulderPivot.add(lUpperArm);
+    const lElbowPivot = pivot(0, -0.56, 0);
+    lShoulderPivot.add(lElbowPivot);
+    const lForeArm = limb(0.50, 0.12, SKIN, -0.25);
+    lElbowPivot.add(lForeArm);
+    const lHandMesh = new THREE.Mesh(new THREE.SphereGeometry(0.13,10,8),
+      new THREE.MeshPhongMaterial({ color: SKIN }));
+    lHandMesh.position.set(0, -0.51, 0);
+    lElbowPivot.add(lHandMesh);
+
+    // ── Legs ───────────────────────────────────────────────────
+    const rHipPivot = pivot( 0.26, 0, 0);
+    torsoGrp.add(rHipPivot);
+    const rThigh = limb(0.64, 0.17, PANT, -0.32);
+    rHipPivot.add(rThigh);
+    const rKneePivot = pivot(0, -0.64, 0);
+    rHipPivot.add(rKneePivot);
+    const rShin = limb(0.56, 0.13, PANT, -0.28);
+    rKneePivot.add(rShin);
+    const rFoot = new THREE.Mesh(new THREE.BoxGeometry(0.22,0.12,0.36),
+      new THREE.MeshPhongMaterial({ color: SHOE }));
+    rFoot.position.set(0.04, -0.58, 0.06);
+    rKneePivot.add(rFoot);
+
+    const lHipPivot = pivot(-0.26, 0, 0);
+    torsoGrp.add(lHipPivot);
+    const lThigh = limb(0.64, 0.17, PANT, -0.32);
+    lHipPivot.add(lThigh);
+    const lKneePivot = pivot(0, -0.64, 0);
+    lHipPivot.add(lKneePivot);
+    const lShin = limb(0.56, 0.13, PANT, -0.28);
+    lKneePivot.add(lShin);
+    const lFoot = new THREE.Mesh(new THREE.BoxGeometry(0.22,0.12,0.36),
+      new THREE.MeshPhongMaterial({ color: SHOE }));
+    lFoot.position.set(-0.04, -0.58, 0.06);
+    lKneePivot.add(lFoot);
+
+    // Shadow plane
+    const shadow = new THREE.Mesh(
+      new THREE.CircleGeometry(0.7, 32),
+      new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.18 })
+    );
+    shadow.rotation.x = -Math.PI / 2;
+    shadow.position.set(0, -1.28, 0);
+    char.add(shadow);
+
+    // ── Poses ─────────────────────────────────────────────────
+    // [rShoulderZ, rElbowZ, lShoulderZ, lElbowZ, rHipX, rKneeX, lHipX, lKneeX, headY, torsoY]
+    type Pose = { rSh:[number,number,number]; rEl:[number,number,number]; lSh:[number,number,number]; lEl:[number,number,number]; rHip:number; rKnee:number; lHip:number; lKnee:number; headY:number; bodyY:number; };
+    const POSES: Record<string,Pose> = {
+      wave:      { rSh:[-1.6, 0,-0.3], rEl:[0.9,0,0], lSh:[0.2,0,0.1], lEl:[-0.1,0,0], rHip:0, rKnee:0, lHip:0, lKnee:0, headY:0.05, bodyY:0 },
+      confident: { rSh:[0.1,0, 0.15], rEl:[-0.2,0,0], lSh:[0.1,0,-0.15], lEl:[-0.2,0,0], rHip:0, rKnee:0, lHip:0, lKnee:0, headY:0, bodyY:0 },
+      think:     { rSh:[-0.9,0,-0.2], rEl:[1.1,0,0], lSh:[0.1,0,0.12], lEl:[-0.1,0,0], rHip:0, rKnee:0, lHip:0, lKnee:0, headY:0.12, bodyY:0 },
+      look:      { rSh:[0.05,0,0.1], rEl:[0,0,0], lSh:[0.05,0,-0.1], lEl:[0,0,0], rHip:0, rKnee:0, lHip:0, lKnee:0, headY:-0.4, bodyY:0 },
+      work:      { rSh:[-0.5,0,-0.4], rEl:[0.7,0,0], lSh:[-0.5,0,0.4], lEl:[0.7,0,0], rHip:0, rKnee:0, lHip:0, lKnee:0, headY:0, bodyY:-0.05 },
+      celebrate: { rSh:[-2.0,0,-0.2], rEl:[-0.3,0,0], lSh:[-2.0,0,0.2], lEl:[-0.3,0,0], rHip:0, rKnee:0, lHip:0, lKnee:0, headY:0, bodyY:0.05 },
+      walk:      { rSh:[0.4,0,0.1], rEl:[-0.2,0,0], lSh:[-0.4,0,-0.1], lEl:[0.2,0,0], rHip:0.4, rKnee:-0.5, lHip:-0.4, lKnee:0.2, headY:0, bodyY:0 },
+    };
+
+    const cur = {
+      rShX:0, rShZ:0.1, rElX:0, lShX:0, lShZ:-0.1, lElX:0,
+      rHipX:0, rKneeX:0, lHipX:0, lKneeX:0, headY:0, bodyY:0,
+    };
+
+    // Mouse + scroll state
+    const mouse = { x:0, y:0, tx:0, ty:0 };
+    let scrollProg = 0;
+
     const onMouseMove = (e: MouseEvent) => {
       mouse.tx =  (e.clientX / window.innerWidth  - 0.5) * 2;
       mouse.ty = -(e.clientY / window.innerHeight - 0.5) * 2;
     };
+    const onScroll = () => {
+      const max = document.body.scrollHeight - window.innerHeight;
+      scrollProg = max > 0 ? window.scrollY / max : 0;
+    };
     window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("scroll", onScroll, { passive: true });
 
-    // ── Animate ────────────────────────────────────────────────
+    function lerpVal(c: number, t: number, f=0.07) { return c + (t-c)*f; }
+
     let raf: number, t = 0;
-    const CONNECT_DIST = 3.5;
-
     const tick = () => {
       raf = requestAnimationFrame(tick);
-      t += 0.008;
+      t += 0.012;
 
-      // Smooth mouse lerp
-      mouse.x += (mouse.tx - mouse.x) * 0.06;
-      mouse.y += (mouse.ty - mouse.y) * 0.06;
+      // Smooth mouse
+      mouse.x += (mouse.tx - mouse.x) * 0.055;
+      mouse.y += (mouse.ty - mouse.y) * 0.055;
 
-      // Move particles
-      const pos = pGeo.attributes.position.array as Float32Array;
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
-        pos[i*3]   += pVelocities[i].x;
-        pos[i*3+1] += pVelocities[i].y;
-        // Wrap
-        if (pos[i*3]   >  9) pos[i*3]   = -9;
-        if (pos[i*3]   < -9) pos[i*3]   =  9;
-        if (pos[i*3+1] >  6) pos[i*3+1] = -6;
-        if (pos[i*3+1] < -6) pos[i*3+1] =  6;
+      // Pick pose from scroll
+      const sp = scrollProg;
+      let poseName = "wave";
+      if      (sp > 0.84) poseName = "walk";
+      else if (sp > 0.70) poseName = "celebrate";
+      else if (sp > 0.56) poseName = "work";
+      else if (sp > 0.42) poseName = "look";
+      else if (sp > 0.28) poseName = "think";
+      else if (sp > 0.14) poseName = "confident";
+
+      const P = POSES[poseName];
+
+      // Wave oscillation on top of target
+      const waveOsc = poseName === "wave" ? Math.sin(t * 5) * 0.35 : 0;
+      // Walk oscillation
+      const walkOsc = poseName === "walk" ? Math.sin(t * 4) : 0;
+
+      // Lerp all joints
+      cur.rShX   = lerpVal(cur.rShX,   P.rSh[0] + (poseName==="walk" ? walkOsc*0.4 : 0));
+      cur.rShZ   = lerpVal(cur.rShZ,   P.rSh[2]);
+      cur.rElX   = lerpVal(cur.rElX,   P.rEl[0] + waveOsc);
+      cur.lShX   = lerpVal(cur.lShX,   P.lSh[0] + (poseName==="walk" ? -walkOsc*0.4 : 0));
+      cur.lShZ   = lerpVal(cur.lShZ,   P.lSh[2]);
+      cur.lElX   = lerpVal(cur.lElX,   P.lEl[0]);
+      cur.rHipX  = lerpVal(cur.rHipX,  poseName==="walk" ? walkOsc*0.5  : P.rHip);
+      cur.rKneeX = lerpVal(cur.rKneeX, poseName==="walk" ? Math.max(0,-walkOsc)*0.7 : P.rKnee);
+      cur.lHipX  = lerpVal(cur.lHipX,  poseName==="walk" ? -walkOsc*0.5 : P.lHip);
+      cur.lKneeX = lerpVal(cur.lKneeX, poseName==="walk" ? Math.max(0,walkOsc)*0.7 : P.lKnee);
+      cur.headY  = lerpVal(cur.headY,  P.headY + mouse.x * 0.3);
+      cur.bodyY  = lerpVal(cur.bodyY,  P.bodyY);
+
+      // Apply to joints
+      rShoulderPivot.rotation.x = cur.rShX;
+      rShoulderPivot.rotation.z = cur.rShZ;
+      rElbowPivot.rotation.x    = cur.rElX;
+      lShoulderPivot.rotation.x = cur.lShX;
+      lShoulderPivot.rotation.z = cur.lShZ;
+      lElbowPivot.rotation.x    = cur.lElX;
+      rHipPivot.rotation.x      = cur.rHipX;
+      rKneePivot.rotation.x     = cur.rKneeX;
+      lHipPivot.rotation.x      = cur.lHipX;
+      lKneePivot.rotation.x     = cur.lKneeX;
+      headPivot.rotation.y      = cur.headY;
+      torsoGrp.rotation.y       = cur.bodyY + mouse.x * 0.12;
+
+      // Idle bob + breathe
+      char.position.y = -0.5 + Math.sin(t * 1.6) * 0.055;
+      char.position.x = 3.8 + Math.sin(t * 0.8) * 0.04 + mouse.x * 0.2;
+      // Slight breathe on torso scale
+      const breathe = 1 + Math.sin(t * 1.8) * 0.012;
+      torsoMesh.scale.set(breathe, 1, breathe);
+
+      // Camera subtle tilt following mouse
+      camera.position.x = mouse.x * 0.25;
+      camera.position.y = mouse.y * 0.18;
+      camera.lookAt(0, 0, 0);
+
+      // Particles
+      for (let i = 0; i < PC; i++) {
+        pPos[i*3]   += pVel[i].x; if (Math.abs(pPos[i*3])   > 8)  pVel[i].x *= -1;
+        pPos[i*3+1] += pVel[i].y; if (Math.abs(pPos[i*3+1]) > 5.5) pVel[i].y *= -1;
       }
       pGeo.attributes.position.needsUpdate = true;
 
-      // Draw connection lines between close particles
-      let lineIdx = 0;
-      const lp = lineGeo.attributes.position.array as Float32Array;
-      for (let i = 0; i < PARTICLE_COUNT && lineIdx < maxLines - 1; i++) {
-        for (let j = i+1; j < PARTICLE_COUNT && lineIdx < maxLines - 1; j++) {
-          const dx = pos[i*3]-pos[j*3], dy = pos[i*3+1]-pos[j*3+1];
-          if (dx*dx + dy*dy < CONNECT_DIST*CONNECT_DIST) {
-            lp[lineIdx*6]   = pos[i*3]; lp[lineIdx*6+1] = pos[i*3+1]; lp[lineIdx*6+2] = pos[i*3+2];
-            lp[lineIdx*6+3] = pos[j*3]; lp[lineIdx*6+4] = pos[j*3+1]; lp[lineIdx*6+5] = pos[j*3+2];
-            lineIdx++;
+      // Connection lines
+      let li = 0;
+      for (let i = 0; i < PC && li < PC*4-1; i++) {
+        for (let j = i+1; j < PC && li < PC*4-1; j++) {
+          const dx=pPos[i*3]-pPos[j*3], dy=pPos[i*3+1]-pPos[j*3+1];
+          if (dx*dx+dy*dy < 12) {
+            lPos[li*6]=pPos[i*3]; lPos[li*6+1]=pPos[i*3+1]; lPos[li*6+2]=pPos[i*3+2];
+            lPos[li*6+3]=pPos[j*3]; lPos[li*6+4]=pPos[j*3+1]; lPos[li*6+5]=pPos[j*3+2];
+            li++;
           }
         }
       }
-      // Clear unused
-      for (let k = lineIdx; k < maxLines; k++) {
-        lp[k*6] = lp[k*6+1] = lp[k*6+2] = lp[k*6+3] = lp[k*6+4] = lp[k*6+5] = 0;
-      }
-      lineGeo.attributes.position.needsUpdate = true;
-      (lineMat.geometry as THREE.BufferGeometry).setDrawRange(0, lineIdx * 2);
-
-      // Rotate shapes + mouse parallax
-      shapes.forEach((m, i) => {
-        m.rotation.x += m.userData.rx;
-        m.rotation.y += m.userData.ry;
-        // Gentle float
-        m.position.y = m.userData.oy + Math.sin(t + i * 1.2) * 0.3;
-        // Parallax
-        m.position.x = m.userData.ox + mouse.x * (0.4 + i * 0.15);
-      });
-
-      // Camera subtle sway
-      camera.position.x = mouse.x * 0.3;
-      camera.position.y = mouse.y * 0.2;
-      camera.lookAt(scene.position);
+      for (let k=li; k<PC*4; k++) lPos[k*6]=lPos[k*6+1]=lPos[k*6+2]=lPos[k*6+3]=lPos[k*6+4]=lPos[k*6+5]=0;
+      lGeo.attributes.position.needsUpdate = true;
+      lGeo.setDrawRange(0, li*2);
 
       renderer.render(scene, camera);
     };
@@ -180,6 +363,7 @@ function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       renderer.dispose();
       if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);
@@ -422,7 +606,6 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
       <FifthScreen />
       <SixthScreen />
       <SeventhScreen />
-      <FloatingAvatar />
     </div>
   );
 }
