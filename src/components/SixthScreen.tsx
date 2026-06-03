@@ -1,5 +1,90 @@
 "use client";
 
+// ── Products: counts & research icon ──────────────────────────
+// counts[i] matches card order: Games, Mobile Apps, Web, Filmaking,
+// 3D Modeling, Graphic Design, Music Production, Research,
+// Art Sketches, UX/UI Impl, Electronics, Miscellaneous
+const PRODUCT_COUNTS = [2, 4, 6, 1, 3, 10, 3, 7, 3, 4, 1, 10];
+
+// SVG viewport: 1277×802
+// Cards start at y≈180 (22.4%). Each row ≈ 304px tall (37.9%).
+// Numbers sit at bottom of each card, ~y≈455 (row1) and ~y≈758 (row2).
+// 6 equal-width cards: centers at x = 106, 319, 532, 745, 958, 1171.
+// As % of 1277: 8.3%, 25%, 41.7%, 58.3%, 75%, 91.7%
+// As % of 802:  row1 = 56.7%, row2 = 94.5%
+
+// Research card is column index 1 in row 2 (index 7 overall).
+// Its icon area is at x≈319, y≈255–445.
+
+function ProductsSection() {
+  const xPct  = [8.3, 25, 41.7, 58.3, 75, 91.7];
+  const yPct  = [56.7, 94.5]; // row 1, row 2 (number center as % of SVG height)
+
+  return (
+    <div style={{ position: "relative", lineHeight: 0 }}>
+      <img src="/screen6/third-part__Container.svg" alt="Products"
+        style={{ width: "100%", height: "auto", display: "block" }} />
+
+      {/* ── Replace each "12" with the correct number SVG ── */}
+      {PRODUCT_COUNTS.map((count, i) => {
+        const col = i % 6;
+        const row = Math.floor(i / 6);
+        // Use 10.svg for 10+ (miscellaneous index 11)
+        const numFile = i === 11 ? "10" : String(count);
+        return (
+          <img
+            key={i}
+            src={`/screen6/numbers/${numFile}.svg`}
+            alt={String(count)}
+            style={{
+              position:  "absolute",
+              left:      `${xPct[col]}%`,
+              top:       `${yPct[row]}%`,
+              transform: "translate(-50%, -50%)",
+              // Scale relative to SVG width — numbers are ~80px wide in a 1277px SVG = 6.3%
+              width:     "4.5%",
+              height:    "auto",
+              zIndex:    2,
+              pointerEvents: "none",
+            }}
+          />
+        );
+      })}
+
+      {/* ── Replace Research icon (col 1, row 2 = card index 7) ── */}
+      {/* Icon area center: x≈25%, y≈65% of SVG height */}
+      <img
+        src="/screen6/research-icon.svg"
+        alt="Research icon"
+        style={{
+          position:  "absolute",
+          left:      "25%",
+          top:       "65%",
+          transform: "translate(-50%, -50%)",
+          width:     "13%",
+          height:    "auto",
+          zIndex:    2,
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* Miscellaneous "+" label (overlay small + after the 10) */}
+      <div style={{
+        position: "absolute",
+        left: `calc(91.7% + 2.4%)`,
+        top:  `94.5%`,
+        transform: "translate(-50%, -50%)",
+        fontFamily: "monospace", fontWeight: 900,
+        fontSize:   "clamp(8px, 1.6vw, 20px)",
+        color:      "#E63329",
+        zIndex:     3,
+        pointerEvents: "none",
+        lineHeight: 1,
+      }}>+</div>
+    </div>
+  );
+}
+
 // ── Screen 6: Metrics of Impact ───────────────────────────────
 // Layout (all parts share 1280px max-width):
 //
@@ -45,13 +130,7 @@ export default function SixthScreen() {
         </div>
 
         {/* ── Part 3: Products grid ── */}
-        <div>
-          <img
-            src="/screen6/third-part__Container.svg"
-            alt="Products"
-            style={{ width: "100%", height: "auto", display: "block" }}
-          />
-        </div>
+        <ProductsSection />
 
         {/* ── Part 4: Impact metrics (left) + Process metrics (right) ── */}
         <div style={{ display: "flex" }}>
