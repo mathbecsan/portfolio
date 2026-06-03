@@ -395,43 +395,49 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
 
       {/* ══════════════════════════════════════════════
           SECTION 2b — Mission statement
+          Dark outer + Bauhaus top + cream text + Bauhaus bottom
       ══════════════════════════════════════════════ */}
-      <section style={{ background: "#F5E6C0", position: "relative", overflow: "hidden", minHeight: "100vh",
-        display: "flex", alignItems: "center" }}>
+      <section style={{ background: "#111", overflow: "hidden" }}>
 
-        {/* Corner decorations */}
-        <img src="/second-screen/word-1.svg" aria-hidden alt=""
-          style={{ position:"absolute", top:0, left:0, width:"clamp(60px,9vw,130px)", zIndex:0 }} />
-        <img src="/second-screen/word-4.svg" aria-hidden alt=""
-          style={{ position:"absolute", top:0, right:0, height:"clamp(60px,9vw,120px)", width:"auto", zIndex:0 }} />
-        <img src="/second-screen/word-2.svg" aria-hidden alt=""
-          style={{ position:"absolute", bottom:0, left:0, width:"clamp(100px,16vw,240px)", zIndex:0 }} />
-        <img src="/second-screen/word-3.svg" aria-hidden alt=""
-          style={{ position:"absolute", bottom:0, right:0, width:"clamp(100px,16vw,240px)", zIndex:0 }} />
+        {/* Top Bauhaus strip */}
+        <div style={{
+          height: "clamp(100px, 13vw, 170px)",
+          backgroundImage: "url('/bauhaus-2.svg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center bottom",
+        }} />
 
-        <div style={{ position: "relative", zIndex: 1, width: "100%",
-          padding: "clamp(64px, 9vw, 120px) clamp(40px, 7vw, 120px)" }}>
+        {/* Cream text area */}
+        <div style={{
+          background: "#F5E6C0",
+          padding: "clamp(40px, 6vw, 80px) clamp(32px, 6vw, 80px)",
+        }}>
           <p style={{
             fontFamily: "Georgia, 'Times New Roman', serif", fontWeight: 700,
-            fontSize: "clamp(28px, 4.5vw, 68px)", lineHeight: 1.15,
-            color: "#1a1a1a", margin: 0, maxWidth: "16ch",
-            opacity: posterVisible ? 1 : 0,
-            transform: posterVisible ? "translateY(0)" : "translateY(24px)",
-            transition: "opacity 0.7s ease 0.3s, transform 0.7s ease 0.3s",
+            fontSize: "clamp(24px, 4vw, 58px)", lineHeight: 1.2,
+            color: "#1a1a1a", margin: 0,
           }}>
             {"I "}
             <span key={wordIdx} style={{
-              display: "inline-block", color: "#6B1A1A", fontStyle: "italic",
+              display: "inline",
+              color: "#6B1A1A", fontStyle: "italic",
               opacity: wordExit ? 0 : 1,
-              transform: wordExit ? "translateY(-10px)" : "translateY(0)",
-              transition: "opacity 0.26s ease, transform 0.26s ease",
-              animation: !wordExit ? "wordIn 0.36s cubic-bezier(0.22,1,0.36,1) both" : "none",
+              transition: "opacity 0.26s ease",
             }}>
               {WORDS[wordIdx]}
             </span>
             {" products with meticulous attention to detail to create accessible user experiences for social good"}
           </p>
         </div>
+
+        {/* Bottom Bauhaus strip — flipped for variety */}
+        <div style={{
+          height: "clamp(100px, 13vw, 170px)",
+          backgroundImage: "url('/bauhaus-2.svg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center bottom",
+          transform: "scaleX(-1)",
+        }} />
       </section>
 
       <ThirdScreen />
