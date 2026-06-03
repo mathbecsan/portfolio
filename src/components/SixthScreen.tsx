@@ -1,86 +1,30 @@
 "use client";
 
-// ── Products: counts & research icon ──────────────────────────
-// counts[i] matches card order: Games, Mobile Apps, Web, Filmaking,
-// 3D Modeling, Graphic Design, Music Production, Research,
-// Art Sketches, UX/UI Impl, Electronics, Miscellaneous
-const PRODUCT_COUNTS = [2, 4, 6, 1, 3, 10, 3, 7, 3, 4, 1, 10];
-
-// SVG viewport: 1277×802
-// Cards start at y≈180 (22.4%). Each row ≈ 304px tall (37.9%).
-// Numbers sit at bottom of each card, ~y≈455 (row1) and ~y≈758 (row2).
-// 6 equal-width cards: centers at x = 106, 319, 532, 745, 958, 1171.
-// As % of 1277: 8.3%, 25%, 41.7%, 58.3%, 75%, 91.7%
-// As % of 802:  row1 = 56.7%, row2 = 94.5%
-
-// Research card is column index 1 in row 2 (index 7 overall).
-// Its icon area is at x≈319, y≈255–445.
-
+// Research card: col 1 (index 1), row 2 (index 7)
+// SVG 1277×802 — card col width = 1277/6 ≈ 213px
+// Col 1 center x = 213 * 1.5 = 319.5px → 25.0% of 1277
+// Row 2 spans y ≈ 420–720px. Icon center ≈ y 555px → 69.2% of 802
 function ProductsSection() {
-  // 6 card centers as % of SVG width (1277px)
-  const xPct = [8.3, 25.1, 41.6, 58.2, 74.8, 91.5];
-  // Number badge y-center as % of SVG height (802px)
-  // Numbers sit just below the description text of each card row
-  // Row 1: ~78.5%, Row 2: ~96.5%
-  const yPct = [78.5, 96.5];
-
   return (
     <div style={{ position: "relative", lineHeight: 0 }}>
+      {/* New container already has updated numbers baked in */}
       <img src="/screen6/third-part__Container.svg" alt="Products"
         style={{ width: "100%", height: "auto", display: "block" }} />
 
-      {/* ── Number overlays ── */}
-      {PRODUCT_COUNTS.map((count, i) => {
-        const col     = i % 6;
-        const row     = Math.floor(i / 6);
-        const numFile = String(count); // 10.svg covers both 10 and 10+
-        return (
-          <img
-            key={i}
-            src={`/screen6/numbers/${numFile}.svg`}
-            alt={String(count)}
-            style={{
-              position:  "absolute",
-              left:      `${xPct[col]}%`,
-              top:       `${yPct[row]}%`,
-              transform: "translate(-50%, -50%)",
-              width:     "2.8%",   // ~36px in 1277px SVG
-              height:    "auto",
-              zIndex:    2,
-              pointerEvents: "none",
-            }}
-          />
-        );
-      })}
-
-      {/* Miscellaneous "+ " suffix (index 11) */}
-      <div style={{
-        position:   "absolute",
-        left:       `calc(${xPct[5]}% + 1.6%)`,
-        top:        `${yPct[1]}%`,
-        transform:  "translate(0, -50%)",
-        fontFamily: "monospace", fontWeight: 900,
-        fontSize:   "clamp(8px, 1.4vw, 18px)",
-        color:      "#E63329",
-        zIndex:     3,
-        pointerEvents: "none",
-        lineHeight: 1,
-      }}>+</div>
-
-      {/* ── Research icon overlay (card row2 col1, index 7) ── */}
-      {/* Card icon area center: x≈25.1%, y≈64% of SVG */}
+      {/* Research icon — centered in its card's icon area */}
       <img
         src="/screen6/research-icon.svg"
         alt="Research"
         style={{
           position:  "absolute",
-          left:      "25.1%",
-          top:       "64%",
+          left:      "25.0%",
+          top:       "69.2%",
           transform: "translate(-50%, -50%)",
-          width:     "10%",
+          width:     "11.5%",   /* ≈ 147px in 1277px SVG — matches card icon size */
           height:    "auto",
           zIndex:    2,
           pointerEvents: "none",
+          borderRadius: "12px",
         }}
       />
     </div>
