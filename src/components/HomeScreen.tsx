@@ -7,6 +7,7 @@ import FourthScreen from "./FourthScreen";
 import FifthScreen from "./FifthScreen";
 import SixthScreen from "./SixthScreen";
 import SeventhScreen from "./SeventhScreen";
+import EighthScreen from "./EighthScreen";
 
 const NAV = ["Home", "About", "Process", "Impact"];
 
@@ -396,6 +397,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
       <FifthScreen />
       <SixthScreen />
       <SeventhScreen />
+      <EighthScreen />
     </div>
   );
 }
