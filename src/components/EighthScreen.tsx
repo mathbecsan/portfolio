@@ -28,151 +28,165 @@ export default function EighthScreen() {
     setSent(true);
   };
 
-  const inputStyle: React.CSSProperties = {
-    flex: "1 1 180px", padding: "13px 20px",
-    borderRadius: 999, border: "1.5px solid #1a1a2e",
-    background: "rgba(255,255,255,0.55)", backdropFilter: "blur(4px)",
-    fontFamily: "Georgia, serif", fontSize: "clamp(13px, 1.1vw, 15px)",
-    color: "#1a1a2e", outline: "none", minWidth: 0,
+  const pill: React.CSSProperties = {
+    padding: "13px 22px", borderRadius: 999,
+    border: "1.5px solid rgba(255,255,255,0.25)",
+    background: "rgba(255,255,255,0.06)",
+    fontFamily: "Georgia, serif",
+    fontSize: "clamp(13px, 1.1vw, 15px)",
+    color: "#f0ede6", outline: "none",
+    flex: "1 1 160px", minWidth: 0,
   };
 
   return (
-    <section style={{ background: "#FFE4B4", overflow: "hidden" }}>
+    <section style={{ overflow: "hidden" }}>
 
       {/* ── Bauhaus top strip ── */}
       <div style={{ lineHeight: 0 }}>
         <img src="/screen7/bauhaus-top.svg" aria-hidden alt=""
-          style={{ width: "100%", height: "clamp(80px, 11vw, 150px)", objectFit: "cover", objectPosition: "center top", display: "block" }} />
+          style={{ width: "100%", height: "clamp(80px,12vw,160px)", objectFit: "cover", objectPosition: "center top", display: "block" }} />
       </div>
 
-      {/* ── Big email display ── */}
-      <div style={{ position: "relative" }}>
+      {/* ── Email marquee band ── */}
+      <div style={{ background: "#F5E6C0", overflow: "hidden", padding: "clamp(24px,4vw,56px) 0" }}>
         <img src="/screen8/replicate.svg" alt="mathbecsan@gmail.com"
           style={{ width: "100%", height: "auto", display: "block" }} />
-        {/* Corner Bauhaus decorations over the email display */}
-        <img src="/second-screen/word-1.svg" aria-hidden alt=""
-          style={{ position: "absolute", top: 0, left: 0, width: "clamp(60px, 9vw, 140px)", zIndex: 2 }} />
-        <img src="/second-screen/word-4.svg" aria-hidden alt=""
-          style={{ position: "absolute", top: 0, right: 0, height: "clamp(60px, 9vw, 120px)", width: "auto", zIndex: 2 }} />
       </div>
 
-      {/* ── Let's Talk section — app.svg as Bauhaus frame + interactive form on top ── */}
-      <div style={{ position: "relative" }}>
-        {/* Bauhaus frame from Figma export */}
-        <img src="/screen8/app.svg" aria-hidden alt=""
-          style={{ width: "100%", height: "auto", display: "block" }} />
+      {/* ── LET'S TALK section ── */}
+      <div style={{ background: "#0d0d0d", position: "relative", overflow: "hidden" }}>
 
-        {/* Interactive form overlay — centered in the cream middle area of app.svg */}
-        {/* app.svg is 2118×915; cream area runs roughly y=8%–82% */}
+        {/* Bauhaus corner decorations */}
+        <img src="/second-screen/word-1.svg" aria-hidden alt=""
+          style={{ position: "absolute", top: 0, left: 0, width: "clamp(70px,10vw,160px)", zIndex: 0 }} />
+        <img src="/second-screen/word-4.svg" aria-hidden alt=""
+          style={{ position: "absolute", top: 0, right: 0, height: "clamp(70px,10vw,150px)", width: "auto", zIndex: 0 }} />
+        <img src="/second-screen/word-2.svg" aria-hidden alt=""
+          style={{ position: "absolute", bottom: 0, left: 0, width: "clamp(100px,16vw,240px)", zIndex: 0 }} />
+        <img src="/second-screen/word-3.svg" aria-hidden alt=""
+          style={{ position: "absolute", bottom: 0, right: 0, width: "clamp(100px,16vw,240px)", zIndex: 0 }} />
+
+        {/* Bauhaus color accent bars behind the title */}
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 4, display: "flex", zIndex: 1 }}>
+          {["#E7000B","#F0B100","#155DFC","#E7000B","#F0B100","#155DFC","#E7000B","#F0B100","#155DFC","#E7000B"].map((c,i) => (
+            <div key={i} style={{ flex: 1, background: c }} />
+          ))}
+        </div>
+
         <div style={{
-          position: "absolute",
-          top: "8%", left: "14%", right: "14%",
-          bottom: "18%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          gap: "clamp(10px, 1.4vw, 18px)",
-          zIndex: 2,
+          position: "relative", zIndex: 2,
+          padding: "clamp(60px,9vw,110px) clamp(40px,8vw,120px) clamp(56px,8vw,100px)",
+          display: "flex", flexWrap: "wrap", gap: "clamp(40px,6vw,80px)", alignItems: "flex-start",
         }}>
-          {/* Buttons row */}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "clamp(8px, 1vw, 14px)" }}>
-            {[
-              { label: "⊞ GITHUB",        href: "https://github.com/mathbecsan",         bg: "#fff",     border: "#1a1a2e", color: "#1a1a2e" },
-              { label: "📅 BOOK A CALL",  href: "https://calendly.com/mathbecsan",       bg: "#155DFC",  border: "#155DFC", color: "#fff"    },
-              { label: "☕ BUY ME A COFFEE", href: "https://buymeacoffee.com/mathbecsan", bg: "#E7000B",  border: "#E7000B", color: "#fff"    },
-            ].map(btn => (
-              <a key={btn.label} href={btn.href} target="_blank" rel="noopener noreferrer"
-                style={{
-                  padding: "clamp(8px,1vw,12px) clamp(14px,1.8vw,22px)",
-                  borderRadius: 6, border: `2px solid ${btn.border}`,
-                  background: btn.bg, color: btn.color,
-                  fontFamily: "monospace", fontWeight: 700,
-                  fontSize: "clamp(9px, 0.95vw, 13px)", letterSpacing: ".06em",
-                  textDecoration: "none", whiteSpace: "nowrap",
-                  transition: "transform .18s, box-shadow .18s",
-                  display: "inline-block",
-                }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 18px rgba(0,0,0,.18)"; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = ""; }}
-              >{btn.label}</a>
-            ))}
-            <a href="/resume.pdf" target="_blank" rel="noopener noreferrer"
-              style={{
-                padding: "clamp(8px,1vw,12px) clamp(14px,1.8vw,22px)",
-                fontFamily: "monospace", fontWeight: 700,
-                fontSize: "clamp(9px, 0.95vw, 13px)", letterSpacing: ".06em",
-                color: "#F0B100", textDecoration: "none", whiteSpace: "nowrap",
-                transition: "opacity .18s",
-              }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.opacity = ".7"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = "1"; }}
-            >RESUME ←</a>
+
+          {/* LEFT: heading + buttons */}
+          <div style={{ flex: "1 1 280px", maxWidth: 420 }}>
+            <h2 style={{
+              fontFamily: "monospace", fontWeight: 900,
+              fontSize: "clamp(52px,9vw,118px)",
+              color: "#f0ede6", margin: "0 0 6px",
+              lineHeight: .9, letterSpacing: "-.02em",
+            }}>
+              LET&apos;S<br />
+              <span style={{ color: "#E7000B" }}>TALK</span>
+            </h2>
+            <p style={{
+              fontFamily: "Georgia, serif", fontStyle: "italic",
+              fontSize: "clamp(14px,1.4vw,18px)",
+              color: "rgba(240,237,230,0.6)",
+              lineHeight: 1.65, margin: "16px 0 32px",
+            }}>
+              Have a project in mind or just want to say hello? I&apos;d love to hear from you.
+            </p>
+
+            {/* Action buttons */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+              {[
+                { label: "GitHub",          href: "https://github.com/mathbecsan",         bg: "#fff",    color: "#0d0d0d" },
+                { label: "Book a Call",     href: "https://calendly.com/mathbecsan",       bg: "#155DFC", color: "#fff"    },
+                { label: "Buy Me a Coffee", href: "https://buymeacoffee.com/mathbecsan",   bg: "#E7000B", color: "#fff"    },
+                { label: "Resume ↗",        href: "/resume.pdf",                           bg: "#F0B100", color: "#0d0d0d" },
+              ].map(btn => (
+                <a key={btn.label} href={btn.href} target="_blank" rel="noopener noreferrer"
+                  style={{
+                    padding: "10px 18px", borderRadius: 6,
+                    background: btn.bg, color: btn.color,
+                    fontFamily: "monospace", fontWeight: 700,
+                    fontSize: "clamp(10px,.95vw,13px)", letterSpacing: ".06em",
+                    textDecoration: "none", whiteSpace: "nowrap",
+                    transition: "transform .18s, box-shadow .18s",
+                    display: "inline-block",
+                  }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-3px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 8px 24px rgba(0,0,0,.35)"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = ""; }}
+                >{btn.label}</a>
+              ))}
+            </div>
           </div>
 
-          {/* Form */}
-          {sent ? (
-            <div style={{ textAlign: "center", padding: "12px 0" }}>
-              <p style={{ fontFamily: "Georgia, serif", fontSize: "clamp(15px,1.6vw,20px)", color: "#1a1a2e", margin: "0 0 8px" }}>✉️ Mail client opened!</p>
-              <button onClick={() => { setSent(false); setName(""); setEmail(""); setMessage(""); }}
-                style={{ fontFamily: "monospace", fontSize: "clamp(9px,.9vw,11px)", letterSpacing: ".1em", background: "none", border: "1.5px solid #1a1a2e", padding: "8px 20px", borderRadius: 999, cursor: "pointer", color: "#1a1a2e" }}>
-                SEND ANOTHER
-              </button>
-            </div>
-          ) : (
-            <form onSubmit={handleSend} style={{ display: "flex", flexDirection: "column", gap: "clamp(8px, 1vw, 14px)" }}>
-              {/* Row 1 */}
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "clamp(6px,.8vw,12px)" }}>
+          {/* RIGHT: form */}
+          <div style={{ flex: "1 1 300px", maxWidth: 520 }}>
+            {sent ? (
+              <div style={{ textAlign: "center", padding: "48px 0" }}>
+                <p style={{ fontFamily: "monospace", fontSize: "clamp(28px,4vw,44px)", color: "#f0ede6", margin: "0 0 12px" }}>✉️</p>
+                <p style={{ fontFamily: "Georgia, serif", fontSize: 18, color: "#f0ede6", margin: "0 0 8px" }}>Mail client opened!</p>
+                <p style={{ fontFamily: "monospace", fontSize: 12, color: "rgba(240,237,230,.4)", margin: "0 0 20px" }}>I'll get back to you soon.</p>
+                <button onClick={() => { setSent(false); setName(""); setEmail(""); setMessage(""); }}
+                  style={{ fontFamily: "monospace", fontSize: 11, letterSpacing: ".1em", background: "none", border: "1px solid rgba(240,237,230,.3)", padding: "10px 24px", borderRadius: 999, cursor: "pointer", color: "#f0ede6" }}>
+                  SEND ANOTHER
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSend} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 <select value={topic} onChange={e => setTopic(e.target.value)}
-                  style={{ ...inputStyle, flex: "0 1 160px", cursor: "pointer" }}>
-                  {TOPICS.map(t => <option key={t} value={t}>{t}</option>)}
+                  style={{ ...pill, cursor: "pointer", flex: "0 0 auto" } as React.CSSProperties}>
+                  {TOPICS.map(t => <option key={t} value={t} style={{ background: "#1a1a1a" }}>{t}</option>)}
                 </select>
-                <input type="text" placeholder="Your name" value={name} onChange={e => setName(e.target.value)} style={inputStyle} />
-                <input type="email" placeholder="Your email" value={email} onChange={e => setEmail(e.target.value)} required style={inputStyle} />
-              </div>
-              {/* Row 2 */}
-              <div style={{ display: "flex", borderRadius: 999, border: "1.5px solid #1a1a2e", overflow: "hidden", background: "rgba(255,255,255,0.55)" }}>
-                <input type="text" placeholder="How may I help you?" value={message}
-                  onChange={e => setMessage(e.target.value)} required
-                  style={{ flex: 1, padding: "13px 22px", border: "none", background: "transparent", fontFamily: "Georgia, serif", fontSize: "clamp(13px,1.1vw,15px)", color: "#1a1a2e", outline: "none" }} />
-                <button type="submit"
-                  style={{ padding: "13px 20px", background: "#1a1a2e", border: "none", color: "#fff", fontSize: 16, cursor: "pointer", transition: "background .2s" }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#155DFC"; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#1a1a2e"; }}
-                >→</button>
-              </div>
-            </form>
-          )}
+                <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                  <input type="text"  placeholder="Your name"  value={name}  onChange={e => setName(e.target.value)}  style={{ ...pill, flex: "1 1 140px" }} />
+                  <input type="email" placeholder="Your email" value={email} onChange={e => setEmail(e.target.value)} style={{ ...pill, flex: "1 1 160px" }} required />
+                </div>
+                <div style={{ display: "flex", borderRadius: 999, border: "1.5px solid rgba(255,255,255,0.25)", overflow: "hidden", background: "rgba(255,255,255,0.06)" }}>
+                  <input type="text" placeholder="How may I help you?" value={message} onChange={e => setMessage(e.target.value)} required
+                    style={{ flex: 1, padding: "13px 22px", border: "none", background: "transparent", fontFamily: "Georgia, serif", fontSize: "clamp(13px,1.1vw,15px)", color: "#f0ede6", outline: "none" }} />
+                  <button type="submit"
+                    style={{ padding: "13px 22px", background: "#E7000B", border: "none", color: "#fff", fontSize: 16, cursor: "pointer", borderRadius: 0, transition: "background .2s" }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#155DFC"; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#E7000B"; }}>→</button>
+                </div>
+              </form>
+            )}
 
-          {/* Footer */}
-          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 10, marginTop: 2 }}>
-            <span style={{ fontFamily: "monospace", fontSize: "clamp(9px,.85vw,12px)", color: "#4A5565", letterSpacing: ".06em" }}>
-              © 2026 MATHIAS BECERRA
-            </span>
-            <div style={{ display: "flex", gap: 8 }}>
-              {SOCIALS.map(s => (
-                <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" title={s.label}
-                  style={{
-                    width: "clamp(28px,2.8vw,40px)", height: "clamp(28px,2.8vw,40px)",
-                    borderRadius: "50%", background: "#101828", color: "#fff",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: "clamp(10px,1.1vw,14px)", fontWeight: 700, fontFamily: "monospace",
-                    textDecoration: "none", transition: "transform .2s, background .2s",
-                  }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "scale(1.15)"; (e.currentTarget as HTMLElement).style.background = "#155DFC"; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.background = "#101828"; }}
-                >{s.icon}</a>
-              ))}
+            {/* Social + copyright */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginTop: 28 }}>
+              <span style={{ fontFamily: "monospace", fontSize: "clamp(9px,.8vw,11px)", color: "rgba(240,237,230,.25)", letterSpacing: ".08em" }}>
+                © 2026 MATHIAS BECERRA
+              </span>
+              <div style={{ display: "flex", gap: 8 }}>
+                {SOCIALS.map(s => (
+                  <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" title={s.label}
+                    style={{
+                      width: "clamp(28px,2.5vw,36px)", height: "clamp(28px,2.5vw,36px)",
+                      borderRadius: "50%", background: "#1a1a1a",
+                      border: "1px solid rgba(255,255,255,.12)",
+                      color: "#f0ede6", display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: "clamp(10px,1vw,13px)", fontFamily: "monospace",
+                      textDecoration: "none", transition: "transform .2s, background .2s",
+                    }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "scale(1.15)"; (e.currentTarget as HTMLElement).style.background = "#E7000B"; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.background = "#1a1a1a"; }}
+                  >{s.icon}</a>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ── Bauhaus bottom strip ── */}
+      {/* ── Bottom Bauhaus strip ── */}
       <div style={{ lineHeight: 0 }}>
-        <img src="/second-screen/word-2.svg" aria-hidden alt=""
-          style={{ width: "clamp(120px,20vw,300px)", height: "auto", display: "inline-block", verticalAlign: "bottom" }} />
-        <img src="/second-screen/word-3.svg" aria-hidden alt=""
-          style={{ width: "clamp(120px,20vw,300px)", height: "auto", display: "inline-block", verticalAlign: "bottom", float: "right" }} />
+        <img src="/screen7/bauhaus-top.svg" aria-hidden alt=""
+          style={{ width: "100%", height: "clamp(80px,12vw,160px)", objectFit: "cover", objectPosition: "center top", display: "block", transform: "scaleY(-1)" }} />
       </div>
     </section>
   );
