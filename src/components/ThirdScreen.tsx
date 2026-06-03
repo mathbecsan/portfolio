@@ -290,37 +290,34 @@ export default function ThirdScreen() {
   return (
     <section style={{ position: "relative", overflow: "hidden", background: "#F2EFE4" }}>
 
-      {/* ── body.svg provides the full layout frame ── */}
+      {/* ── App.svg: correct Screen 3 layout frame ──
+          SVG is 2849×1677. Text content starts at x≈1443 (50.6%).
+          Left half (brain area): x=0–1443, y=0–1677              */}
       <img
-        src="/screen3/body.svg"
+        src="/screen3/App.svg"
         alt=""
         aria-hidden="true"
         style={{ width: "100%", height: "auto", display: "block" }}
       />
 
-      {/* ── Three.js brain — overlaid on the left empty area ──
-          SVG is 2825×1133. The brain placeholder occupies roughly
-          x: 64–870 (2.3%–30.8%), y: 200–920 (17.7%–81.2%)
-          Brain center ≈ x:16%, y:50% of the SVG               */}
+      {/* ── Three.js brain — fills the left 50% placeholder ── */}
       <div style={{
         position: "absolute",
-        left:   "2%",
-        top:    "16%",
-        width:  "30%",
-        /* height matches aspect of the SVG column */
-        aspectRatio: "1 / 1.1",
+        left:   "1%",
+        top:    "12%",
+        width:  "46%",
+        aspectRatio: "1 / 1.15",
         pointerEvents: "auto",
       }}>
         <BrainCanvas onHover={handleHover} />
 
-        {/* Hover tooltip */}
         {hovered && (
           <div style={{
-            position: "absolute", top: "6%", left: "50%",
+            position: "absolute", top: "5%", left: "50%",
             transform: "translateX(-50%)",
             background: "#1a1a1a", color: "#F2EFE4",
             fontFamily: "monospace", fontWeight: 700,
-            fontSize: "clamp(10px, 1.1vw, 14px)",
+            fontSize: "clamp(9px, 1vw, 13px)",
             letterSpacing: "0.08em",
             padding: "5px 14px", borderRadius: 4,
             pointerEvents: "none", whiteSpace: "nowrap",
@@ -332,26 +329,22 @@ export default function ThirdScreen() {
         )}
       </div>
 
-      {/* ── Legend + hint below brain ── */}
+      {/* Legend */}
       <div style={{
         position: "absolute",
-        left: "2%",
-        top:  "82%",
-        width: "30%",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 4,
+        left: "1%", top: "86%",
+        width: "46%",
+        display: "flex", flexDirection: "column", alignItems: "center", gap: 3,
       }}>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "3px 8px", justifyContent: "center" }}>
           {LOBES.map(l => (
             <div key={l.id} style={{ display: "flex", alignItems: "center", gap: 3 }}>
               <div style={{ width: 7, height: 7, borderRadius: "50%", background: `#${l.color.toString(16).padStart(6,"0")}`, flexShrink: 0 }} />
-              <span style={{ fontFamily: "monospace", fontSize: "clamp(7px, 0.8vw, 10px)", color: "#4a3a1a" }}>{l.label}</span>
+              <span style={{ fontFamily: "monospace", fontSize: "clamp(6px, 0.7vw, 9px)", color: "#4a3a1a" }}>{l.label}</span>
             </div>
           ))}
         </div>
-        <p style={{ fontFamily: "monospace", fontSize: "clamp(7px, 0.7vw, 9px)", color: "#8b6914", letterSpacing: "0.08em", margin: 0, textAlign: "center" }}>
+        <p style={{ fontFamily: "monospace", fontSize: "clamp(6px, 0.6vw, 8px)", color: "#8b6914", letterSpacing: "0.08em", margin: 0 }}>
           DRAG TO ROTATE · HOVER TO EXPLORE
         </p>
       </div>
