@@ -359,7 +359,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
               Portfolio
             </span>
           </div>
-          <div className="flex gap-5 font-mono text-xs text-[#f0ede6]/40 tracking-[0.15em] uppercase">
+          <div className="flex gap-5 font-mono text-xs text-[#f0ede6]/90 tracking-[0.18em] uppercase">
             {NAV.map((n) => (
               <a
                 key={n.label}
@@ -408,7 +408,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
           >
             mathias.
           </h1>
-          <p className="mt-4 font-mono tracking-[0.3em] uppercase text-[#f0ede6]/60"
+          <p className="mt-4 font-mono tracking-[0.3em] uppercase text-[#f0ede6]/90"
             style={{ fontSize: "clamp(11px, 1.1vw, 15px)", letterSpacing: "0.3em" }}>
             {GREETINGS[idx].lang} · {GREETINGS[idx].script}
           </p>
@@ -423,7 +423,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
               background: "rgba(240,237,230,0.25)",
             }}
           />
-          <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-[#f0ede6]/25">
+          <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-[#f0ede6]/80">
             scroll
           </span>
         </div>
