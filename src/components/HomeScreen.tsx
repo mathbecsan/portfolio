@@ -408,7 +408,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
         }} />
 
         {/* Text — equal top/bottom padding */}
-        <div style={{ padding: "clamp(80px, 11vw, 140px) clamp(40px, 7vw, 100px)" }}>
+        <div style={{ padding: "clamp(80px, 11vw, 140px) clamp(40px, 7vw, 100px) clamp(120px, 15vw, 200px)" }}>
           <p style={{
             fontFamily: "Georgia, 'Times New Roman', serif", fontWeight: 700,
             fontSize: "clamp(26px, 4.2vw, 62px)", lineHeight: 1.2,
