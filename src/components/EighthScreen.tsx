@@ -2,199 +2,203 @@
 
 import { useState } from "react";
 
+const SOCIALS = [
+  { icon: "📷", label: "Instagram", href: "https://instagram.com/mathbecsan"              },
+  { icon: "🏀", label: "Dribbble",  href: "https://dribbble.com/mathbecsan"               },
+  { icon: "Bē", label: "Behance",   href: "https://behance.net/mathbecsan"                },
+  { icon: "📌", label: "Pinterest", href: "https://pinterest.com/mathbecsan"              },
+  { icon: "💬", label: "WhatsApp",  href: "https://wa.me/message/mathbecsan"              },
+  { icon: "in", label: "LinkedIn",  href: "https://linkedin.com/in/mathiasbecerrasanchez" },
+];
+
+const TOPICS = ["Mentoring", "Collaboration", "Freelance", "Research", "Just saying hi!"];
+
 export default function EighthScreen() {
+  const [topic,   setTopic]   = useState("Mentoring");
   const [name,    setName]    = useState("");
   const [email,   setEmail]   = useState("");
   const [message, setMessage] = useState("");
   const [sent,    setSent]    = useState(false);
-  const [sending, setSending] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !email || !message) return;
-    setSending(true);
-    // Opens default mail client with pre-filled content
-    const subject = encodeURIComponent(`Portfolio Contact from ${name}`);
+    const subject = encodeURIComponent(`[${topic}] from ${name || "Portfolio visitor"}`);
     const body    = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
-    window.open(`mailto:mathias@stanford.edu?subject=${subject}&body=${body}`);
-    setTimeout(() => { setSent(true); setSending(false); }, 600);
+    window.open(`mailto:mathbecsan@gmail.com?subject=${subject}&body=${body}`);
+    setSent(true);
+  };
+
+  const inputStyle: React.CSSProperties = {
+    flex: "1 1 180px",
+    padding: "14px 20px",
+    borderRadius: 999,
+    border: "1.5px solid #1a1a2e",
+    background: "transparent",
+    fontFamily: "Georgia, serif",
+    fontSize: "clamp(13px, 1.2vw, 15px)",
+    color: "#1a1a2e",
+    outline: "none",
+    minWidth: 0,
   };
 
   return (
-    <section style={{ background: "#0A0A0A", overflow: "hidden" }}>
+    <section style={{ background: "#FFE4B4", overflow: "hidden" }}>
 
-      {/* ── Part 1: LET'S TALK layout from Figma ── */}
+      {/* ── 1. Big email display (replicate.svg) ── */}
       <img
-        src="/screen8/app.svg"
-        alt="Let's Talk — contact section"
+        src="/screen8/replicate.svg"
+        alt="mathbecsan@gmail.com"
         style={{ width: "100%", height: "auto", display: "block" }}
       />
 
-      {/* ── Part 2: Interactive email form ── */}
+      {/* ── 2. Let's Talk form (coded to match Figma, all buttons clickable) ── */}
       <div style={{
-        background: "#0d0d0d",
-        padding: "clamp(56px, 8vw, 100px) clamp(24px, 7vw, 120px)",
-        display: "flex",
-        flexWrap: "wrap",
-        gap: "clamp(40px, 6vw, 80px)",
-        alignItems: "flex-start",
+        padding: "clamp(32px, 5vw, 60px) clamp(24px, 7vw, 120px) clamp(40px, 6vw, 72px)",
+        maxWidth: 1200,
+        margin: "0 auto",
       }}>
 
-        {/* Left — headline */}
-        <div style={{ flex: "1 1 280px", maxWidth: 420 }}>
-          <div style={{ display: "flex", gap: 4, marginBottom: 20 }}>
-            {["#E7000B","#F0B100","#1447E6"].map(c => (
-              <div key={c} style={{ width: 5, height: 36, background: c, borderRadius: 2 }} />
-            ))}
-          </div>
-          <h2 style={{
-            fontFamily: "monospace", fontWeight: 900,
-            fontSize: "clamp(32px, 5vw, 64px)",
-            color: "#f0ede6", margin: "0 0 16px",
-            lineHeight: 1, letterSpacing: "-0.02em",
-          }}>
-            SEND ME<br />AN EMAIL
-          </h2>
-          <p style={{
-            fontFamily: "Georgia, serif",
-            fontSize: "clamp(13px, 1.3vw, 17px)",
-            color: "rgba(240,237,230,0.55)",
-            lineHeight: 1.7, margin: "0 0 28px",
-          }}>
-            Have a project, a question, or just want to connect?<br />
-            I'd love to hear from you.
-          </p>
-          <a href="mailto:mathias@stanford.edu"
+        {/* Button row */}
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12, marginBottom: "clamp(24px, 4vw, 40px)" }}>
+          <a href="https://github.com/mathbecsan" target="_blank" rel="noopener noreferrer"
             style={{
-              fontFamily: "monospace", fontSize: 13,
-              color: "#E7000B", letterSpacing: "0.1em",
-              textDecoration: "none", borderBottom: "1px solid #E7000B",
-              paddingBottom: 2,
-            }}>
-            mathias@stanford.edu
+              display: "inline-flex", alignItems: "center", gap: 8,
+              padding: "12px 22px", borderRadius: 6,
+              border: "2px solid #1a1a2e", background: "#fff",
+              fontFamily: "monospace", fontWeight: 700,
+              fontSize: "clamp(11px, 1.1vw, 14px)", letterSpacing: ".08em",
+              color: "#1a1a2e", textDecoration: "none",
+              transition: "transform .18s ease, box-shadow .18s ease",
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 20px rgba(0,0,0,.15)"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = ""; }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GITHUB
+          </a>
+
+          <a href="https://calendly.com/mathbecsan" target="_blank" rel="noopener noreferrer"
+            style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              padding: "12px 22px", borderRadius: 6,
+              background: "#155DFC", border: "2px solid #155DFC",
+              fontFamily: "monospace", fontWeight: 700,
+              fontSize: "clamp(11px, 1.1vw, 14px)", letterSpacing: ".08em",
+              color: "#fff", textDecoration: "none",
+              transition: "transform .18s ease, box-shadow .18s ease",
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 20px rgba(21,93,252,.4)"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = ""; }}
+          >
+            📅 BOOK A CALL
+          </a>
+
+          <a href="https://buymeacoffee.com/mathbecsan" target="_blank" rel="noopener noreferrer"
+            style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              padding: "12px 22px", borderRadius: 6,
+              background: "#E7000B", border: "2px solid #E7000B",
+              fontFamily: "monospace", fontWeight: 700,
+              fontSize: "clamp(11px, 1.1vw, 14px)", letterSpacing: ".08em",
+              color: "#fff", textDecoration: "none",
+              transition: "transform .18s ease, box-shadow .18s ease",
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 20px rgba(231,0,11,.4)"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = ""; }}
+          >
+            ☕ BUY ME A COFFEE
+          </a>
+
+          <a href="/resume.pdf" target="_blank" rel="noopener noreferrer"
+            style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              fontFamily: "monospace", fontWeight: 700,
+              fontSize: "clamp(13px, 1.3vw, 17px)", letterSpacing: ".06em",
+              color: "#F0B100", textDecoration: "none",
+              transition: "opacity .18s ease",
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.opacity = ".7"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = "1"; }}
+          >
+            RESUME ←
           </a>
         </div>
 
-        {/* Right — form */}
-        <div style={{ flex: "1 1 320px", maxWidth: 540 }}>
-          {sent ? (
-            <div style={{
-              display: "flex", flexDirection: "column", alignItems: "center",
-              justifyContent: "center", height: 300, gap: 16, textAlign: "center",
-            }}>
-              <div style={{ fontSize: 48 }}>✉️</div>
-              <p style={{ fontFamily: "monospace", fontSize: 16, color: "#f0ede6", margin: 0 }}>
-                Mail client opened!
-              </p>
-              <p style={{ fontFamily: "monospace", fontSize: 12, color: "rgba(240,237,230,0.4)", margin: 0 }}>
-                Thank you — I'll get back to you soon.
-              </p>
-              <button onClick={() => { setSent(false); setName(""); setEmail(""); setMessage(""); }}
-                style={{ fontFamily: "monospace", fontSize: 11, letterSpacing: ".1em", color: "#E7000B", background: "none", border: "1px solid #E7000B", padding: "8px 20px", borderRadius: 3, cursor: "pointer", marginTop: 8 }}>
-                SEND ANOTHER
+        {/* Form */}
+        {sent ? (
+          <div style={{ textAlign: "center", padding: "40px 0" }}>
+            <p style={{ fontFamily: "Georgia, serif", fontSize: 20, color: "#1a1a2e", margin: "0 0 12px" }}>✉️ Mail client opened!</p>
+            <p style={{ fontFamily: "monospace", fontSize: 13, color: "#4A5565", margin: "0 0 20px" }}>Thanks — I'll get back to you soon.</p>
+            <button onClick={() => { setSent(false); setName(""); setEmail(""); setMessage(""); }}
+              style={{ fontFamily: "monospace", fontSize: 12, letterSpacing: ".1em", background: "none", border: "1.5px solid #1a1a2e", padding: "10px 24px", borderRadius: 999, cursor: "pointer", color: "#1a1a2e" }}>
+              SEND ANOTHER
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={handleSend}>
+            {/* Row 1: topic + name + email */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 12 }}>
+              <select value={topic} onChange={e => setTopic(e.target.value)}
+                style={{ ...inputStyle, flex: "0 1 200px", cursor: "pointer" }}>
+                {TOPICS.map(t => <option key={t} value={t}>{t}</option>)}
+              </select>
+              <input type="text" placeholder="Your name" value={name} onChange={e => setName(e.target.value)}
+                style={inputStyle} />
+              <input type="email" placeholder="Your email" value={email} onChange={e => setEmail(e.target.value)}
+                required style={inputStyle} />
+            </div>
+
+            {/* Row 2: message + send button */}
+            <div style={{ display: "flex", gap: 0, borderRadius: 999, border: "1.5px solid #1a1a2e", overflow: "hidden" }}>
+              <input type="text" placeholder="How may I help you?" value={message}
+                onChange={e => setMessage(e.target.value)} required
+                style={{
+                  flex: 1, padding: "14px 24px", border: "none", background: "transparent",
+                  fontFamily: "Georgia, serif", fontSize: "clamp(13px, 1.2vw, 15px)",
+                  color: "#1a1a2e", outline: "none",
+                }} />
+              <button type="submit"
+                style={{
+                  padding: "14px 22px", background: "#1a1a2e", border: "none",
+                  color: "#fff", fontSize: 18, cursor: "pointer",
+                  borderRadius: 0, transition: "background .2s ease",
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#155DFC"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#1a1a2e"; }}
+              >
+                →
               </button>
             </div>
-          ) : (
-            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              {[
-                { label: "NAME",    value: name,    setter: setName,    type: "text",  placeholder: "Mathias Becerra" },
-                { label: "EMAIL",   value: email,   setter: setEmail,   type: "email", placeholder: "you@example.com" },
-              ].map(({ label, value, setter, type, placeholder }) => (
-                <div key={label}>
-                  <label style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: ".18em", color: "rgba(240,237,230,.4)", display: "block", marginBottom: 6 }}>
-                    {label}
-                  </label>
-                  <input
-                    type={type}
-                    value={value}
-                    onChange={e => setter(e.target.value)}
-                    placeholder={placeholder}
-                    required
-                    style={{
-                      width: "100%", padding: "12px 16px",
-                      background: "rgba(255,255,255,0.04)",
-                      border: "1px solid rgba(255,255,255,0.1)",
-                      borderRadius: 4, color: "#f0ede6",
-                      fontFamily: "monospace", fontSize: 14,
-                      outline: "none", boxSizing: "border-box",
-                    }}
-                  />
-                </div>
-              ))}
-              <div>
-                <label style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: ".18em", color: "rgba(240,237,230,.4)", display: "block", marginBottom: 6 }}>
-                  MESSAGE
-                </label>
-                <textarea
-                  value={message}
-                  onChange={e => setMessage(e.target.value)}
-                  placeholder="Tell me about your project, idea, or just say hi..."
-                  required
-                  rows={5}
-                  style={{
-                    width: "100%", padding: "12px 16px",
-                    background: "rgba(255,255,255,0.04)",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                    borderRadius: 4, color: "#f0ede6",
-                    fontFamily: "monospace", fontSize: 14,
-                    outline: "none", resize: "vertical",
-                    boxSizing: "border-box",
-                  }}
-                />
-              </div>
-              <button type="submit" disabled={sending}
-                style={{
-                  fontFamily: "monospace", fontWeight: 700,
-                  fontSize: 12, letterSpacing: ".18em",
-                  color: "#f0ede6",
-                  background: sending ? "#333" : "#E7000B",
-                  border: "none", padding: "14px 28px",
-                  borderRadius: 4, cursor: sending ? "not-allowed" : "pointer",
-                  textTransform: "uppercase",
-                  transition: "background .2s ease",
-                  alignSelf: "flex-start",
-                }}>
-                {sending ? "OPENING MAIL..." : "SEND MESSAGE →"}
-              </button>
-            </form>
-          )}
-        </div>
-      </div>
+          </form>
+        )}
 
-      {/* ── Part 3: Replicate / closing design ── */}
-      <img
-        src="/screen8/replicate.svg"
-        alt="Let's Talk closing section"
-        style={{ width: "100%", height: "auto", display: "block" }}
-      />
-
-      {/* ── Footer ── */}
-      <div style={{
-        background: "#0A0A0A",
-        padding: "clamp(20px, 3vw, 36px) clamp(24px, 6vw, 80px)",
-        display: "flex", justifyContent: "space-between", alignItems: "center",
-        flexWrap: "wrap", gap: 12,
-        borderTop: "1px solid rgba(255,255,255,0.06)",
-      }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 28, height: 28, background: "#2952A3", borderRadius: 3, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <span style={{ fontFamily: "monospace", fontWeight: 900, color: "#fff", fontSize: 10 }}>MB</span>
-          </div>
-          <span style={{ fontFamily: "monospace", fontSize: 11, color: "rgba(240,237,230,0.3)", letterSpacing: ".1em" }}>
-            MATHIAS BECERRA-SANCHEZ © 2026
+        {/* Footer */}
+        <div style={{
+          display: "flex", flexWrap: "wrap",
+          justifyContent: "space-between", alignItems: "center",
+          marginTop: "clamp(28px, 4vw, 48px)", gap: 16,
+        }}>
+          <span style={{ fontFamily: "monospace", fontSize: 13, color: "#4A5565", letterSpacing: ".06em" }}>
+            © 2026 MATHIAS BECERRA
           </span>
-        </div>
-        <div style={{ display: "flex", gap: 20 }}>
-          {[
-            { label: "GitHub",   href: "https://github.com/mathbecsan"                      },
-            { label: "LinkedIn", href: "https://linkedin.com/in/mathiasbecerrasanchez"       },
-            { label: "Email",    href: "mailto:mathias@stanford.edu"                         },
-          ].map(({ label, href }) => (
-            <a key={label} href={href} target="_blank" rel="noopener noreferrer"
-              style={{ fontFamily: "monospace", fontSize: 11, color: "rgba(240,237,230,0.35)", letterSpacing: ".1em", textDecoration: "none" }}>
-              {label}
-            </a>
-          ))}
+          <div style={{ display: "flex", gap: 10 }}>
+            {SOCIALS.map(s => (
+              <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer"
+                title={s.label}
+                style={{
+                  width: 40, height: 40, borderRadius: "50%",
+                  background: "#101828", color: "#fff",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 14, fontWeight: 700, fontFamily: "monospace",
+                  textDecoration: "none", transition: "transform .2s ease, background .2s ease",
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "scale(1.12)"; (e.currentTarget as HTMLElement).style.background = "#155DFC"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.background = "#101828"; }}
+              >
+                {s.icon}
+              </a>
+            ))}
+          </div>
         </div>
       </div>
     </section>
