@@ -35,38 +35,154 @@ const ROLES = [
 
 const WORDS = ["design", "build", "program"];
 
-// ── Three.js background ───────────────────────────────────────
+// ── Three.js background — particle network + mouse parallax ───
 function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
   useEffect(() => {
     const mount = mountRef.current;
     if (!mount) return;
     const W = mount.clientWidth, H = mount.clientHeight;
+
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(W, H);
     renderer.setClearColor(0x000000, 0);
     mount.appendChild(renderer.domElement);
-    const scene = new THREE.Scene();
+
+    const scene  = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(55, W / H, 0.1, 100);
     camera.position.z = 9;
-    const meshes: THREE.Mesh[] = [];
-    [
-      { geo: new THREE.IcosahedronGeometry(1.6, 1), color: 0xe63329, x: 3.5, y: 2,    z: -2, rx: 0.003, ry: 0.005 },
-      { geo: new THREE.TorusGeometry(1.1, 0.3, 8, 24), color: 0xf5a623, x: 4, y: -2.5, z: -3, rx: 0.005, ry: 0.002 },
-      { geo: new THREE.OctahedronGeometry(1.3),     color: 0x2952a3, x: 2, y: -0.5,  z: -4, rx: 0.002, ry: 0.004 },
-    ].forEach(d => {
-      const mat = new THREE.MeshBasicMaterial({ color: d.color, wireframe: true, opacity: 0.13, transparent: true });
-      const m = new THREE.Mesh(d.geo, mat);
-      m.position.set(d.x, d.y, d.z);
-      m.userData = { rx: d.rx, ry: d.ry };
-      scene.add(m); meshes.push(m);
+
+    // ── Particle field ─────────────────────────────────────────
+    const PARTICLE_COUNT = 120;
+    const pPositions = new Float32Array(PARTICLE_COUNT * 3);
+    const pVelocities: THREE.Vector3[] = [];
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      pPositions[i*3]   = (Math.random()-0.5) * 18;
+      pPositions[i*3+1] = (Math.random()-0.5) * 12;
+      pPositions[i*3+2] = (Math.random()-0.5) * 8 - 4;
+      pVelocities.push(new THREE.Vector3(
+        (Math.random()-0.5)*0.005,
+        (Math.random()-0.5)*0.005,
+        0
+      ));
+    }
+    const pGeo = new THREE.BufferGeometry();
+    pGeo.setAttribute("position", new THREE.BufferAttribute(pPositions, 3));
+    const pMat = new THREE.PointsMaterial({ color: 0xf0ede6, size: 0.055, transparent: true, opacity: 0.55 });
+    const points = new THREE.Points(pGeo, pMat);
+    scene.add(points);
+
+    // ── Connection lines (updated dynamically) ─────────────────
+    const lineGeo = new THREE.BufferGeometry();
+    const maxLines = PARTICLE_COUNT * 4;
+    const linePos  = new Float32Array(maxLines * 6);
+    lineGeo.setAttribute("position", new THREE.BufferAttribute(linePos, 3));
+    const lineMat = new THREE.LineSegments(
+      lineGeo,
+      new THREE.LineBasicMaterial({ color: 0xf0ede6, transparent: true, opacity: 0.08 })
+    );
+    scene.add(lineMat);
+
+    // ── Bauhaus floating shapes ─────────────────────────────────
+    const shapes = [
+      { geo: new THREE.IcosahedronGeometry(1.4, 1), color: 0xe63329, x: 4.2,  y: 2.0,  rx: 0.0025, ry: 0.004  },
+      { geo: new THREE.TorusGeometry(1.0, 0.25, 10, 32), color: 0xf5c500, x: 3.8, y:-2.2, rx: 0.004,  ry: 0.0018 },
+      { geo: new THREE.OctahedronGeometry(1.2),     color: 0x2952a3, x: 1.8,  y:-0.5,  rx: 0.0015, ry: 0.0035 },
+    ].map(d => {
+      const mat  = new THREE.MeshBasicMaterial({ color: d.color, wireframe: true, transparent: true, opacity: 0.16 });
+      const mesh = new THREE.Mesh(d.geo, mat);
+      mesh.position.set(d.x, d.y, -3);
+      mesh.userData = { rx: d.rx, ry: d.ry, ox: d.x, oy: d.y };
+      scene.add(mesh);
+      return mesh;
     });
-    let raf: number;
-    const tick = () => { raf = requestAnimationFrame(tick); meshes.forEach(m => { m.rotation.x += m.userData.rx; m.rotation.y += m.userData.ry; }); renderer.render(scene, camera); };
+
+    // ── Mouse parallax ─────────────────────────────────────────
+    const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
+    const onMouseMove = (e: MouseEvent) => {
+      mouse.tx =  (e.clientX / window.innerWidth  - 0.5) * 2;
+      mouse.ty = -(e.clientY / window.innerHeight - 0.5) * 2;
+    };
+    window.addEventListener("mousemove", onMouseMove);
+
+    // ── Animate ────────────────────────────────────────────────
+    let raf: number, t = 0;
+    const CONNECT_DIST = 3.5;
+
+    const tick = () => {
+      raf = requestAnimationFrame(tick);
+      t += 0.008;
+
+      // Smooth mouse lerp
+      mouse.x += (mouse.tx - mouse.x) * 0.06;
+      mouse.y += (mouse.ty - mouse.y) * 0.06;
+
+      // Move particles
+      const pos = pGeo.attributes.position.array as Float32Array;
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        pos[i*3]   += pVelocities[i].x;
+        pos[i*3+1] += pVelocities[i].y;
+        // Wrap
+        if (pos[i*3]   >  9) pos[i*3]   = -9;
+        if (pos[i*3]   < -9) pos[i*3]   =  9;
+        if (pos[i*3+1] >  6) pos[i*3+1] = -6;
+        if (pos[i*3+1] < -6) pos[i*3+1] =  6;
+      }
+      pGeo.attributes.position.needsUpdate = true;
+
+      // Draw connection lines between close particles
+      let lineIdx = 0;
+      const lp = lineGeo.attributes.position.array as Float32Array;
+      for (let i = 0; i < PARTICLE_COUNT && lineIdx < maxLines - 1; i++) {
+        for (let j = i+1; j < PARTICLE_COUNT && lineIdx < maxLines - 1; j++) {
+          const dx = pos[i*3]-pos[j*3], dy = pos[i*3+1]-pos[j*3+1];
+          if (dx*dx + dy*dy < CONNECT_DIST*CONNECT_DIST) {
+            lp[lineIdx*6]   = pos[i*3]; lp[lineIdx*6+1] = pos[i*3+1]; lp[lineIdx*6+2] = pos[i*3+2];
+            lp[lineIdx*6+3] = pos[j*3]; lp[lineIdx*6+4] = pos[j*3+1]; lp[lineIdx*6+5] = pos[j*3+2];
+            lineIdx++;
+          }
+        }
+      }
+      // Clear unused
+      for (let k = lineIdx; k < maxLines; k++) {
+        lp[k*6] = lp[k*6+1] = lp[k*6+2] = lp[k*6+3] = lp[k*6+4] = lp[k*6+5] = 0;
+      }
+      lineGeo.attributes.position.needsUpdate = true;
+      (lineMat.geometry as THREE.BufferGeometry).setDrawRange(0, lineIdx * 2);
+
+      // Rotate shapes + mouse parallax
+      shapes.forEach((m, i) => {
+        m.rotation.x += m.userData.rx;
+        m.rotation.y += m.userData.ry;
+        // Gentle float
+        m.position.y = m.userData.oy + Math.sin(t + i * 1.2) * 0.3;
+        // Parallax
+        m.position.x = m.userData.ox + mouse.x * (0.4 + i * 0.15);
+      });
+
+      // Camera subtle sway
+      camera.position.x = mouse.x * 0.3;
+      camera.position.y = mouse.y * 0.2;
+      camera.lookAt(scene.position);
+
+      renderer.render(scene, camera);
+    };
     tick();
-    const onResize = () => { const w = mount.clientWidth, h = mount.clientHeight; camera.aspect = w / h; camera.updateProjectionMatrix(); renderer.setSize(w, h); };
+
+    const onResize = () => {
+      const w = mount.clientWidth, h = mount.clientHeight;
+      camera.aspect = w / h; camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    };
     window.addEventListener("resize", onResize);
-    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", onResize); renderer.dispose(); if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement); };
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("resize", onResize);
+      renderer.dispose();
+      if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);
+    };
   }, [mountRef]);
 }
 
