@@ -1,110 +1,93 @@
 "use client";
 
-// Logo metadata — org name + path + size hint
+// Logos in order matching the reference — all circular
 const LOGOS = [
-  { src: "/screen7/logo-google.png",       alt: "Google",                   bg: "#fff"     },
-  { src: "/screen7/logo-uwc.png",          alt: "UWC Sustainability",        bg: "#3ab5a4"  },
-  { src: "/screen7/logo-stanfordperu.png", alt: "Stanford Peru",             bg: "#5c0f1e"  },
-  { src: "/screen7/logo-image133.svg",     alt: "Organization",              bg: "transparent" },
-  { src: "/screen7/logo-undp.png",         alt: "UNDP",                      bg: "#fff"     },
-  { src: "/screen7/logo-ai4all.png",       alt: "AI4ALL",                    bg: "#fff"     },
-  { src: "/screen7/logo-scienceclubs.svg", alt: "Science Clubs International", bg: "transparent" },
-  { src: "/screen7/logo-breakthrough.png", alt: "BreakthroughTech",          bg: "transparent" },
-  { src: "/screen7/logo-image134.svg",     alt: "Organization 2",            bg: "transparent" },
+  { src: "/screen7/logo-google.png",       alt: "Google",                    bg: "#fff"    },
+  { src: "/screen7/logo-uwc.png",          alt: "UWC Sustainability",         bg: "#3ab5a4" },
+  { src: "/screen7/logo-stanfordperu.png", alt: "Stanford Peru",              bg: "#5c1420" },
+  { src: "/screen7/logo-image133.svg",     alt: "BreakthroughTech",           bg: "#0d1f2d" },
+  { src: "/screen7/logo-undp.png",         alt: "UNDP",                       bg: "#fff"    },
+  { src: "/screen7/logo-ai4all.png",       alt: "AI4ALL",                     bg: "#fff"    },
+  { src: "/screen7/logo-scienceclubs.svg", alt: "Science Clubs International", bg: "#28b5c8" },
+  { src: "/screen7/logo-breakthrough.png", alt: "BreakthroughTech",           bg: "transparent" },
+  { src: "/screen7/logo-image134.svg",     alt: "CodePath",                   bg: "#fff"    },
 ];
 
-export default function SeventhScreen() {
-  // Duplicate for seamless infinite loop
-  const track = [...LOGOS, ...LOGOS, ...LOGOS];
+// Triple for seamless infinite loop
+const TRACK = [...LOGOS, ...LOGOS, ...LOGOS];
 
+export default function SeventhScreen() {
   return (
-    <section style={{
-      background: "#0d0d0d",
-      overflow: "hidden",
-      padding: "clamp(40px, 6vw, 80px) 0",
-      position: "relative",
-    }}>
+    <section style={{ background: "#111111", overflow: "hidden" }}>
       <style>{`
         @keyframes logoScroll {
           0%   { transform: translateX(0); }
-          100% { transform: translateX(-33.333%); }
+          100% { transform: translateX(-33.3334%); }
         }
-        .logo-track {
+        .s7-track {
           display: flex;
           align-items: center;
-          gap: clamp(24px, 4vw, 56px);
+          gap: clamp(28px, 4vw, 60px);
           width: max-content;
-          animation: logoScroll 28s linear infinite;
+          padding: clamp(32px, 5vw, 64px) clamp(28px, 4vw, 60px);
+          animation: logoScroll 32s linear infinite;
+          will-change: transform;
         }
-        .logo-track:hover {
-          animation-play-state: paused;
-        }
-        .logo-item {
+        .s7-track:hover { animation-play-state: paused; }
+        .s7-logo {
           flex-shrink: 0;
-          width: clamp(80px, 10vw, 130px);
-          height: clamp(80px, 10vw, 130px);
+          width:  clamp(130px, 16vw, 220px);
+          height: clamp(130px, 16vw, 220px);
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
           overflow: hidden;
-          box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+          box-shadow: 0 6px 28px rgba(0,0,0,0.22);
           transition: transform 0.3s ease, box-shadow 0.3s ease;
           cursor: pointer;
         }
-        .logo-item:hover {
-          transform: scale(1.12);
-          box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        .s7-logo:hover {
+          transform: scale(1.08);
+          box-shadow: 0 12px 40px rgba(0,0,0,0.38);
         }
-        .logo-item img {
-          width: 80%;
-          height: 80%;
+        .s7-logo img {
+          width: 85%;
+          height: 85%;
           object-fit: contain;
+          display: block;
         }
       `}</style>
 
-      {/* Section label */}
-      <div style={{
-        textAlign: "center",
-        marginBottom: "clamp(20px, 3vw, 40px)",
-      }}>
-        <p style={{
-          fontFamily: "monospace",
-          fontSize: "clamp(9px, 1vw, 12px)",
-          letterSpacing: "0.22em",
-          color: "rgba(255,255,255,0.3)",
-          textTransform: "uppercase",
-          margin: 0,
-        }}>
-          Organizations I've worked with
-        </p>
+      {/* ── Top Bauhaus strip ── */}
+      <div style={{ width: "100%", overflow: "hidden", lineHeight: 0 }}>
+        <img
+          src="/screen7/bauhaus-top.svg"
+          alt=""
+          aria-hidden="true"
+          style={{
+            width: "100%",
+            height: "clamp(90px, 13vw, 180px)",
+            objectFit: "cover",
+            objectPosition: "center top",
+            display: "block",
+          }}
+        />
       </div>
 
-      {/* Fade masks on sides */}
-      <div style={{ position: "relative" }}>
+      {/* ── Cream band with logo carousel ── */}
+      <div style={{ background: "#F5E6C0", position: "relative", overflow: "hidden" }}>
+
+        {/* Fade edges */}
         <div style={{
-          position: "absolute", left: 0, top: 0, bottom: 0,
-          width: "clamp(40px, 8vw, 120px)",
-          background: "linear-gradient(to right, #0d0d0d, transparent)",
-          zIndex: 2, pointerEvents: "none",
-        }} />
-        <div style={{
-          position: "absolute", right: 0, top: 0, bottom: 0,
-          width: "clamp(40px, 8vw, 120px)",
-          background: "linear-gradient(to left, #0d0d0d, transparent)",
-          zIndex: 2, pointerEvents: "none",
+          position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none",
+          background: "linear-gradient(to right, #F5E6C0 clamp(20px,4vw,60px), transparent clamp(60px,10vw,140px), transparent calc(100% - clamp(60px,10vw,140px)), #F5E6C0 calc(100% - clamp(20px,4vw,60px)))",
         }} />
 
-        {/* Scrolling track */}
-        <div style={{ overflow: "hidden", padding: "clamp(8px, 1.5vw, 20px) 0" }}>
-          <div className="logo-track">
-            {track.map((logo, i) => (
-              <div
-                key={i}
-                className="logo-item"
-                style={{ background: logo.bg }}
-                title={logo.alt}
-              >
+        <div style={{ overflow: "hidden" }}>
+          <div className="s7-track">
+            {TRACK.map((logo, i) => (
+              <div key={i} className="s7-logo" style={{ background: logo.bg }} title={logo.alt}>
                 <img src={logo.src} alt={logo.alt} />
               </div>
             ))}
@@ -112,22 +95,34 @@ export default function SeventhScreen() {
         </div>
       </div>
 
-      {/* Bauhaus accent card below */}
-      <div style={{
-        display: "flex",
-        justifyContent: "center",
-        marginTop: "clamp(24px, 4vw, 48px)",
-      }}>
+      {/* ── Bottom Bauhaus strip ── */}
+      <div style={{ width: "100%", overflow: "hidden", lineHeight: 0 }}>
         <img
-          src="/screen7/bauhaus-card.svg"
+          src="/screen7/bauhaus-bottom.svg"
           alt=""
           aria-hidden="true"
           style={{
-            width: "clamp(160px, 22vw, 300px)",
-            height: "auto",
-            opacity: 0.85,
+            width: "100%",
+            height: "clamp(90px, 13vw, 180px)",
+            objectFit: "cover",
+            objectPosition: "center bottom",
+            display: "block",
           }}
         />
+      </div>
+
+      {/* ── Label ── */}
+      <div style={{ textAlign: "center", padding: "clamp(16px,2.5vw,32px) 0" }}>
+        <p style={{
+          fontFamily: "monospace",
+          fontSize: "clamp(9px, 0.9vw, 12px)",
+          letterSpacing: "0.22em",
+          color: "rgba(255,255,255,0.28)",
+          textTransform: "uppercase",
+          margin: 0,
+        }}>
+          Organizations I've worked with
+        </p>
       </div>
     </section>
   );
