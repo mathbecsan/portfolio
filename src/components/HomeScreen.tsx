@@ -359,7 +359,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
               Portfolio
             </span>
           </div>
-          <div className="flex gap-5 font-mono text-xs text-[#f0ede6]/90 tracking-[0.18em] uppercase">
+          <div className="flex gap-6 font-mono text-sm text-[#f0ede6]/90 tracking-[0.22em] uppercase">
             {NAV.map((n) => (
               <a
                 key={n.label}
@@ -400,13 +400,13 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
             className="font-mono text-[#f0ede6] leading-none mt-1"
             style={{ fontSize: "clamp(32px, 5.5vw, 88px)" }}
           >
-            i&apos;m
+            I&apos;M
           </p>
           <h1
             className="font-mono font-bold text-[#f0ede6] leading-none tracking-tight"
             style={{ fontSize: "clamp(44px, 7.5vw, 118px)" }}
           >
-            mathias.
+            MATHIAS.
           </h1>
           <p className="mt-4 font-mono tracking-[0.3em] uppercase text-[#f0ede6]/90"
             style={{ fontSize: "clamp(11px, 1.1vw, 15px)", letterSpacing: "0.3em" }}>
