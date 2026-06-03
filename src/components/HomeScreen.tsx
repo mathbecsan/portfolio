@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState, type RefObject } from "react";
 import * as THREE from "three";
 import ThirdScreen from "./ThirdScreen";
+import FourthScreen from "./FourthScreen";
+import FifthScreen from "./FifthScreen";
 
 const NAV = ["Home", "About", "Process", "Impact"];
 
@@ -297,6 +299,8 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
       </section>
 
       <ThirdScreen />
+      <FourthScreen />
+      <FifthScreen />
     </div>
   );
 }
