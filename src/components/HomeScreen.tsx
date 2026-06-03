@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type RefObject } from "react";
 import * as THREE from "three";
 import ThirdScreen from "./ThirdScreen";
+import ExperienceScreen from "./ExperienceScreen";
 import FourthScreen from "./FourthScreen";
 import FifthScreen from "./FifthScreen";
 import SixthScreen from "./SixthScreen";
@@ -707,6 +708,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
       </section>
 
       <ThirdScreen />
+      <ExperienceScreen />
       <FourthScreen />
       <FifthScreen />
       <SixthScreen />
