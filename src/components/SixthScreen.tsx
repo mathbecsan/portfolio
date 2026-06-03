@@ -43,7 +43,7 @@ function ProductsSection() {
 
 export default function SixthScreen() {
   return (
-    <section style={{ background: "#111111", overflow: "hidden" }}>
+    <section id="impact" style={{ background: "#111111", overflow: "hidden" }}>
       <div style={{ maxWidth: 1280, margin: "0 auto" }}>
 
         {/* ── Part 1: Header — Metrics of Impact / Data Analysis ── */}

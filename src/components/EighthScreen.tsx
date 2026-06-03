@@ -34,7 +34,7 @@ export default function EighthScreen() {
   };
 
   return (
-    <section>
+    <section id="contact">
 
       {/* ── Big email ── */}
       <div style={{ background: "#F5E6C0", textAlign: "center", padding: "clamp(32px,5vw,64px) 20px", lineHeight: 1 }}>

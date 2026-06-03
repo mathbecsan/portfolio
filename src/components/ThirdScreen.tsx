@@ -8,7 +8,7 @@
 
 export default function ThirdScreen() {
   return (
-    <section style={{ overflow: "hidden" }}>
+    <section id="experience" style={{ overflow: "hidden" }}>
       {/* ── Top Bauhaus strip ── */}
       <div
         style={{

@@ -9,7 +9,14 @@ import SixthScreen from "./SixthScreen";
 import SeventhScreen from "./SeventhScreen";
 import EighthScreen from "./EighthScreen";
 
-const NAV = ["Home", "About", "Process", "Impact"];
+const NAV = [
+  { label: "Home",       href: "#home"       },
+  { label: "About",      href: "#about"      },
+  { label: "Process",    href: "#process"    },
+  { label: "Experience", href: "#experience" },
+  { label: "Impact",     href: "#impact"     },
+  { label: "Contact",    href: "#contact"    },
+];
 
 const GREETINGS = [
   { text: "Allinllachu.", lang: "Quechua", script: "Latin" },
@@ -315,7 +322,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
       {/* ══════════════════════════════════════════════
           SECTION 1 — Dark hero (full viewport)
       ══════════════════════════════════════════════ */}
-      <section
+      <section id="home"
         className="relative flex flex-col overflow-hidden bg-[#0d0d0d]"
         style={{ height: "100svh", minHeight: 600, padding: "3vh 6vw 2vh" }}
       >
@@ -352,14 +359,14 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
               Portfolio
             </span>
           </div>
-          <div className="flex gap-6 font-mono text-xs text-[#f0ede6]/40 tracking-[0.2em] uppercase">
-            {NAV.map((l) => (
+          <div className="flex gap-5 font-mono text-xs text-[#f0ede6]/40 tracking-[0.15em] uppercase">
+            {NAV.map((n) => (
               <a
-                key={l}
-                href={`#${l.toLowerCase()}`}
+                key={n.label}
+                href={n.href}
                 className="hover:text-[#f0ede6] transition-colors"
               >
-                {l}
+                {n.label}
               </a>
             ))}
           </div>
@@ -401,7 +408,8 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
           >
             mathias.
           </h1>
-          <p className="mt-3 font-mono text-[10px] tracking-[0.35em] uppercase text-[#f0ede6]/25">
+          <p className="mt-4 font-mono tracking-[0.3em] uppercase text-[#f0ede6]/60"
+            style={{ fontSize: "clamp(11px, 1.1vw, 15px)", letterSpacing: "0.3em" }}>
             {GREETINGS[idx].lang} · {GREETINGS[idx].script}
           </p>
         </div>
