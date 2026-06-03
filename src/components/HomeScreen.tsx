@@ -320,47 +320,52 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
       </div>
 
       {/* ══════════════════════════════════════════════
-          SECTION 2 — Cream poster
+          SECTION 2 — Profile card (matches reference)
+          Top bauhaus → portrait fills full height → bottom bauhaus
       ══════════════════════════════════════════════ */}
-      <section id="about" ref={posterRef} className="relative overflow-hidden"
-        style={{ background: "#F5E6C0", margin: 0, padding: 0 }}>
+      <section id="about" ref={posterRef}
+        style={{ background: "#F5E6C0", margin: 0, padding: 0, display: "flex", flexDirection: "column", minHeight: "100svh" }}>
 
-        {/* ── Bauhaus banner — CSS background (no SVG title rendering) ── */}
+        {/* ── Top Bauhaus strip — tall, full width ── */}
         <div style={{
-          width: "100%", height: "clamp(90px, 13vw, 170px)",
+          flexShrink: 0,
+          height: "clamp(130px, 16vw, 200px)",
           backgroundImage: "url('/bauhaus-pattern.svg')",
-          backgroundSize: "cover", backgroundPosition: "center top",
+          backgroundSize: "cover",
+          backgroundPosition: "center top",
         }} />
 
-        {/* ── Portrait + role ── */}
-        <div style={{ position: "relative", height: "clamp(360px, 48vw, 640px)" }}>
+        {/* ── Portrait + role — fills all remaining space ── */}
+        <div style={{ flex: 1, position: "relative", minHeight: 300 }}>
 
-          {/* Photo fills right 52% */}
+          {/* Photo: right 55%, full height */}
           <div style={{
-            position: "absolute", top: 0, right: 0, bottom: 0, width: "52%", overflow: "hidden",
-            animation: posterVisible ? "fadeRight 0.7s ease 0.2s both" : "none",
+            position: "absolute", top: 0, right: 0, bottom: 0, width: "55%",
+            overflow: "hidden",
+            animation: posterVisible ? "fadeRight 0.6s ease 0.15s both" : "none",
           }}>
             <img src="/profile-picture.png" alt="Mathias Becerra"
-              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 12%", display: "block" }} />
+              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 10%", display: "block" }} />
           </div>
 
-          {/* Text left 52% */}
+          {/* Text: left 48%, vertically centered */}
           <div style={{
-            position: "absolute", top: 0, left: 0, bottom: 0, width: "52%",
-            padding: "clamp(20px, 3.5vw, 52px) clamp(20px, 5vw, 64px)",
+            position: "absolute", top: 0, left: 0, bottom: 0, width: "48%",
+            padding: "clamp(24px, 4vw, 60px) clamp(24px, 5vw, 72px)",
             display: "flex", flexDirection: "column", justifyContent: "center",
-            gap: "clamp(6px, 1vw, 14px)",
-            animation: posterVisible ? "fadeLeft 0.7s ease 0.15s both" : "none",
+            gap: "clamp(10px, 1.4vw, 20px)",
+            animation: posterVisible ? "fadeLeft 0.6s ease 0.1s both" : "none",
           }}>
-            {/* "I'm a" — coded text, no SVG title issue */}
+
+            {/* "I'm a" italic */}
             <p style={{
               fontFamily: "Georgia, serif", fontStyle: "italic",
-              fontSize: "clamp(16px, 2.2vw, 28px)",
-              color: "#6B1A1A", margin: 0,
+              fontSize: "clamp(18px, 2.4vw, 32px)",
+              color: "#6B1A1A", margin: 0, fontWeight: 400,
             }}>I&apos;m a</p>
 
-            {/* Role SVGs — crossfade on cycle */}
-            <div style={{ position: "relative", width: "clamp(240px, 42vw, 520px)", aspectRatio: "855/427" }}>
+            {/* Role SVGs */}
+            <div style={{ position: "relative", width: "clamp(220px, 40vw, 500px)", aspectRatio: "855/427" }}>
               {ROLES.map((role, i) => (
                 <img key={role.src} src={role.src} alt={role.label}
                   style={{
@@ -374,48 +379,47 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
               ))}
             </div>
 
-            {/* Location — coded, no SVG title */}
+            {/* Location */}
             <p style={{
-              fontFamily: "monospace", fontSize: "clamp(11px, 1.2vw, 16px)",
-              color: "#6B1A1A", margin: 0, letterSpacing: "0.03em",
+              fontFamily: "monospace",
+              fontSize: "clamp(11px, 1.1vw, 15px)",
+              color: "#6B1A1A", margin: 0, letterSpacing: "0.04em",
               display: "flex", alignItems: "center", gap: 8,
             }}>
-              From Lambayeque, Peru.&nbsp;
+              From Lambayeque, Peru.
               <img src="/first-screen/peruflag.svg" alt="Peru flag"
-                style={{ width: "clamp(20px, 2.5vw, 32px)", height: "auto", display: "inline-block" }} />
+                style={{ width: "clamp(20px, 2.2vw, 30px)", height: "auto", display: "inline-block", verticalAlign: "middle" }} />
             </p>
           </div>
         </div>
 
-        {/* ── Bridge Bauhaus bar ── */}
+        {/* ── Bottom Bauhaus strip — full width ── */}
         <div style={{
-          display: "flex", justifyContent: "flex-end", overflow: "hidden",
-          animation: posterVisible ? "fadeUp 0.6s ease 0.3s both" : "none",
-        }}>
-          <div style={{
-            width: "65%", height: "clamp(70px, 10vw, 130px)",
-            backgroundImage: "url('/second-screen/word-4.svg')",
-            backgroundSize: "cover", backgroundPosition: "left center",
-          }} />
-        </div>
+          flexShrink: 0,
+          height: "clamp(100px, 13vw, 160px)",
+          backgroundImage: "url('/first-screen/bauhaus.svg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center bottom",
+        }} />
+      </section>
 
-        {/* ── Mission statement ── */}
-        <div style={{ position: "relative", padding: "clamp(40px, 6vw, 80px) clamp(40px, 7vw, 120px) clamp(60px, 8vw, 100px)" }}>
-          {/* Right accent — CSS background */}
+      {/* ══════════════════════════════════════════════
+          SECTION 2b — Mission statement (separate)
+      ══════════════════════════════════════════════ */}
+      <section style={{ background: "#F5E6C0", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "relative", padding: "clamp(48px, 7vw, 96px) clamp(40px, 7vw, 120px) clamp(64px, 8vw, 100px)" }}>
           <div style={{
-            position: "absolute", top: 0, right: 0, bottom: 0,
-            width: "clamp(24px, 2.5vw, 40px)",
+            position: "absolute", top: 0, right: 0, bottom: 0, width: "clamp(24px, 2.5vw, 40px)",
             backgroundImage: "url('/second-screen/word-4.svg')",
             backgroundSize: "cover", backgroundPosition: "right center",
           }} />
-
           <p style={{
             fontFamily: "Georgia, 'Times New Roman', serif", fontWeight: 700,
             fontSize: "clamp(28px, 4.5vw, 68px)", lineHeight: 1.15,
             color: "#1a1a1a", margin: 0, maxWidth: "16ch",
             opacity: posterVisible ? 1 : 0,
             transform: posterVisible ? "translateY(0)" : "translateY(24px)",
-            transition: "opacity 0.7s ease 0.4s, transform 0.7s ease 0.4s",
+            transition: "opacity 0.7s ease 0.3s, transform 0.7s ease 0.3s",
           }}>
             {"I "}
             <span key={wordIdx} style={{
@@ -430,8 +434,6 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
             {" products with meticulous attention to detail to create accessible user experiences for social good"}
           </p>
         </div>
-
-        {/* ── Bottom corner clusters ── */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
           <div style={{ width: "clamp(110px, 18vw, 280px)", aspectRatio: "1205/183",
             backgroundImage: "url('/second-screen/word-2.svg')", backgroundSize: "cover" }} />
