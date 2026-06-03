@@ -130,10 +130,9 @@ function BrainCanvas({ onHover }: { onHover: (label: string | null) => void }) {
 
     // Inter-hemisphere groove
     const grooveGeo = new THREE.CylinderGeometry(0.013, 0.013, 1.85, 8);
-    group.add(Object.assign(new THREE.Mesh(grooveGeo,
-      new THREE.MeshBasicMaterial({ color: 0x8b5e3c })),
-      { position: new THREE.Vector3(0, 0.05, 0) }
-    ));
+    const groove = new THREE.Mesh(grooveGeo, new THREE.MeshBasicMaterial({ color: 0x8b5e3c }));
+    groove.position.set(0, 0.05, 0);
+    group.add(groove);
 
     // Gyri surface bumps (56 total, both hemispheres)
     const gyriBase = Array.from({ length: 28 }, (_, i) => {
