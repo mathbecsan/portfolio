@@ -47,31 +47,31 @@ export default function ThirdScreen() {
           />
         </div>
 
-        {/* ── HCI logo — after "HCI" text in the (HCI / HAI) line ── */}
+        {/* ── HCI logo — inline after "HCI" text ── */}
         <img
           src="/screen3/hci-logo.svg"
           alt="HCI"
           style={{
             position: "absolute",
-            left:      "54.8%",
-            top:       "32%",
-            width:     "2.4%",
-            height:    "auto",
-            zIndex:    2,
+            left:   "54.2%",
+            top:    "33.5%",
+            width:  "1.3%",
+            height: "auto",
+            zIndex: 2,
           }}
         />
 
-        {/* ── HAI logo — after "HAI" text ── */}
+        {/* ── HAI logo — inline after "/" ── */}
         <img
           src="/screen3/hai-logo.svg"
           alt="HAI"
           style={{
             position: "absolute",
-            left:      "60.5%",
-            top:       "32%",
-            width:     "2.4%",
-            height:    "auto",
-            zIndex:    2,
+            left:   "58.8%",
+            top:    "33.5%",
+            width:  "1.3%",
+            height: "auto",
+            zIndex: 2,
           }}
         />
       </div>
