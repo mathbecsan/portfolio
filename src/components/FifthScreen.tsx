@@ -1,57 +1,50 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
-// ── UX Process steps ───────────────────────────────────────────
 const STEPS = [
   {
-    num: "01",
-    label: "DISCOVER",
-    sub: "Research & Empathize",
-    body: "Understand users deeply through interviews, observations, and contextual inquiry. Map pain points and uncover hidden needs.",
-    color: "#E63329",
-    hex: 0xE63329,
-    tags: ["User Interviews", "Field Research", "Surveys", "Affinity Maps"],
+    num: "01", label: "DISCOVER",  sub: "Research & Empathize",
+    body: "Understand users through interviews, observations and contextual inquiry. Map pain points and surface hidden needs.",
+    color: "#E63329", hex: 0xE63329,
+    tags: ["User Interviews", "Field Research", "Affinity Maps"],
   },
   {
-    num: "02",
-    label: "DEFINE",
-    sub: "Synthesize & Frame",
-    body: "Distill research into actionable insights. Create personas, journey maps, and a clear problem statement that guides the team.",
-    color: "#F5C500",
-    hex: 0xF5C500,
-    tags: ["Personas", "Journey Maps", "HMW Statements", "POV"],
+    num: "02", label: "DEFINE",    sub: "Synthesize & Frame",
+    body: "Distill findings into personas, journey maps and a sharp problem statement that gives the whole team direction.",
+    color: "#F5C500", hex: 0xF5C500,
+    tags: ["Personas", "Journey Maps", "HMW Statements"],
   },
   {
-    num: "03",
-    label: "IDEATE",
-    sub: "Design & Explore",
-    body: "Generate hundreds of ideas without judgment. Sketch rapidly, challenge assumptions, and identify the most promising directions.",
-    color: "#1B3F8B",
-    hex: 0x1B3F8B,
-    tags: ["Sketching", "Crazy 8s", "Storyboards", "Mind Maps"],
+    num: "03", label: "IDEATE",    sub: "Design & Explore",
+    body: "Generate possibilities without judgement. Rapid sketches, Crazy 8s and card-sorting surface the strongest directions.",
+    color: "#1B3F8B", hex: 0x1B3F8B,
+    tags: ["Sketching", "Crazy 8s", "Storyboards"],
   },
   {
-    num: "04",
-    label: "ITERATE",
-    sub: "Prototype & Test",
-    body: "Build lightweight prototypes and test with real users. Embrace failure as learning — each cycle sharpens the solution.",
-    color: "#2A9D8F",
-    hex: 0x2A9D8F,
-    tags: ["Wireframes", "Figma Prototypes", "Usability Tests", "A/B Testing"],
+    num: "04", label: "ITERATE",   sub: "Prototype & Test",
+    body: "Build the lightest prototype that answers the key question. Put it in front of users, learn fast and loop again.",
+    color: "#2A9D8F", hex: 0x2A9D8F,
+    tags: ["Wireframes", "Prototypes", "Usability Tests"],
   },
 ];
 
-const PANEL_COUNT = STEPS.length + 1; // intro + 4 steps
+// panels: 0 = intro, 1-4 = steps
+const PANELS = STEPS.length + 1;
+// scroll space: PANELS × 100vh
+const SCROLL_VH = PANELS * 100;
 
-// ── Per-step Three.js fluid canvas ────────────────────────────
-function FluidCanvas({ color, active }: { color: number; active: boolean }) {
-  const mountRef = useRef<HTMLDivElement>(null);
-  const rafRef   = useRef(0);
+export default function FifthScreen() {
+  const wrapRef   = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
+  const trackRef  = useRef<HTMLDivElement>(null);
+  const bgRef     = useRef<HTMLDivElement>(null);
+  const barRef    = useRef<HTMLDivElement>(null);
 
+  // ── Three.js single shared background ─────────────────────
   useEffect(() => {
-    const mount = mountRef.current;
+    const mount = bgRef.current;
     if (!mount) return;
     const W = mount.clientWidth, H = mount.clientHeight;
 
@@ -63,86 +56,83 @@ function FluidCanvas({ color, active }: { color: number; active: boolean }) {
 
     const scene  = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, W / H, 0.1, 100);
-    camera.position.z = 6;
+    camera.position.z = 7;
+    scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 
-    // ── Ribbons / flowing lines ────────────────────────────────
-    const ribbonCount = 18;
-    const ribbons: { mesh: THREE.Line; phase: number; speed: number; amp: number } [] = [];
+    // ── Ribbon field ───────────────────────────────────────
+    const RIBBONS = 22;
+    type Ribbon = { line: THREE.Line; phase: number; speed: number; amp: number; yBase: number };
+    const ribbons: Ribbon[] = [];
 
-    for (let r = 0; r < ribbonCount; r++) {
-      const points: THREE.Vector3[] = [];
-      const segments = 80;
-      for (let s = 0; s <= segments; s++) {
-        points.push(new THREE.Vector3(
-          (s / segments - 0.5) * 14,
-          (r / ribbonCount - 0.5) * 8,
-          0
-        ));
-      }
-      const geo = new THREE.BufferGeometry().setFromPoints(points);
-      const mat = new THREE.LineBasicMaterial({
-        color,
-        transparent: true,
-        opacity: 0.12 + (r % 3) * 0.06,
-      });
+    for (let r = 0; r < RIBBONS; r++) {
+      const pts: THREE.Vector3[] = [];
+      const segs = 100;
+      const yBase = (r / RIBBONS - 0.5) * 10;
+      for (let s = 0; s <= segs; s++)
+        pts.push(new THREE.Vector3((s / segs - 0.5) * 18, yBase, 0));
+      const geo = new THREE.BufferGeometry().setFromPoints(pts);
+      const mat = new THREE.LineBasicMaterial({ color: 0xE63329, transparent: true, opacity: 0.08 + (r % 4) * 0.04 });
       const line = new THREE.Line(geo, mat);
       scene.add(line);
-      ribbons.push({ mesh: line, phase: r * 0.38, speed: 0.3 + (r % 5) * 0.12, amp: 0.3 + (r % 4) * 0.15 });
+      ribbons.push({ line, phase: r * 0.42, speed: 0.25 + (r % 5) * 0.1, amp: 0.25 + (r % 4) * 0.14, yBase });
     }
 
-    // ── Floating particles ─────────────────────────────────────
-    const N = 80;
-    const pPos = new Float32Array(N * 3);
-    const pVel: number[] = [];
+    // ── Particle cloud ─────────────────────────────────────
+    const N = 100;
+    const pArr = new Float32Array(N * 3);
+    const pVel = new Float32Array(N * 3);
     for (let i = 0; i < N; i++) {
-      pPos[i*3]   = (Math.random()-0.5) * 14;
-      pPos[i*3+1] = (Math.random()-0.5) * 9;
-      pPos[i*3+2] = (Math.random()-0.5) * 3;
-      pVel.push((Math.random()-0.5)*0.006, (Math.random()-0.5)*0.006, 0);
+      pArr[i*3]   = (Math.random()-0.5)*18; pArr[i*3+1] = (Math.random()-0.5)*11; pArr[i*3+2] = (Math.random()-0.5)*4;
+      pVel[i*3]   = (Math.random()-0.5)*0.005; pVel[i*3+1] = (Math.random()-0.5)*0.005;
     }
     const pGeo = new THREE.BufferGeometry();
-    pGeo.setAttribute("position", new THREE.BufferAttribute(pPos, 3));
-    const pMat = new THREE.PointsMaterial({ color, size: 0.07, transparent: true, opacity: 0.6 });
-    scene.add(new THREE.Points(pGeo, pMat));
+    pGeo.setAttribute("position", new THREE.BufferAttribute(pArr, 3));
+    const pMat = new THREE.PointsMaterial({ color: 0xE63329, size: 0.06, transparent: true, opacity: 0.55 });
+    const pts3d = new THREE.Points(pGeo, pMat);
+    scene.add(pts3d);
 
-    // ── Central shape ──────────────────────────────────────────
-    const cGeo = new THREE.IcosahedronGeometry(1.2, 2);
-    const cMat = new THREE.MeshBasicMaterial({ color, wireframe: true, transparent: true, opacity: active ? 0.22 : 0.10 });
-    const cMesh = new THREE.Mesh(cGeo, cMat);
-    cMesh.position.set(3.5, 0.5, -1);
-    scene.add(cMesh);
+    // target color for smooth transitions
+    let targetR = 0xE6/255, targetG = 0x33/255, targetB = 0x29/255;
+    let curR    = targetR,  curG    = targetG,  curB    = targetB;
 
-    // ── Animate ────────────────────────────────────────────────
-    let t = 0;
+    // exposed so scroll handler can update
+    (window as any).__s5SetColor = (hex: number) => {
+      targetR = ((hex >> 16) & 255) / 255;
+      targetG = ((hex >>  8) & 255) / 255;
+      targetB = ( hex        & 255) / 255;
+    };
+
+    let t = 0, raf = 0;
     const animate = () => {
-      rafRef.current = requestAnimationFrame(animate);
-      t += 0.012;
+      raf = requestAnimationFrame(animate);
+      t += 0.010;
 
-      // Undulate ribbons (sine wave)
-      ribbons.forEach(({ mesh, phase, speed, amp }) => {
-        const posAttr = mesh.geometry.attributes.position;
-        const arr = posAttr.array as Float32Array;
-        for (let s = 0; s <= 80; s++) {
-          arr[s * 3 + 1] = ((mesh.position.y || 0)) +
-            amp * Math.sin(arr[s * 3] * 0.4 + t * speed + phase) +
-            amp * 0.4 * Math.sin(arr[s * 3] * 0.8 + t * speed * 1.5 + phase * 2);
+      // Lerp color
+      curR += (targetR - curR) * 0.035;
+      curG += (targetG - curG) * 0.035;
+      curB += (targetB - curB) * 0.035;
+      const col = new THREE.Color(curR, curG, curB);
+      pMat.color.copy(col);
+      ribbons.forEach(({ line }) => (line.material as THREE.LineBasicMaterial).color.copy(col));
+
+      // Animate ribbons
+      ribbons.forEach(({ line, phase, speed, amp, yBase }) => {
+        const arr = line.geometry.attributes.position.array as Float32Array;
+        for (let s = 0; s <= 100; s++) {
+          arr[s*3+1] = yBase
+            + amp * Math.sin(arr[s*3] * 0.35 + t * speed + phase)
+            + amp * 0.45 * Math.sin(arr[s*3] * 0.7 + t * speed * 1.6 + phase * 1.8);
         }
-        posAttr.needsUpdate = true;
+        line.geometry.attributes.position.needsUpdate = true;
       });
 
       // Move particles
-      const pp = pGeo.attributes.position.array as Float32Array;
       for (let i = 0; i < N; i++) {
-        pp[i*3]   += pVel[i*3];
-        pp[i*3+1] += pVel[i*3+1];
-        if (Math.abs(pp[i*3])   > 7) pVel[i*3]   *= -1;
-        if (Math.abs(pp[i*3+1]) > 4.5) pVel[i*3+1] *= -1;
+        pArr[i*3]   += pVel[i*3];   if (Math.abs(pArr[i*3])   > 9)   pVel[i*3]   *= -1;
+        pArr[i*3+1] += pVel[i*3+1]; if (Math.abs(pArr[i*3+1]) > 5.5) pVel[i*3+1] *= -1;
       }
       pGeo.attributes.position.needsUpdate = true;
 
-      cMesh.rotation.x = t * 0.18;
-      cMesh.rotation.y = t * 0.25;
-
       renderer.render(scene, camera);
     };
     animate();
@@ -154,336 +144,158 @@ function FluidCanvas({ color, active }: { color: number; active: boolean }) {
     };
     window.addEventListener("resize", onResize);
     return () => {
-      cancelAnimationFrame(rafRef.current);
+      cancelAnimationFrame(raf);
       window.removeEventListener("resize", onResize);
+      delete (window as any).__s5SetColor;
       renderer.dispose();
       if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);
     };
-  }, [color, active]);
+  }, []);
 
-  return <div ref={mountRef} style={{ position: "absolute", inset: 0 }} />;
-}
-
-// ── Intro Three.js — particle grid ────────────────────────────
-function IntroCanvas() {
-  const mountRef = useRef<HTMLDivElement>(null);
-  const rafRef   = useRef(0);
-
+  // ── Scroll → horizontal translation (direct DOM) ───────────
   useEffect(() => {
-    const mount = mountRef.current;
-    if (!mount) return;
-    const W = mount.clientWidth, H = mount.clientHeight;
+    const wrap   = wrapRef.current;
+    const track  = trackRef.current;
+    const bar    = barRef.current;
+    if (!wrap || !track || !bar) return;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(W, H);
-    renderer.setClearColor(0x000000, 0);
-    mount.appendChild(renderer.domElement);
+    let lastPanel = -1;
 
-    const scene  = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, W / H, 0.1, 100);
-    camera.position.z = 8;
+    const onScroll = () => {
+      const rect  = wrap.getBoundingClientRect();
+      const total = wrap.offsetHeight - window.innerHeight;
+      if (total <= 0) return;
 
-    // Grid of points that wave
-    const cols = 28, rows = 18;
-    const pts: THREE.Vector3[] = [];
-    for (let r = 0; r < rows; r++)
-      for (let c = 0; c < cols; c++)
-        pts.push(new THREE.Vector3((c / cols - 0.5) * 20, (r / rows - 0.5) * 13, 0));
+      const progress = Math.max(0, Math.min(1, -rect.top / total));
+      const panelF   = progress * (PANELS - 1);  // 0 → 4
+      const panel    = Math.min(Math.floor(panelF), PANELS - 1);
 
-    const geo = new THREE.BufferGeometry().setFromPoints(pts);
-    const mat = new THREE.PointsMaterial({ color: 0xf0ede6, size: 0.05, transparent: true, opacity: 0.35 });
-    const grid = new THREE.Points(geo, mat);
-    scene.add(grid);
+      // Move track horizontally
+      track.style.transform = `translateX(${-panelF * 100}vw)`;
 
-    let t = 0;
-    const animate = () => {
-      rafRef.current = requestAnimationFrame(animate);
-      t += 0.009;
-      const arr = geo.attributes.position.array as Float32Array;
-      for (let i = 0; i < pts.length; i++) {
-        const ox = pts[i].x, oy = pts[i].y;
-        arr[i*3+2] = Math.sin(ox * 0.5 + t) * Math.cos(oy * 0.5 + t * 0.7) * 1.2;
+      // Update progress bar
+      bar.style.width = `${progress * 100}%`;
+
+      // Update Three.js color when panel changes
+      if (panel !== lastPanel) {
+        lastPanel = panel;
+        const step = STEPS[panel - 1];
+        if (step && (window as any).__s5SetColor) (window as any).__s5SetColor(step.hex);
+        else if (panel === 0 && (window as any).__s5SetColor) (window as any).__s5SetColor(0xf0ede6);
+
+        // Highlight active step panel
+        track.querySelectorAll<HTMLElement>(".s5-panel").forEach((el, i) => {
+          if (i === 0) return; // skip intro
+          const active = i === panel;
+          const past   = i < panel;
+          el.style.opacity = active ? "1" : past ? "0.35" : "0.18";
+          (el.querySelector(".s5-content") as HTMLElement | null)?.style &&
+            Object.assign((el.querySelector(".s5-content") as HTMLElement).style, {
+              opacity:   active ? "1"             : past ? "0.4" : "0",
+              transform: active ? "translateX(0)" : past ? "translateX(-48px)" : "translateX(64px)",
+            });
+        });
       }
-      geo.attributes.position.needsUpdate = true;
-      renderer.render(scene, camera);
     };
-    animate();
 
-    const onResize = () => {
-      const w = mount.clientWidth, h = mount.clientHeight;
-      camera.aspect = w / h; camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-    window.addEventListener("resize", onResize);
-    return () => {
-      cancelAnimationFrame(rafRef.current);
-      window.removeEventListener("resize", onResize);
-      renderer.dispose();
-      if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);
-    };
-  }, []);
-
-  return <div ref={mountRef} style={{ position: "absolute", inset: 0 }} />;
-}
-
-// ── FifthScreen — scroll-hijack horizontal ────────────────────
-export default function FifthScreen() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [progress, setProgress] = useState(0); // 0→1 through all panels
-
-  // Map scroll position to horizontal progress
-  const onScroll = useCallback(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const total = el.offsetHeight - window.innerHeight;
-    const scrolled = -rect.top;
-    const p = Math.max(0, Math.min(1, scrolled / total));
-    setProgress(p);
-  }, []);
-
-  useEffect(() => {
     window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
+    onScroll(); // init
     return () => window.removeEventListener("scroll", onScroll);
-  }, [onScroll]);
-
-  // Which panel is "active" (0 = intro, 1-4 = steps)
-  const panelProgress = progress * PANEL_COUNT;
-  const activePanel   = Math.floor(panelProgress);
-  // Sub-progress within current panel (0→1)
-  const subProgress   = panelProgress - activePanel;
-
-  // Translate: move content LEFT as user scrolls
-  // Each panel is 100vw wide; at progress=1 we're at last panel
-  const translateX = -progress * (PANEL_COUNT - 1) * 100; // vw
+  }, []);
 
   return (
-    // Tall container gives scroll space: one viewport per panel
-    <div ref={containerRef} style={{ height: `${PANEL_COUNT * 100}vh`, position: "relative" }}>
+    <div ref={wrapRef} style={{ height: `${SCROLL_VH}vh`, position: "relative" }}>
       <style>{`
-        .s5-tag {
-          font-family: monospace;
-          font-size: clamp(9px, 0.85vw, 11px);
-          letter-spacing: 0.1em;
-          color: rgba(240,237,230,0.5);
-          border: 1px solid rgba(240,237,230,0.2);
-          padding: 4px 10px;
-          border-radius: 3px;
-          white-space: nowrap;
-        }
+        .s5-content { transition: opacity 0.5s cubic-bezier(0.22,1,0.36,1), transform 0.5s cubic-bezier(0.22,1,0.36,1); }
+        .s5-tag { font-family:monospace; font-size:clamp(9px,.85vw,11px); letter-spacing:.1em; color:rgba(240,237,230,.5); border:1px solid rgba(240,237,230,.2); padding:4px 10px; border-radius:3px; white-space:nowrap; }
+        .s5-divider { transition: width .7s cubic-bezier(0.22,1,0.36,1) .15s; }
       `}</style>
 
-      {/* Sticky viewport */}
-      <div style={{
-        position: "sticky",
-        top: 0,
-        height: "100vh",
-        overflow: "hidden",
-        background: "#0a0a0a",
-      }}>
+      {/* ── Sticky viewport ── */}
+      <div ref={stickyRef} style={{ position:"sticky", top:0, height:"100vh", overflow:"hidden", background:"#080808" }}>
+
+        {/* One shared Three.js background */}
+        <div ref={bgRef} style={{ position:"absolute", inset:0, zIndex:0 }} />
 
         {/* Horizontal track */}
-        <div style={{
-          display: "flex",
-          width: `${PANEL_COUNT * 100}vw`,
-          height: "100%",
-          transform: `translateX(${translateX}vw)`,
-          transition: "transform 0.05s linear",
-          willChange: "transform",
-        }}>
-
-          {/* ── Panel 0: Intro ──────────────────────────────── */}
-          <div style={{
-            width: "100vw", height: "100%", flexShrink: 0,
-            position: "relative", display: "flex", alignItems: "center", justifyContent: "center",
-          }}>
-            <IntroCanvas />
-            <div style={{ position: "relative", zIndex: 1, textAlign: "center" }}>
-              <p style={{
-                fontFamily: "monospace", fontSize: "clamp(10px, 1vw, 13px)",
-                letterSpacing: "0.28em", color: "rgba(240,237,230,0.35)",
-                textTransform: "uppercase", margin: "0 0 18px",
-                opacity: activePanel === 0 ? 1 : 0,
-                transform: activePanel === 0 ? "translateY(0)" : "translateY(-12px)",
-                transition: "opacity 0.6s ease, transform 0.6s ease",
-              }}>
-                UX Research & Design
-              </p>
-              <h2 style={{
-                fontFamily: "monospace", fontWeight: 900,
-                fontSize: "clamp(36px, 7vw, 96px)",
-                color: "#f0ede6", margin: 0,
-                letterSpacing: "-0.02em",
-                lineHeight: 1,
-              }}>
-                THE<br />PROCESS
-              </h2>
-              <p style={{
-                fontFamily: "monospace",
-                fontSize: "clamp(10px, 1vw, 13px)",
-                letterSpacing: "0.2em",
-                color: "rgba(240,237,230,0.3)",
-                margin: "28px 0 0",
-                opacity: activePanel === 0 ? (subProgress > 0.3 ? 0.8 : subProgress / 0.3 * 0.8) : 0,
-                transition: "opacity 0.4s ease",
-              }}>
-                SCROLL TO EXPLORE ↓
-              </p>
-            </div>
-
-            {/* Step preview pills at bottom */}
-            <div style={{
-              position: "absolute", bottom: "8%", left: "50%",
-              transform: "translateX(-50%)",
-              display: "flex", gap: 12,
-              opacity: subProgress > 0.4 ? 1 : 0,
-              transition: "opacity 0.5s ease",
-            }}>
-              {STEPS.map((s, i) => (
-                <div key={i} style={{
-                  fontFamily: "monospace", fontSize: 11,
-                  color: s.color, letterSpacing: "0.1em",
-                  borderBottom: `2px solid ${s.color}`,
-                  paddingBottom: 3,
-                }}>
+        <div ref={trackRef}
+          style={{
+            display:"flex", width:`${PANELS * 100}vw`, height:"100%",
+            position:"relative", zIndex:1,
+            transition:"transform 0.04s linear", willChange:"transform",
+          }}
+        >
+          {/* ── Panel 0: Intro ── */}
+          <div className="s5-panel" style={{ width:"100vw", height:"100%", flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", gap:0 }}>
+            <p style={{ fontFamily:"monospace", fontSize:"clamp(10px,1vw,12px)", letterSpacing:".26em", color:"rgba(240,237,230,.3)", textTransform:"uppercase", margin:"0 0 16px" }}>
+              UX Research & Design
+            </p>
+            <h2 style={{ fontFamily:"monospace", fontWeight:900, fontSize:"clamp(48px,9vw,120px)", color:"#f0ede6", margin:0, letterSpacing:"-.02em", lineHeight:.92, textAlign:"center" }}>
+              THE<br/>PROCESS
+            </h2>
+            <p style={{ fontFamily:"monospace", fontSize:"clamp(9px,.9vw,12px)", letterSpacing:".22em", color:"rgba(240,237,230,.25)", margin:"36px 0 0", textTransform:"uppercase" }}>
+              Scroll to reveal ↓
+            </p>
+            {/* Step pills */}
+            <div style={{ display:"flex", gap:16, marginTop:48 }}>
+              {STEPS.map(s => (
+                <span key={s.num} style={{ fontFamily:"monospace", fontSize:11, color:s.color, letterSpacing:".1em", borderBottom:`2px solid ${s.color}`, paddingBottom:3 }}>
                   {s.num} {s.label}
-                </div>
+                </span>
               ))}
             </div>
           </div>
 
-          {/* ── Panels 1–4: Steps ───────────────────────────── */}
-          {STEPS.map((step, i) => {
-            const panelIdx = i + 1;
-            const isActive = activePanel === panelIdx;
-            const isPast   = activePanel > panelIdx;
+          {/* ── Panels 1-4: Steps ── */}
+          {STEPS.map((step, i) => (
+            <div key={step.num} className="s5-panel"
+              style={{
+                width:"100vw", height:"100%", flexShrink:0,
+                display:"flex", alignItems:"center",
+                padding:"0 clamp(40px,8vw,130px)",
+                opacity: i === 0 ? "1" : "0.18",
+              }}
+            >
+              {/* Left accent */}
+              <div style={{ position:"absolute", left:0, top:"12%", bottom:"12%", width:3, background:step.color, borderRadius:2 }} />
 
-            return (
-              <div key={step.num} style={{
-                width: "100vw", height: "100%", flexShrink: 0,
-                position: "relative", display: "flex",
-                alignItems: "center",
-                padding: "0 clamp(32px, 7vw, 120px)",
-              }}>
-                {/* Fluid Three.js background */}
-                <FluidCanvas color={step.hex} active={isActive} />
-
-                {/* Thin colored left border */}
-                <div style={{
-                  position: "absolute", left: 0, top: "10%", bottom: "10%",
-                  width: 3, background: step.color, borderRadius: 2,
-                  opacity: isActive ? 1 : 0.3,
-                  transition: "opacity 0.5s ease",
-                }} />
-
-                {/* Content */}
-                <div style={{
-                  position: "relative", zIndex: 1,
-                  maxWidth: 720,
-                  opacity: isActive ? 1 : isPast ? 0.4 : 0.15,
-                  transform: isActive ? "translateX(0)" : isPast ? "translateX(-40px)" : "translateX(60px)",
-                  transition: "opacity 0.55s cubic-bezier(0.22,1,0.36,1), transform 0.55s cubic-bezier(0.22,1,0.36,1)",
-                }}>
-                  {/* Step number */}
-                  <p style={{
-                    fontFamily: "monospace", fontWeight: 700,
-                    fontSize: "clamp(11px, 1.2vw, 15px)",
-                    color: step.color, letterSpacing: "0.22em",
-                    margin: "0 0 12px",
-                    textTransform: "uppercase",
-                  }}>
-                    Step {step.num} / {STEPS.length}
-                  </p>
-
-                  {/* Title */}
-                  <h2 style={{
-                    fontFamily: "monospace", fontWeight: 900,
-                    fontSize: "clamp(42px, 8vw, 110px)",
-                    color: "#f0ede6", margin: "0 0 8px",
-                    lineHeight: 0.92, letterSpacing: "-0.02em",
-                  }}>
-                    {step.label}
-                  </h2>
-
-                  {/* Subtitle */}
-                  <p style={{
-                    fontFamily: "Georgia, serif", fontStyle: "italic",
-                    fontSize: "clamp(15px, 1.8vw, 24px)",
-                    color: step.color, margin: "0 0 24px",
-                  }}>
-                    {step.sub}
-                  </p>
-
-                  {/* Divider */}
-                  <div style={{
-                    width: isActive ? "clamp(40px, 6vw, 80px)" : 0,
-                    height: 2, background: step.color, borderRadius: 1,
-                    transition: "width 0.8s cubic-bezier(0.22,1,0.36,1) 0.2s",
-                    marginBottom: 24,
-                  }} />
-
-                  {/* Body */}
-                  <p style={{
-                    fontFamily: "Georgia, serif",
-                    fontSize: "clamp(14px, 1.4vw, 19px)",
-                    color: "rgba(240,237,230,0.72)",
-                    lineHeight: 1.7, margin: "0 0 28px",
-                    maxWidth: 520,
-                  }}>
-                    {step.body}
-                  </p>
-
-                  {/* Tags */}
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                    {step.tags.map(tag => (
-                      <span key={tag} className="s5-tag">{tag}</span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Progress indicator dots */}
-                <div style={{
-                  position: "absolute", right: "clamp(24px, 4vw, 60px)", top: "50%",
-                  transform: "translateY(-50%)",
-                  display: "flex", flexDirection: "column", gap: 10,
-                }}>
-                  {STEPS.map((s, di) => (
-                    <div key={di} style={{
-                      width: 7, height: di === i ? 24 : 7,
-                      borderRadius: 4,
-                      background: di === i ? s.color : "rgba(255,255,255,0.2)",
-                      transition: "all 0.4s ease",
-                    }} />
-                  ))}
-                </div>
-
-                {/* Panel counter bottom-left */}
-                <div style={{
-                  position: "absolute", bottom: "8%", left: "clamp(32px, 7vw, 120px)",
-                  fontFamily: "monospace", fontSize: 11,
-                  color: "rgba(255,255,255,0.2)", letterSpacing: "0.15em",
-                }}>
-                  {step.num} — {step.label}
+              <div className="s5-content"
+                style={{
+                  maxWidth:680, opacity:i === 0 ? "1" : "0",
+                  transform: i === 0 ? "translateX(0)" : "translateX(64px)",
+                }}
+              >
+                <p style={{ fontFamily:"monospace", fontWeight:700, fontSize:"clamp(10px,1.1vw,13px)", color:step.color, letterSpacing:".2em", margin:"0 0 10px", textTransform:"uppercase" }}>
+                  Step {step.num} / {STEPS.length}
+                </p>
+                <h3 style={{ fontFamily:"monospace", fontWeight:900, fontSize:"clamp(44px,8.5vw,112px)", color:"#f0ede6", margin:"0 0 6px", lineHeight:.9, letterSpacing:"-.02em" }}>
+                  {step.label}
+                </h3>
+                <p style={{ fontFamily:"Georgia,serif", fontStyle:"italic", fontSize:"clamp(14px,1.7vw,22px)", color:step.color, margin:"0 0 20px" }}>
+                  {step.sub}
+                </p>
+                <div className="s5-divider" style={{ height:2, background:step.color, borderRadius:1, marginBottom:20, width: i === 0 ? "clamp(40px,5vw,70px)" : 0 }} />
+                <p style={{ fontFamily:"Georgia,serif", fontSize:"clamp(14px,1.35vw,18px)", color:"rgba(240,237,230,.7)", lineHeight:1.72, margin:"0 0 24px", maxWidth:500 }}>
+                  {step.body}
+                </p>
+                <div style={{ display:"flex", flexWrap:"wrap", gap:8 }}>
+                  {step.tags.map(t => <span key={t} className="s5-tag">{t}</span>)}
                 </div>
               </div>
-            );
-          })}
+
+              {/* Step dots nav */}
+              <div style={{ position:"absolute", right:"clamp(24px,4vw,56px)", top:"50%", transform:"translateY(-50%)", display:"flex", flexDirection:"column", gap:10 }}>
+                {STEPS.map((s, di) => (
+                  <div key={di} style={{ width:7, height: di === i ? 22 : 7, borderRadius:4, background: di === i ? s.color : "rgba(255,255,255,.18)", transition:"all .4s ease" }} />
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
 
-        {/* Global scroll progress bar */}
-        <div style={{
-          position: "absolute", bottom: 0, left: 0,
-          height: 2, background: "rgba(255,255,255,0.08)",
-          width: "100%", zIndex: 10,
-        }}>
-          <div style={{
-            height: "100%",
-            background: STEPS[Math.max(0, activePanel - 1)]?.color ?? "#f0ede6",
-            width: `${progress * 100}%`,
-            transition: "width 0.1s linear, background 0.4s ease",
-          }} />
+        {/* Progress bar */}
+        <div style={{ position:"absolute", bottom:0, left:0, right:0, height:2, background:"rgba(255,255,255,.07)", zIndex:10 }}>
+          <div ref={barRef} style={{ height:"100%", background:"#E63329", width:"0%", transition:"background .4s ease" }} />
         </div>
       </div>
     </div>
