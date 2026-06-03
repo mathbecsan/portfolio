@@ -427,13 +427,13 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
           </p>
         </div>
 
-        {/* Bottom Bauhaus strip — mirrored */}
+        {/* Bottom Bauhaus strip */}
         <div style={{
           height: "clamp(100px, 13vw, 170px)",
-          backgroundImage: "url('/bauhaus-2.svg')",
+          backgroundImage: "url('/bauhaus-pattern.svg')",
           backgroundSize: "cover",
-          backgroundPosition: "center bottom",
-          transform: "scaleX(-1)",
+          backgroundPosition: "center top",
+          transform: "scaleY(-1)",
         }} />
       </section>
 
