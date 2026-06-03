@@ -1,24 +1,24 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import * as THREE from "three";
 
 const STEPS = [
   {
     num: "01", label: "DISCOVER",  sub: "Research & Empathize",
-    body: "Understand users through interviews, observations and contextual inquiry. Map pain points and surface hidden needs.",
+    body: "Understand users through interviews, contextual inquiry and observation. Map pain points and surface hidden needs.",
     color: "#E63329", hex: 0xE63329,
     tags: ["User Interviews", "Field Research", "Affinity Maps"],
   },
   {
     num: "02", label: "DEFINE",    sub: "Synthesize & Frame",
-    body: "Distill findings into personas, journey maps and a sharp problem statement that gives the whole team direction.",
+    body: "Distill findings into personas, journey maps and a sharp problem statement that aligns the entire team.",
     color: "#F5C500", hex: 0xF5C500,
     tags: ["Personas", "Journey Maps", "HMW Statements"],
   },
   {
     num: "03", label: "IDEATE",    sub: "Design & Explore",
-    body: "Generate possibilities without judgement. Rapid sketches, Crazy 8s and card-sorting surface the strongest directions.",
+    body: "Generate possibilities without judgement. Rapid sketches and Crazy 8s surface the strongest creative directions.",
     color: "#1B3F8B", hex: 0x1B3F8B,
     tags: ["Sketching", "Crazy 8s", "Storyboards"],
   },
@@ -30,19 +30,22 @@ const STEPS = [
   },
 ];
 
-// panels: 0 = intro, 1-4 = steps
-const PANELS = STEPS.length + 1;
-// scroll space: PANELS × 100vh
-const SCROLL_VH = PANELS * 100;
+const PANELS = STEPS.length + 1; // intro + 4 steps
 
 export default function FifthScreen() {
-  const wrapRef   = useRef<HTMLDivElement>(null);
-  const stickyRef = useRef<HTMLDivElement>(null);
+  const outerRef  = useRef<HTMLDivElement>(null);  // placeholder for layout space
+  const fixedRef  = useRef<HTMLDivElement>(null);  // fixed overlay while hijacking
   const trackRef  = useRef<HTMLDivElement>(null);
   const bgRef     = useRef<HTMLDivElement>(null);
   const barRef    = useRef<HTMLDivElement>(null);
+  const stateRef  = useRef({
+    active: false,       // are we currently hijacking scroll?
+    offset: 0,           // horizontal px offset so far
+    maxOffset: 0,        // (PANELS-1) * vw
+    lastPanel: -1,
+  });
 
-  // ── Three.js single shared background ─────────────────────
+  // ── 1. One shared Three.js fluid background ─────────────────
   useEffect(() => {
     const mount = bgRef.current;
     if (!mount) return;
@@ -57,85 +60,74 @@ export default function FifthScreen() {
     const scene  = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, W / H, 0.1, 100);
     camera.position.z = 7;
-    scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 
-    // ── Ribbon field ───────────────────────────────────────
-    const RIBBONS = 22;
-    type Ribbon = { line: THREE.Line; phase: number; speed: number; amp: number; yBase: number };
-    const ribbons: Ribbon[] = [];
-
+    // Ribbon waves
+    const RIBBONS = 24;
+    type Rib = { line: THREE.Line; phase: number; speed: number; amp: number; yBase: number };
+    const ribbons: Rib[] = [];
     for (let r = 0; r < RIBBONS; r++) {
       const pts: THREE.Vector3[] = [];
-      const segs = 100;
-      const yBase = (r / RIBBONS - 0.5) * 10;
-      for (let s = 0; s <= segs; s++)
-        pts.push(new THREE.Vector3((s / segs - 0.5) * 18, yBase, 0));
+      const yBase = (r / RIBBONS - 0.5) * 11;
+      for (let s = 0; s <= 120; s++) pts.push(new THREE.Vector3((s / 120 - 0.5) * 20, yBase, 0));
       const geo = new THREE.BufferGeometry().setFromPoints(pts);
-      const mat = new THREE.LineBasicMaterial({ color: 0xE63329, transparent: true, opacity: 0.08 + (r % 4) * 0.04 });
+      const mat = new THREE.LineBasicMaterial({ color: 0xE63329, transparent: true, opacity: 0.06 + (r % 4) * 0.04 });
       const line = new THREE.Line(geo, mat);
       scene.add(line);
-      ribbons.push({ line, phase: r * 0.42, speed: 0.25 + (r % 5) * 0.1, amp: 0.25 + (r % 4) * 0.14, yBase });
+      ribbons.push({ line, phase: r * 0.44, speed: 0.22 + (r % 6) * 0.1, amp: 0.22 + (r % 5) * 0.15, yBase });
     }
 
-    // ── Particle cloud ─────────────────────────────────────
-    const N = 100;
+    // Particles
+    const N = 120;
     const pArr = new Float32Array(N * 3);
-    const pVel = new Float32Array(N * 3);
+    const pVel = new Float32Array(N * 2);
     for (let i = 0; i < N; i++) {
-      pArr[i*3]   = (Math.random()-0.5)*18; pArr[i*3+1] = (Math.random()-0.5)*11; pArr[i*3+2] = (Math.random()-0.5)*4;
-      pVel[i*3]   = (Math.random()-0.5)*0.005; pVel[i*3+1] = (Math.random()-0.5)*0.005;
+      pArr[i*3]=(Math.random()-.5)*20; pArr[i*3+1]=(Math.random()-.5)*12; pArr[i*3+2]=(Math.random()-.5)*4;
+      pVel[i*2]=(Math.random()-.5)*0.006; pVel[i*2+1]=(Math.random()-.5)*0.006;
     }
     const pGeo = new THREE.BufferGeometry();
     pGeo.setAttribute("position", new THREE.BufferAttribute(pArr, 3));
-    const pMat = new THREE.PointsMaterial({ color: 0xE63329, size: 0.06, transparent: true, opacity: 0.55 });
-    const pts3d = new THREE.Points(pGeo, pMat);
-    scene.add(pts3d);
+    const pMat = new THREE.PointsMaterial({ color: 0xE63329, size: 0.055, transparent: true, opacity: 0.5 });
+    scene.add(new THREE.Points(pGeo, pMat));
 
-    // target color for smooth transitions
-    let targetR = 0xE6/255, targetG = 0x33/255, targetB = 0x29/255;
-    let curR    = targetR,  curG    = targetG,  curB    = targetB;
+    // Color targets
+    let tR = 0xE6/255, tG = 0x33/255, tB = 0x29/255;
+    let cR = tR, cG = tG, cB = tB;
 
-    // exposed so scroll handler can update
-    (window as any).__s5SetColor = (hex: number) => {
-      targetR = ((hex >> 16) & 255) / 255;
-      targetG = ((hex >>  8) & 255) / 255;
-      targetB = ( hex        & 255) / 255;
+    // Expose color setter
+    (window as any).__s5color = (hex: number) => {
+      tR = ((hex >> 16) & 255) / 255;
+      tG = ((hex >>  8) & 255) / 255;
+      tB = ( hex        & 255) / 255;
     };
 
     let t = 0, raf = 0;
-    const animate = () => {
-      raf = requestAnimationFrame(animate);
-      t += 0.010;
-
+    const tick = () => {
+      raf = requestAnimationFrame(tick);
+      t += 0.009;
       // Lerp color
-      curR += (targetR - curR) * 0.035;
-      curG += (targetG - curG) * 0.035;
-      curB += (targetB - curB) * 0.035;
-      const col = new THREE.Color(curR, curG, curB);
+      cR += (tR - cR) * 0.04; cG += (tG - cG) * 0.04; cB += (tB - cB) * 0.04;
+      const col = new THREE.Color(cR, cG, cB);
       pMat.color.copy(col);
       ribbons.forEach(({ line }) => (line.material as THREE.LineBasicMaterial).color.copy(col));
 
-      // Animate ribbons
       ribbons.forEach(({ line, phase, speed, amp, yBase }) => {
         const arr = line.geometry.attributes.position.array as Float32Array;
-        for (let s = 0; s <= 100; s++) {
+        for (let s = 0; s <= 120; s++) {
           arr[s*3+1] = yBase
-            + amp * Math.sin(arr[s*3] * 0.35 + t * speed + phase)
-            + amp * 0.45 * Math.sin(arr[s*3] * 0.7 + t * speed * 1.6 + phase * 1.8);
+            + amp * Math.sin(arr[s*3] * 0.32 + t * speed + phase)
+            + amp * 0.5 * Math.sin(arr[s*3] * 0.66 + t * speed * 1.5 + phase * 2);
         }
         line.geometry.attributes.position.needsUpdate = true;
       });
 
-      // Move particles
       for (let i = 0; i < N; i++) {
-        pArr[i*3]   += pVel[i*3];   if (Math.abs(pArr[i*3])   > 9)   pVel[i*3]   *= -1;
-        pArr[i*3+1] += pVel[i*3+1]; if (Math.abs(pArr[i*3+1]) > 5.5) pVel[i*3+1] *= -1;
+        pArr[i*3]   += pVel[i*2];   if (Math.abs(pArr[i*3])   > 10)  pVel[i*2]   *= -1;
+        pArr[i*3+1] += pVel[i*2+1]; if (Math.abs(pArr[i*3+1]) > 6)   pVel[i*2+1] *= -1;
       }
       pGeo.attributes.position.needsUpdate = true;
-
       renderer.render(scene, camera);
     };
-    animate();
+    tick();
 
     const onResize = () => {
       const w = mount.clientWidth, h = mount.clientHeight;
@@ -146,158 +138,239 @@ export default function FifthScreen() {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", onResize);
-      delete (window as any).__s5SetColor;
+      delete (window as any).__s5color;
       renderer.dispose();
       if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);
     };
   }, []);
 
-  // ── Scroll → horizontal translation (direct DOM) ───────────
+  // ── Helper: update visuals for a given progress (0→1) ───────
+  const applyProgress = useCallback((progress: number) => {
+    const track = trackRef.current;
+    const bar   = barRef.current;
+    const s     = stateRef.current;
+    if (!track || !bar) return;
+
+    const panelF = progress * (PANELS - 1);
+    const panel  = Math.min(Math.floor(panelF), PANELS - 1);
+
+    // Move horizontal track
+    track.style.transform = `translateX(${-panelF * 100}vw)`;
+
+    // Progress bar
+    bar.style.width = `${progress * 100}%`;
+
+    // Active panel color + panel content visibility
+    if (panel !== s.lastPanel) {
+      s.lastPanel = panel;
+      const step = STEPS[panel - 1];
+      if ((window as any).__s5color) {
+        if (step) (window as any).__s5color(step.hex);
+        else (window as any).__s5color(0xf0ede6);
+      }
+      // Update progress bar color
+      if (bar && step) bar.style.background = step.color;
+
+      // Fade panels in/out
+      track.querySelectorAll<HTMLElement>(".s5p").forEach((el, i) => {
+        const isActive = i === panel;
+        const isPast   = i < panel;
+        el.style.opacity = isActive ? "1" : isPast ? "0.3" : "0.12";
+        const content = el.querySelector<HTMLElement>(".s5c");
+        if (content) {
+          content.style.opacity   = isActive ? "1"  : isPast ? "0.3" : "0";
+          content.style.transform = isActive ? "translateX(0)" : isPast ? "translateX(-52px)" : "translateX(68px)";
+        }
+      });
+    }
+  }, []);
+
+  // ── 2. Scroll-hijack via wheel events ────────────────────────
   useEffect(() => {
-    const wrap   = wrapRef.current;
-    const track  = trackRef.current;
-    const bar    = barRef.current;
-    if (!wrap || !track || !bar) return;
+    const outer   = outerRef.current;
+    const fixed   = fixedRef.current;
+    if (!outer || !fixed) return;
 
-    let lastPanel = -1;
+    const s = stateRef.current;
 
-    const onScroll = () => {
-      const rect  = wrap.getBoundingClientRect();
-      const total = wrap.offsetHeight - window.innerHeight;
-      if (total <= 0) return;
+    const engage = () => {
+      if (s.active) return;
+      s.active = true;
+      s.maxOffset = (PANELS - 1) * window.innerWidth;
+      // Show fixed overlay aligned with outer placeholder
+      fixed.style.display = "block";
+      // Freeze body scroll at outer's position
+      document.body.style.overflow = "hidden";
+    };
 
-      const progress = Math.max(0, Math.min(1, -rect.top / total));
-      const panelF   = progress * (PANELS - 1);  // 0 → 4
-      const panel    = Math.min(Math.floor(panelF), PANELS - 1);
-
-      // Move track horizontally
-      track.style.transform = `translateX(${-panelF * 100}vw)`;
-
-      // Update progress bar
-      bar.style.width = `${progress * 100}%`;
-
-      // Update Three.js color when panel changes
-      if (panel !== lastPanel) {
-        lastPanel = panel;
-        const step = STEPS[panel - 1];
-        if (step && (window as any).__s5SetColor) (window as any).__s5SetColor(step.hex);
-        else if (panel === 0 && (window as any).__s5SetColor) (window as any).__s5SetColor(0xf0ede6);
-
-        // Highlight active step panel
-        track.querySelectorAll<HTMLElement>(".s5-panel").forEach((el, i) => {
-          if (i === 0) return; // skip intro
-          const active = i === panel;
-          const past   = i < panel;
-          el.style.opacity = active ? "1" : past ? "0.35" : "0.18";
-          (el.querySelector(".s5-content") as HTMLElement | null)?.style &&
-            Object.assign((el.querySelector(".s5-content") as HTMLElement).style, {
-              opacity:   active ? "1"             : past ? "0.4" : "0",
-              transform: active ? "translateX(0)" : past ? "translateX(-48px)" : "translateX(64px)",
-            });
-        });
+    const disengage = (scrollToTop = false) => {
+      if (!s.active) return;
+      s.active = false;
+      fixed.style.display = "none";
+      document.body.style.overflow = "";
+      if (scrollToTop) {
+        // jump body scroll to just ABOVE outer so normal scroll resumes
+        window.scrollTo({ top: outer.getBoundingClientRect().top + window.scrollY - 4 });
+      } else {
+        // jump body scroll to just BELOW outer
+        window.scrollTo({ top: outer.getBoundingClientRect().bottom + window.scrollY + 4 });
       }
     };
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll(); // init
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    const onWheel = (e: WheelEvent) => {
+      const rect = outer.getBoundingClientRect();
+      const inZone = rect.top <= 30 && rect.top >= -30;
+
+      // Snap into hijack when entering from above
+      if (!s.active && e.deltaY > 0 && rect.top > -60 && rect.top < window.innerHeight * 0.5) {
+        window.scrollTo({ top: outer.getBoundingClientRect().top + window.scrollY });
+        engage();
+      }
+
+      if (!s.active) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const delta = e.deltaY * 2.2;
+      const next  = Math.max(0, Math.min(s.maxOffset, s.offset + delta));
+
+      if (delta < 0 && s.offset <= 0) {
+        // Scroll back up past section
+        disengage(true);
+        return;
+      }
+      if (delta > 0 && s.offset >= s.maxOffset) {
+        // Scroll forward past section
+        disengage(false);
+        return;
+      }
+
+      s.offset = next;
+      applyProgress(s.offset / s.maxOffset);
+    };
+
+    // Touch support
+    let touchY = 0;
+    const onTouchStart = (e: TouchEvent) => { touchY = e.touches[0].clientY; };
+    const onTouchMove  = (e: TouchEvent) => {
+      if (!s.active) return;
+      e.preventDefault();
+      const dy = touchY - e.touches[0].clientY;
+      touchY = e.touches[0].clientY;
+      const next = Math.max(0, Math.min(s.maxOffset, s.offset + dy * 2.5));
+      if (dy < 0 && s.offset <= 0)    { disengage(true);  return; }
+      if (dy > 0 && s.offset >= s.maxOffset) { disengage(false); return; }
+      s.offset = next;
+      applyProgress(s.offset / s.maxOffset);
+    };
+
+    document.addEventListener("wheel",      onWheel,      { passive: false, capture: true });
+    document.addEventListener("touchstart", onTouchStart, { passive: true  });
+    document.addEventListener("touchmove",  onTouchMove,  { passive: false });
+
+    return () => {
+      document.removeEventListener("wheel",      onWheel,      true);
+      document.removeEventListener("touchstart", onTouchStart);
+      document.removeEventListener("touchmove",  onTouchMove);
+      document.body.style.overflow = "";
+    };
+  }, [applyProgress]);
 
   return (
-    <div ref={wrapRef} style={{ height: `${SCROLL_VH}vh`, position: "relative" }}>
-      <style>{`
-        .s5-content { transition: opacity 0.5s cubic-bezier(0.22,1,0.36,1), transform 0.5s cubic-bezier(0.22,1,0.36,1); }
-        .s5-tag { font-family:monospace; font-size:clamp(9px,.85vw,11px); letter-spacing:.1em; color:rgba(240,237,230,.5); border:1px solid rgba(240,237,230,.2); padding:4px 10px; border-radius:3px; white-space:nowrap; }
-        .s5-divider { transition: width .7s cubic-bezier(0.22,1,0.36,1) .15s; }
-      `}</style>
+    <>
+      {/* Placeholder that triggers the hijack */}
+      <div ref={outerRef} style={{ height: "100vh", background: "#080808" }} />
 
-      {/* ── Sticky viewport ── */}
-      <div ref={stickyRef} style={{ position:"sticky", top:0, height:"100vh", overflow:"hidden", background:"#080808" }}>
+      {/* Fixed overlay — shown only while hijack is active */}
+      <div ref={fixedRef} style={{
+        display: "none",
+        position: "fixed", inset: 0, zIndex: 999,
+        background: "#080808", overflow: "hidden",
+      }}>
+        <style>{`
+          .s5c { transition: opacity .45s cubic-bezier(.22,1,.36,1), transform .45s cubic-bezier(.22,1,.36,1); }
+          .s5-tag { font-family:monospace; font-size:clamp(9px,.85vw,11px); letter-spacing:.1em; color:rgba(240,237,230,.45); border:1px solid rgba(240,237,230,.18); padding:3px 10px; border-radius:3px; white-space:nowrap; }
+        `}</style>
 
-        {/* One shared Three.js background */}
+        {/* Three.js fluid background */}
         <div ref={bgRef} style={{ position:"absolute", inset:0, zIndex:0 }} />
 
         {/* Horizontal track */}
         <div ref={trackRef}
           style={{
-            display:"flex", width:`${PANELS * 100}vw`, height:"100%",
-            position:"relative", zIndex:1,
-            transition:"transform 0.04s linear", willChange:"transform",
+            position:"absolute", inset:0,
+            display:"flex", width:`${PANELS * 100}vw`,
+            transform:"translateX(0)", willChange:"transform",
+            zIndex:1,
           }}
         >
           {/* ── Panel 0: Intro ── */}
-          <div className="s5-panel" style={{ width:"100vw", height:"100%", flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", gap:0 }}>
-            <p style={{ fontFamily:"monospace", fontSize:"clamp(10px,1vw,12px)", letterSpacing:".26em", color:"rgba(240,237,230,.3)", textTransform:"uppercase", margin:"0 0 16px" }}>
-              UX Research & Design
-            </p>
-            <h2 style={{ fontFamily:"monospace", fontWeight:900, fontSize:"clamp(48px,9vw,120px)", color:"#f0ede6", margin:0, letterSpacing:"-.02em", lineHeight:.92, textAlign:"center" }}>
-              THE<br/>PROCESS
-            </h2>
-            <p style={{ fontFamily:"monospace", fontSize:"clamp(9px,.9vw,12px)", letterSpacing:".22em", color:"rgba(240,237,230,.25)", margin:"36px 0 0", textTransform:"uppercase" }}>
-              Scroll to reveal ↓
-            </p>
-            {/* Step pills */}
-            <div style={{ display:"flex", gap:16, marginTop:48 }}>
-              {STEPS.map(s => (
-                <span key={s.num} style={{ fontFamily:"monospace", fontSize:11, color:s.color, letterSpacing:".1em", borderBottom:`2px solid ${s.color}`, paddingBottom:3 }}>
-                  {s.num} {s.label}
-                </span>
-              ))}
+          <div className="s5p" style={{ width:"100vw", height:"100vh", flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", opacity:1 }}>
+            <div className="s5c" style={{ textAlign:"center", opacity:1, transform:"translateX(0)" }}>
+              <p style={{ fontFamily:"monospace", fontSize:"clamp(9px,.9vw,12px)", letterSpacing:".28em", color:"rgba(240,237,230,.3)", textTransform:"uppercase", margin:"0 0 14px" }}>
+                UX Research & Design
+              </p>
+              <h2 style={{ fontFamily:"monospace", fontWeight:900, fontSize:"clamp(52px,9.5vw,128px)", color:"#f0ede6", margin:0, letterSpacing:"-.02em", lineHeight:.88 }}>
+                THE<br/>PROCESS
+              </h2>
+              <p style={{ fontFamily:"monospace", fontSize:"clamp(9px,.85vw,11px)", letterSpacing:".24em", color:"rgba(240,237,230,.22)", margin:"32px 0 0", textTransform:"uppercase" }}>
+                Scroll to reveal ↓
+              </p>
+              <div style={{ display:"flex", gap:20, marginTop:44, justifyContent:"center" }}>
+                {STEPS.map(s => (
+                  <span key={s.num} style={{ fontFamily:"monospace", fontSize:10, color:s.color, letterSpacing:".12em", borderBottom:`2px solid ${s.color}`, paddingBottom:2 }}>
+                    {s.num} {s.label}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* ── Panels 1-4: Steps ── */}
+          {/* ── Panels 1-4 ── */}
           {STEPS.map((step, i) => (
-            <div key={step.num} className="s5-panel"
-              style={{
-                width:"100vw", height:"100%", flexShrink:0,
-                display:"flex", alignItems:"center",
-                padding:"0 clamp(40px,8vw,130px)",
-                opacity: i === 0 ? "1" : "0.18",
-              }}
+            <div key={step.num} className="s5p"
+              style={{ width:"100vw", height:"100vh", flexShrink:0, display:"flex", alignItems:"center", padding:"0 clamp(40px,8vw,130px)", position:"relative", opacity:"0.12" }}
             >
-              {/* Left accent */}
+              {/* Colored left bar */}
               <div style={{ position:"absolute", left:0, top:"12%", bottom:"12%", width:3, background:step.color, borderRadius:2 }} />
 
-              <div className="s5-content"
-                style={{
-                  maxWidth:680, opacity:i === 0 ? "1" : "0",
-                  transform: i === 0 ? "translateX(0)" : "translateX(64px)",
-                }}
+              <div className="s5c"
+                style={{ maxWidth:680, opacity:"0", transform:"translateX(68px)" }}
               >
                 <p style={{ fontFamily:"monospace", fontWeight:700, fontSize:"clamp(10px,1.1vw,13px)", color:step.color, letterSpacing:".2em", margin:"0 0 10px", textTransform:"uppercase" }}>
                   Step {step.num} / {STEPS.length}
                 </p>
-                <h3 style={{ fontFamily:"monospace", fontWeight:900, fontSize:"clamp(44px,8.5vw,112px)", color:"#f0ede6", margin:"0 0 6px", lineHeight:.9, letterSpacing:"-.02em" }}>
+                <h3 style={{ fontFamily:"monospace", fontWeight:900, fontSize:"clamp(46px,9vw,118px)", color:"#f0ede6", margin:"0 0 4px", lineHeight:.88, letterSpacing:"-.02em" }}>
                   {step.label}
                 </h3>
-                <p style={{ fontFamily:"Georgia,serif", fontStyle:"italic", fontSize:"clamp(14px,1.7vw,22px)", color:step.color, margin:"0 0 20px" }}>
+                <p style={{ fontFamily:"Georgia,serif", fontStyle:"italic", fontSize:"clamp(14px,1.8vw,23px)", color:step.color, margin:"0 0 18px" }}>
                   {step.sub}
                 </p>
-                <div className="s5-divider" style={{ height:2, background:step.color, borderRadius:1, marginBottom:20, width: i === 0 ? "clamp(40px,5vw,70px)" : 0 }} />
-                <p style={{ fontFamily:"Georgia,serif", fontSize:"clamp(14px,1.35vw,18px)", color:"rgba(240,237,230,.7)", lineHeight:1.72, margin:"0 0 24px", maxWidth:500 }}>
+                <div style={{ width:"clamp(36px,4.5vw,60px)", height:2, background:step.color, borderRadius:1, marginBottom:18 }} />
+                <p style={{ fontFamily:"Georgia,serif", fontSize:"clamp(14px,1.3vw,18px)", color:"rgba(240,237,230,.68)", lineHeight:1.72, margin:"0 0 22px", maxWidth:500 }}>
                   {step.body}
                 </p>
                 <div style={{ display:"flex", flexWrap:"wrap", gap:8 }}>
-                  {step.tags.map(t => <span key={t} className="s5-tag">{t}</span>)}
+                  {step.tags.map(tag => <span key={tag} className="s5-tag">{tag}</span>)}
                 </div>
               </div>
 
-              {/* Step dots nav */}
+              {/* Dot nav */}
               <div style={{ position:"absolute", right:"clamp(24px,4vw,56px)", top:"50%", transform:"translateY(-50%)", display:"flex", flexDirection:"column", gap:10 }}>
-                {STEPS.map((s, di) => (
-                  <div key={di} style={{ width:7, height: di === i ? 22 : 7, borderRadius:4, background: di === i ? s.color : "rgba(255,255,255,.18)", transition:"all .4s ease" }} />
+                {STEPS.map((s2, di) => (
+                  <div key={di} style={{ width:6, height: di===i ? 22 : 6, borderRadius:4, background: di===i ? s2.color : "rgba(255,255,255,.18)", transition:"all .4s ease" }} />
                 ))}
               </div>
             </div>
           ))}
         </div>
 
-        {/* Progress bar */}
-        <div style={{ position:"absolute", bottom:0, left:0, right:0, height:2, background:"rgba(255,255,255,.07)", zIndex:10 }}>
-          <div ref={barRef} style={{ height:"100%", background:"#E63329", width:"0%", transition:"background .4s ease" }} />
+        {/* Bottom progress bar */}
+        <div style={{ position:"absolute", bottom:0, left:0, right:0, height:2, background:"rgba(255,255,255,.06)", zIndex:10 }}>
+          <div ref={barRef} style={{ height:"100%", width:"0%", background:"#E63329", transition:"background .4s ease" }} />
         </div>
       </div>
-    </div>
+    </>
   );
 }
