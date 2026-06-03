@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type RefObject } from "react";
 import * as THREE from "three";
+import ThirdScreen from "./ThirdScreen";
 
 const NAV = ["Home", "About", "Process", "Impact"];
 
@@ -294,6 +295,8 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
             style={{ width: "clamp(110px, 18vw, 280px)", height: "auto", display: "block" }} />
         </div>
       </section>
+
+      <ThirdScreen />
     </div>
   );
 }
