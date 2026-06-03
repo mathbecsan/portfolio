@@ -525,26 +525,28 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
           }}
         />
 
-        {/* ② Portrait + text — flex row, both centered together */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "stretch",
-            gap: "clamp(16px, 2vw, 32px)",
-            padding: "clamp(20px, 3vw, 40px) clamp(32px, 5vw, 80px)",
-            minHeight: "clamp(320px, 42vw, 560px)",
-          }}
-        >
-          {/* Text — centered column */}
+        {/* ② Portrait + text — photo fills full height touching both strips */}
+        <div style={{ position: "relative", minHeight: "clamp(360px, 48vw, 640px)" }}>
+
+          {/* Photo — position absolute, full height right 45% */}
+          <div style={{
+            position: "absolute", top: 0, right: 0, bottom: 0, width: "45%",
+            overflow: "hidden",
+            animation: posterVisible ? "fadeRight 0.6s ease 0.1s both" : "none",
+          }}>
+            <img src="/profile-picture.png" alt="Mathias Becerra"
+              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 8%", display: "block" }} />
+          </div>
+
+          {/* Text — left 58%, vertically centered */}
           <div
             style={{
-              flex: "0 0 auto",
-              width: "clamp(240px, 38vw, 480px)",
+              position: "absolute", top: 0, left: 0, bottom: 0, width: "58%",
+              padding: "clamp(24px, 3vw, 48px) clamp(32px, 5vw, 80px)",
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
-              gap: "clamp(8px, 1.2vw, 16px)",
+              gap: "clamp(10px, 1.4vw, 20px)",
               animation: posterVisible
                 ? "fadeLeft 0.6s ease 0.05s both"
                 : "none",
@@ -620,30 +622,6 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
             </p>
           </div>
 
-          {/* Photo — centered, same height as text column */}
-          <div
-            style={{
-              flex: "0 0 auto",
-              width: "clamp(220px, 36vw, 460px)",
-              overflow: "hidden",
-              borderRadius: "clamp(4px, 0.5vw, 8px)",
-              animation: posterVisible
-                ? "fadeRight 0.6s ease 0.1s both"
-                : "none",
-            }}
-          >
-            <img
-              src="/profile-picture.png"
-              alt="Mathias Becerra"
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                objectPosition: "50% 8%",
-                display: "block",
-              }}
-            />
-          </div>
         </div>
 
         {/* ③ Bottom Bauhaus strip — different pattern */}
