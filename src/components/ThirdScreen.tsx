@@ -47,29 +47,44 @@ export default function ThirdScreen() {
           />
         </div>
 
-        {/* ── HCI logo — inline after "HCI" text ── */}
+        {/* ── HCI logo — right after "HCI" text ── */}
         <img
           src="/screen3/hci-logo.svg"
           alt="HCI"
           style={{
             position: "absolute",
-            left:   "54.2%",
-            top:    "33.5%",
-            width:  "1.3%",
+            left:   "54.0%",
+            top:    "33.2%",
+            width:  "2.0%",
             height: "auto",
             zIndex: 2,
           }}
         />
 
-        {/* ── HAI logo — inline after "/" ── */}
+        {/* ── HAI logo — right after "/" ── */}
         <img
           src="/screen3/hai-logo.svg"
           alt="HAI"
           style={{
             position: "absolute",
-            left:   "58.8%",
-            top:    "33.5%",
-            width:  "1.3%",
+            left:   "58.2%",
+            top:    "33.2%",
+            width:  "2.0%",
+            height: "auto",
+            zIndex: 2,
+          }}
+        />
+
+        {/* ── Stanford S logo — far right of content area ── */}
+        {/* App.svg 2849×1677: Stanford S is in top-right, x≈82%, y≈14% */}
+        <img
+          src="/screen3/image-136.svg"
+          alt="Stanford University"
+          style={{
+            position: "absolute",
+            right:  "2%",
+            top:    "14%",
+            width:  "9%",
             height: "auto",
             zIndex: 2,
           }}
