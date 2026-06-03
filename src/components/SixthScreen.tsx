@@ -1,96 +1,48 @@
 "use client";
 
-// ── Products grid ─────────────────────────────────────────────
-const PRODUCTS = [
-  { name: "GAMES",              sub: "Mobile & 3D",                 count: "2",   bg: "#E63329", icon: "🎮" },
-  { name: "MOBILE APPS",        sub: "iOS/Android",                 count: "4",   bg: "#111111", icon: "📱" },
-  { name: "WEB",                sub: "Websites & Platforms",        count: "6",   bg: "#F5C500", icon: "🌐" },
-  { name: "FILMAKING",          sub: "Short Videoclips & movies",   count: "1",   bg: "#1B3F8B", icon: "🎬" },
-  { name: "3D MODELING",        sub: "Games, Digital Pieces",       count: "3",   bg: "#E63329", icon: "📦" },
-  { name: "GRAPHIC DESIGN",     sub: "Cartoons, Styles",            count: "10",  bg: "#111111", icon: "✏️" },
-  { name: "MUSIC PRODUCTION",   sub: "Digital songs & soundtracks", count: "3",   bg: "#F5C500", icon: "🎵" },
-  { name: "RESEARCH",           sub: "Posters & Papers",            count: "7",   bg: "#1B3F8B", icon: "🔬" },
-  { name: "ART SKETCHES",       sub: "Storyboards, UIs",            count: "3",   bg: "#E63329", icon: "🎨" },
-  { name: "UX/UI IMPLEMENTATION",sub: "Figma Screen Workflows",     count: "4",   bg: "#111111", icon: "⚡" },
-  { name: "ELECTRONICS",        sub: "Robots, Devices & Prototypes",count: "1",   bg: "#F5C500", icon: "🔌" },
-  { name: "MISCELLANEOUS",      sub: "MVPs",                        count: "10+", bg: "#1B3F8B", icon: "📁" },
-];
+// ── Products grid: original SVG + number overlays ─────────────
+// SVG is 1277×802. Cards start after header (~22% from top).
+// Row 1 numbers at ~56% of SVG height; Row 2 at ~93%.
+// 6 equal columns: centers at 8.3%, 25%, 41.7%, 58.3%, 75%, 91.7%.
+const COUNTS = ["2","4","6","1","3","10","3","7","3","4","1","10+"];
 
 function ProductsGrid() {
-  return (
-    <div style={{ background: "#F2EFE4", padding: "clamp(24px, 4vw, 48px) clamp(16px, 3vw, 32px)" }}>
-      {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: "clamp(20px, 3vw, 36px)" }}>
-        <div style={{
-          width: "clamp(44px, 5vw, 64px)", height: "clamp(44px, 5vw, 64px)",
-          borderRadius: "50%", border: "3px solid #1B3F8B",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          background: "#fff", flexShrink: 0,
-        }}>
-          <div style={{ width: "50%", height: "50%", background: "#E63329", borderRadius: "50%" }} />
-        </div>
-        <h3 style={{
-          fontFamily: "monospace", fontWeight: 900,
-          fontSize: "clamp(22px, 4vw, 48px)",
-          color: "#0d0d0d", margin: 0, letterSpacing: ".02em",
-        }}>PRODUCTS</h3>
-        {/* Color bar */}
-        <div style={{ display: "flex", gap: 3, marginLeft: 8 }}>
-          {["#E63329","#111","#F5C500","#1B3F8B","#E63329","#111","#F5C500","#1B3F8B"].map((c,i) => (
-            <div key={i} style={{ width: 10, height: 10, borderRadius: "50%", background: c }} />
-          ))}
-        </div>
-      </div>
+  // 6 columns × 2 rows
+  const xCenters = [8.33, 25, 41.67, 58.33, 75, 91.67];
+  const yRows    = [56, 93]; // % of SVG height
 
-      {/* Grid */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(6, 1fr)",
-        gap: "clamp(8px, 1.2vw, 16px)",
-      }}>
-        {PRODUCTS.map(p => (
-          <div key={p.name} style={{
-            background: p.bg,
-            borderRadius: 4,
-            padding: "clamp(10px, 1.5vw, 20px) clamp(8px, 1.2vw, 16px)",
-            display: "flex", flexDirection: "column", alignItems: "center",
-            gap: "clamp(6px, 1vw, 10px)",
-            transition: "transform .2s ease, box-shadow .2s ease",
-            cursor: "default",
-          }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-4px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 8px 24px rgba(0,0,0,.3)"; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = ""; }}
-          >
-            {/* Icon */}
-            <div style={{ fontSize: "clamp(24px, 3.5vw, 44px)", lineHeight: 1, filter: "drop-shadow(0 2px 4px rgba(0,0,0,.3))" }}>
-              {p.icon}
-            </div>
-            {/* Name */}
-            <p style={{
-              fontFamily: "monospace", fontWeight: 900,
-              fontSize: "clamp(7px, 0.85vw, 11px)",
-              color: "#fff", margin: 0, textAlign: "center",
-              letterSpacing: ".05em", lineHeight: 1.2,
-              textTransform: "uppercase",
-            }}>{p.name}</p>
-            {/* Sub */}
-            <p style={{
-              fontFamily: "monospace",
-              fontSize: "clamp(6px, 0.7vw, 9px)",
-              color: "rgba(255,255,255,.65)", margin: 0,
-              textAlign: "center", lineHeight: 1.3,
-            }}>{p.sub}</p>
-            {/* Count */}
-            <p style={{
-              fontFamily: "monospace", fontWeight: 900,
-              fontSize: "clamp(14px, 2vw, 24px)",
-              color: "#E63329", margin: 0,
-              background: "rgba(255,255,255,.95)",
-              padding: "2px 10px", borderRadius: 3,
-            }}>{p.count}</p>
+  return (
+    <div style={{ position: "relative", lineHeight: 0 }}>
+      <img
+        src="/screen6/third-part__Container.svg"
+        alt="Products"
+        style={{ width: "100%", height: "auto", display: "block" }}
+      />
+      {/* Number overlays */}
+      {COUNTS.map((count, i) => {
+        const col = i % 6;
+        const row = Math.floor(i / 6);
+        return (
+          <div key={i} style={{
+            position: "absolute",
+            left:   `${xCenters[col]}%`,
+            top:    `${yRows[row]}%`,
+            transform: "translate(-50%, -50%)",
+            background: "#fff",
+            color: "#E63329",
+            fontFamily: "monospace",
+            fontWeight: 900,
+            fontSize: "clamp(10px, 1.8vw, 22px)",
+            lineHeight: 1,
+            padding: "2px 8px",
+            borderRadius: 2,
+            pointerEvents: "none",
+            zIndex: 2,
+          }}>
+            {count}
           </div>
-        ))}
-      </div>
+        );
+      })}
     </div>
   );
 }
