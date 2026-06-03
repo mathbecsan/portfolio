@@ -1,52 +1,5 @@
 "use client";
 
-// ── Products grid: original SVG + number overlays ─────────────
-// SVG is 1277×802. Cards start after header (~22% from top).
-// Row 1 numbers at ~56% of SVG height; Row 2 at ~93%.
-// 6 equal columns: centers at 8.3%, 25%, 41.7%, 58.3%, 75%, 91.7%.
-const COUNTS = ["2","4","6","1","3","10","3","7","3","4","1","10+"];
-
-function ProductsGrid() {
-  // 6 columns × 2 rows
-  const xCenters = [8.33, 25, 41.67, 58.33, 75, 91.67];
-  const yRows    = [56, 93]; // % of SVG height
-
-  return (
-    <div style={{ position: "relative", lineHeight: 0 }}>
-      <img
-        src="/screen6/third-part__Container.svg"
-        alt="Products"
-        style={{ width: "100%", height: "auto", display: "block" }}
-      />
-      {/* Number overlays */}
-      {COUNTS.map((count, i) => {
-        const col = i % 6;
-        const row = Math.floor(i / 6);
-        return (
-          <div key={i} style={{
-            position: "absolute",
-            left:   `${xCenters[col]}%`,
-            top:    `${yRows[row]}%`,
-            transform: "translate(-50%, -50%)",
-            background: "#fff",
-            color: "#E63329",
-            fontFamily: "monospace",
-            fontWeight: 900,
-            fontSize: "clamp(10px, 1.8vw, 22px)",
-            lineHeight: 1,
-            padding: "2px 8px",
-            borderRadius: 2,
-            pointerEvents: "none",
-            zIndex: 2,
-          }}>
-            {count}
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
 // ── Screen 6: Metrics of Impact ───────────────────────────────
 // Layout (all parts share 1280px max-width):
 //
@@ -91,8 +44,14 @@ export default function SixthScreen() {
           </div>
         </div>
 
-        {/* ── Part 3: Products grid (coded — accurate counts) ── */}
-        <ProductsGrid />
+        {/* ── Part 3: Products grid ── */}
+        <div>
+          <img
+            src="/screen6/third-part__Container.svg"
+            alt="Products"
+            style={{ width: "100%", height: "auto", display: "block" }}
+          />
+        </div>
 
         {/* ── Part 4: Impact metrics (left) + Process metrics (right) ── */}
         <div style={{ display: "flex" }}>
