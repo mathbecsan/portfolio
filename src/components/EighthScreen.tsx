@@ -52,6 +52,14 @@ export default function EighthScreen() {
         </a>
       </div>
 
+      {/* ── Bauhaus strip between email and LET'S TALK ── */}
+      <div style={{
+        height: "clamp(90px, 12vw, 155px)",
+        backgroundImage: "url('/bauhaus-pattern.svg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center top",
+      }} />
+
       {/* ── LET'S TALK ── */}
       <div style={{ background: "#FFE4B4", position: "relative", overflow: "hidden" }}>
 
