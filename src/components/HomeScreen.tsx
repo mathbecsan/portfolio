@@ -95,10 +95,8 @@ function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
       positions[i*3+1] = y;
       positions[i*3+2] = z;
 
-      // Color based on position (top=blue, sides=red, bottom=yellow)
-      const t = (y / 3.5 + 0.5); // 0..1
-      const idx = Math.min(palette.length - 1, Math.floor(t * palette.length));
-      const col = palette[idx];
+      // Color: pick randomly from palette, guaranteed valid
+      const col = palette[i % palette.length];
       colors[i*3]   = col.r;
       colors[i*3+1] = col.g;
       colors[i*3+2] = col.b;
