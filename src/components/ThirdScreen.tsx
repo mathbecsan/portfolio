@@ -24,7 +24,7 @@ export default function ThirdScreen() {
 
         {/* LEFT — Profile photo */}
         <div style={{
-          flex: "0 0 clamp(240px, 34%, 460px)",
+          flex: "0 0 clamp(160px, 22%, 300px)",
           overflow: "hidden",
           background: "#F5E6C0",
         }}>
@@ -42,7 +42,7 @@ export default function ThirdScreen() {
         {/* RIGHT — Academic info */}
         <div style={{
           flex: "1 1 320px",
-          padding: "clamp(32px, 5vw, 64px) clamp(24px, 4vw, 56px)",
+          padding: "clamp(24px, 3vw, 48px) clamp(32px, 6vw, 80px) clamp(24px, 3vw, 48px) clamp(40px, 7vw, 96px)",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
