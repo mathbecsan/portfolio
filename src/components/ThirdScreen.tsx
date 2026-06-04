@@ -24,7 +24,7 @@ export default function ThirdScreen() {
 
         {/* LEFT — Profile photo */}
         <div style={{
-          flex: "0 0 clamp(280px, 40%, 560px)",
+          flex: "0 0 clamp(240px, 34%, 460px)",
           overflow: "hidden",
           background: "#F5E6C0",
         }}>
@@ -46,7 +46,7 @@ export default function ThirdScreen() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          gap: "clamp(12px, 1.8vw, 24px)",
+          gap: "clamp(6px, 1vw, 12px)",
           position: "relative",
         }}>
 
@@ -59,11 +59,11 @@ export default function ThirdScreen() {
 
           {/* "I AM A SENIOR MAJORING IN" */}
           <img src="/screen3/senior-majoring.svg" alt="I am a senior majoring in"
-            style={{ width: "clamp(200px, 50%, 480px)", height: "auto", display: "block" }} />
+            style={{ width: "clamp(160px, 40%, 360px)", height: "auto", display: "block" }} />
 
           {/* "SYMBOLIC SYSTEMS" badge */}
           <img src="/screen3/symbolic-systems.svg" alt="Symbolic Systems"
-            style={{ width: "clamp(260px, 65%, 580px)", height: "auto", display: "block" }} />
+            style={{ width: "clamp(220px, 55%, 480px)", height: "auto", display: "block" }} />
 
           {/* HCI / HAI logos inline */}
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -92,13 +92,13 @@ export default function ThirdScreen() {
             An interdisciplinary Bachelor of Science degree program designed to explore the relationship between the human mind and artificial systems.
           </p>
 
-          {/* KEY PRINCIPLES badge */}
-          <img src="/screen3/keyprinciples.svg" alt="Key Principles"
-            style={{ width: "clamp(200px, 55%, 500px)", height: "auto", display: "block" }} />
-
-          {/* Principles grid */}
-          <img src="/screen3/principles.svg" alt="I follow and believe in"
-            style={{ width: "clamp(260px, 70%, 620px)", height: "auto", display: "block" }} />
+          {/* KEY PRINCIPLES badge + grid — no gap between them */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+            <img src="/screen3/keyprinciples.svg" alt="Key Principles"
+              style={{ width: "clamp(180px, 48%, 420px)", height: "auto", display: "block" }} />
+            <img src="/screen3/principles.svg" alt="I follow and believe in"
+              style={{ width: "clamp(240px, 64%, 560px)", height: "auto", display: "block", marginTop: 4 }} />
+          </div>
         </div>
       </div>
 
