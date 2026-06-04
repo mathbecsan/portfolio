@@ -362,7 +362,6 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
         <div
           ref={mountRef}
           className="absolute inset-0 z-0"
-          style={{ cursor: "grab" }}
           style={{ left: "45%" }}
         />
         <div
