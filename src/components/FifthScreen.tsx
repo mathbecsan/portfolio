@@ -2,7 +2,7 @@
 
 export default function FifthScreen() {
   return (
-    <section id="process" style={{ background: "#111111", overflow: "hidden" }}>
+    <section id="process" style={{ background: "#111111", overflow: "hidden", scrollMarginTop: 0 }}>
       <img
         src="/screen5/body.svg"
         alt="Design Process — Research, Structure, Iterate, Deliver"
