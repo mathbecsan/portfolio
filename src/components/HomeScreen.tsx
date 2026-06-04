@@ -126,9 +126,17 @@ function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
       blending: THREE.AdditiveBlending,
     });
 
-    curves.forEach(curve => {
-      const geo = new THREE.TubeGeometry(curve, 64, 0.001, 2, false);
-      brainGroup.add(new THREE.Mesh(geo, tubeMat.clone()));
+    // Bauhaus three-color palette — red, yellow, blue cycling per curve
+    const BRAIN_COLORS = [
+      new THREE.Color(0xe63329), // Bauhaus red
+      new THREE.Color(0xf5c500), // Bauhaus yellow
+      new THREE.Color(0x2952a3), // Bauhaus blue
+    ];
+    curves.forEach((curve, i) => {
+      const geo  = new THREE.TubeGeometry(curve, 64, 0.001, 2, false);
+      const mat  = tubeMat.clone();
+      mat.uniforms.color.value = BRAIN_COLORS[i % 3];
+      brainGroup.add(new THREE.Mesh(geo, mat));
     });
 
     // ── Particles travelling along curves ─────────────────────
