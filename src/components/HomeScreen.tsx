@@ -361,7 +361,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
         <div style={{ position:"absolute", top:"20%", left:"3%", width:3, height:"clamp(60px,8vh,100px)", background:"#E63329", opacity:0.18, zIndex:0 }} />
         <div
           ref={mountRef}
-          className="absolute inset-0 z-0"
+          className="absolute inset-0 z-[5]"
           style={{ left: "45%" }}
         />
         <div
@@ -405,8 +405,8 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
           </div>
         </nav>
 
-        {/* Greeting + name */}
-        <div className="relative z-10 flex-1 flex flex-col justify-center">
+        {/* Greeting + name — pointer-events-none so brain canvas beneath is draggable */}
+        <div className="relative z-10 flex-1 flex flex-col justify-center pointer-events-none">
           <div
             className="overflow-hidden"
             style={{ lineHeight: 1.05, direction: isRTL ? "rtl" : "ltr" }}
