@@ -12,8 +12,8 @@ export default function ThirdScreen() {
         backgroundPosition: "center top",
       }} />
 
-      {/* Main row: photo left, content right */}
-      <div style={{ display: "flex", alignItems: "stretch" }}>
+      {/* Main row: centered, max-width container */}
+      <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "stretch" }}>
 
         {/* Photo — 38% wide, fills full height */}
         <div style={{ flex: "0 0 38%", overflow: "hidden" }}>
