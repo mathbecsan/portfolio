@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type RefObject } from "react";
 import * as THREE from "three";
+import { data } from "../brain-data";
 import ThirdScreen from "./ThirdScreen";
 import FourthScreen from "./FourthScreen";
 import FifthScreen from "./FifthScreen";
@@ -43,7 +44,18 @@ const ROLES = [
 
 const WORDS = ["design", "build", "program"];
 
-// ── Three.js — brain particle animation (drag to rotate) ────────
+// ── Build CatmullRom brain curves from data ────────────────────
+function buildBrainCurves(): THREE.CatmullRomCurve3[] {
+  const paths = data.economics[0].paths;
+  return paths.map(path => {
+    const pts: THREE.Vector3[] = [];
+    for (let i = 0; i < path.length; i += 3)
+      pts.push(new THREE.Vector3(path[i], path[i+1], path[i+2]));
+    return new THREE.CatmullRomCurve3(pts);
+  });
+}
+
+// ── Three.js — real anatomical brain (drag to rotate) ──────────
 function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
   useEffect(() => {
     const mount = mountRef.current;
@@ -57,176 +69,167 @@ function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
     mount.appendChild(renderer.domElement);
 
     const scene  = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(50, W / H, 0.1, 100);
-    camera.position.z = 10;
+    // Camera matches original: z=0.3, near=0.001, far=5 — scaled up x30
+    const camera = new THREE.PerspectiveCamera(50, W / H, 0.001, 150);
+    camera.position.z = 9;
 
-    // ── Brain-shaped particle cloud ────────────────────────────
-    // Two hemispheres + surface noise = brain silhouette
-    const N = 400;
-    const positions = new Float32Array(N * 3);
-    const colors    = new Float32Array(N * 3);
+    // ── Build real anatomical brain curves ─────────────────────
+    const curves = buildBrainCurves();
+    const brainGroup = new THREE.Group();
+    scene.add(brainGroup);
 
-    // Color palette: cool blue → warm red → cream (brain lobe style)
-    const palette = [
-      new THREE.Color(0x4fc3f7), // light blue
-      new THREE.Color(0xe63329), // red
-      new THREE.Color(0xf5c500), // yellow
-      new THREE.Color(0x7c83fd), // lavender
-      new THREE.Color(0xf0ede6), // cream
-    ];
+    // Scale the brain to fill the viewport (original data is ~0.0-0.3 range)
+    brainGroup.scale.setScalar(30);
 
-    for (let i = 0; i < N; i++) {
-      // Brain shape: squashed sphere + hemisphere offset
-      const hemisphere = i < N / 2 ? -0.5 : 0.5;
-      const theta = Math.acos(2 * Math.random() - 1);
-      const phi   = Math.random() * Math.PI * 2;
-      const r     = 3.0 + (Math.random() - 0.5) * 0.6;
-
-      // Brain squash: wider than tall, with frontal bulge
-      let x = r * Math.sin(theta) * Math.cos(phi) * 1.35 + hemisphere * 0.25;
-      let y = r * Math.sin(theta) * Math.sin(phi) * 0.95;
-      let z = r * Math.cos(theta) * 1.1;
-      // Cortex fold noise
-      x += (Math.random() - 0.5) * 0.3;
-      y += (Math.random() - 0.5) * 0.3;
-      z += (Math.random() - 0.5) * 0.3;
-
-      positions[i*3]   = x;
-      positions[i*3+1] = y;
-      positions[i*3+2] = z;
-
-      // Color: pick randomly from palette, guaranteed valid
-      const col = palette[i % palette.length];
-      colors[i*3]   = col.r;
-      colors[i*3+1] = col.g;
-      colors[i*3+2] = col.b;
-    }
-
-    const ptGeo = new THREE.BufferGeometry();
-    ptGeo.setAttribute("position", new THREE.BufferAttribute(positions.slice(), 3));
-    ptGeo.setAttribute("color",    new THREE.BufferAttribute(colors, 3));
-    const ptMat = new THREE.PointsMaterial({
-      vertexColors: true, size: 0.075,
-      transparent: true, opacity: 0.85,
-      sizeAttenuation: true,
+    // ── Tube meshes with glowing shader ───────────────────────
+    const tubeMat = new THREE.ShaderMaterial({
+      uniforms: {
+        time:  { value: 0 },
+        color: { value: new THREE.Color(0.1, 0.3, 0.6) },
+        mouse: { value: new THREE.Vector3() },
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        uniform float time;
+        uniform vec3 mouse;
+        varying float vProgress;
+        void main() {
+          vUv = uv;
+          vProgress = smoothstep(-1., 1., sin(vUv.x * 8. + time * 3.));
+          vec3 p = position;
+          float maxDist = 0.05;
+          float dist = length(mouse - p);
+          if (dist < maxDist) {
+            vec3 dir = normalize(mouse - p);
+            dir *= 1. - dist / maxDist;
+            p -= dir * 0.03;
+          }
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform float time;
+        uniform vec3 color;
+        varying vec2 vUv;
+        varying float vProgress;
+        void main() {
+          float hideCorners1 = smoothstep(1., 0.9, vUv.x);
+          float hideCorners2 = smoothstep(0., 0.1, vUv.x);
+          vec3 finalColor = mix(color, color * 0.25, vProgress);
+          gl_FragColor = vec4(finalColor, hideCorners1 * hideCorners2);
+        }
+      `,
+      side: THREE.DoubleSide,
+      transparent: true,
+      depthTest: false,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
     });
-    const brain = new THREE.Points(ptGeo, ptMat);
-    scene.add(brain);
 
-    // ── Neural connections ─────────────────────────────────────
-    const MAX_LINES = N * 5;
-    const lineArr   = new Float32Array(MAX_LINES * 6);
-    const lineGeo   = new THREE.BufferGeometry();
-    lineGeo.setAttribute("position", new THREE.BufferAttribute(lineArr, 3));
-    const lineMat = new THREE.LineBasicMaterial({
-      color: 0x7fc8f8, transparent: true, opacity: 0.07,
+    curves.forEach(curve => {
+      const geo = new THREE.TubeGeometry(curve, 64, 0.001, 2, false);
+      brainGroup.add(new THREE.Mesh(geo, tubeMat.clone()));
     });
-    scene.add(new THREE.LineSegments(lineGeo, lineMat));
 
-    // ── Drag rotation state ────────────────────────────────────
-    const drag = {
-      active: false,
-      lastX: 0, lastY: 0,
-      rotX: 0.15, rotY: 0,   // current rotation
-      velX: 0, velY: 0.003,  // auto-spin velocity
-    };
+    // ── Particles travelling along curves ─────────────────────
+    const DENSITY = 10;
+    const nParticles = DENSITY * curves.length;
+    const pPos = new Float32Array(nParticles * 3);
+
+    interface PInfo { cur: number; speed: number; curve: THREE.CatmullRomCurve3 }
+    const pInfo: PInfo[] = [];
+    curves.forEach(curve => {
+      for (let j = 0; j < DENSITY; j++) {
+        pInfo.push({ cur: Math.random(), speed: Math.random() * 0.003 + 0.001, curve });
+      }
+    });
+    const randoms = new Float32Array(nParticles).map(() => 0.3 + Math.random() * 0.7);
+
+    const pGeo = new THREE.BufferGeometry();
+    pGeo.setAttribute("position", new THREE.BufferAttribute(pPos, 3));
+    pGeo.setAttribute("randoms",  new THREE.BufferAttribute(randoms, 1));
+
+    const pMat = new THREE.ShaderMaterial({
+      uniforms: { time: { value: 0 } },
+      vertexShader: `
+        varying vec2 vUv;
+        uniform float time;
+        attribute float randoms;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+          gl_PointSize = randoms * 2. * (1. / -mvPos.z);
+        }
+      `,
+      fragmentShader: `
+        void main() {
+          float disc = length(gl_PointCoord.xy - vec2(0.5));
+          float opacity = 0.4 * smoothstep(0.5, 0.4, disc);
+          gl_FragColor = vec4(vec3(opacity), 1.0);
+        }
+      `,
+      transparent: true,
+      depthTest: false,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+
+    brainGroup.add(new THREE.Points(pGeo, pMat));
+
+    // ── Drag rotation ─────────────────────────────────────────
+    const drag = { active: false, lastX: 0, lastY: 0, rotX: 0, rotY: 0, velX: 0, velY: 0.003 };
 
     const onPointerDown = (e: PointerEvent) => {
-      drag.active = true;
-      drag.lastX  = e.clientX;
-      drag.lastY  = e.clientY;
-      drag.velX = 0; drag.velY = 0;
-      mount.style.cursor = "grabbing";
+      drag.active = true; drag.lastX = e.clientX; drag.lastY = e.clientY;
+      drag.velX = 0; drag.velY = 0; mount.style.cursor = "grabbing";
     };
     const onPointerMove = (e: PointerEvent) => {
       if (!drag.active) return;
-      const dx = e.clientX - drag.lastX;
-      const dy = e.clientY - drag.lastY;
-      drag.velY = dx * 0.008;
-      drag.velX = dy * 0.008;
-      drag.rotY += drag.velY;
-      drag.rotX += drag.velX;
-      drag.rotX  = Math.max(-1.2, Math.min(1.2, drag.rotX));
-      drag.lastX = e.clientX;
-      drag.lastY = e.clientY;
+      drag.velY = (e.clientX - drag.lastX) * 0.008;
+      drag.velX = (e.clientY - drag.lastY) * 0.008;
+      drag.rotY += drag.velY; drag.rotX += drag.velX;
+      drag.rotX = Math.max(-1.2, Math.min(1.2, drag.rotX));
+      drag.lastX = e.clientX; drag.lastY = e.clientY;
     };
-    const onPointerUp = () => {
-      drag.active = false;
-      mount.style.cursor = "grab";
-    };
-
-    // Click: ripple burst
-    let ripple = 0;
-    const onClick = () => { ripple = 1.0; };
+    const onPointerUp = () => { drag.active = false; mount.style.cursor = "grab"; };
 
     mount.addEventListener("pointerdown", onPointerDown);
     window.addEventListener("pointermove", onPointerMove);
     window.addEventListener("pointerup",   onPointerUp);
-    mount.addEventListener("click",        onClick);
     mount.style.cursor = "grab";
 
-    // ── Animate ────────────────────────────────────────────────
-    let raf: number, t = 0;
-    const BASE = positions.slice(); // original positions
-
+    // ── Animate ───────────────────────────────────────────────
+    let raf: number, elapsed = 0;
     const tick = () => {
       raf = requestAnimationFrame(tick);
-      t += 0.008;
+      elapsed += 0.01;
 
-      // Inertia when not dragging
+      // Inertia
       if (!drag.active) {
-        drag.velY += (0.003 - drag.velY) * 0.02; // settle to auto-spin
-        drag.velX += (0     - drag.velX) * 0.04;
-        drag.rotY += drag.velY;
-        drag.rotX += drag.velX;
+        drag.velY += (0.003 - drag.velY) * 0.02;
+        drag.velX += (0 - drag.velX) * 0.05;
+        drag.rotY += drag.velY; drag.rotX += drag.velX;
       }
+      brainGroup.rotation.y = drag.rotY;
+      brainGroup.rotation.x = drag.rotX;
 
-      // Ripple decay
-      if (ripple > 0) ripple -= 0.018;
-
-      // Build rotation matrix
-      const cosY = Math.cos(drag.rotY), sinY = Math.sin(drag.rotY);
-      const cosX = Math.cos(drag.rotX), sinX = Math.sin(drag.rotX);
-
-      // Breathe + ripple scale
-      const breathe  = 1 + 0.012 * Math.sin(t * 1.2);
-      const rScale   = 1 + ripple * 0.28 * Math.sin(t * 20);
-      const scale    = breathe * rScale;
-
-      // Rotate each point
-      const pos = ptGeo.attributes.position.array as Float32Array;
-      for (let i = 0; i < N; i++) {
-        const bx = BASE[i*3], by = BASE[i*3+1], bz = BASE[i*3+2];
-        // Y rotation
-        const x1 = bx * cosY - bz * sinY;
-        const z1 = bx * sinY + bz * cosY;
-        // X rotation
-        const y2 = by * cosX - z1 * sinX;
-        const z2 = by * sinX + z1 * cosX;
-
-        pos[i*3]   = x1 * scale;
-        pos[i*3+1] = y2 * scale;
-        pos[i*3+2] = z2 * scale;
-      }
-      ptGeo.attributes.position.needsUpdate = true;
-
-      // Update connections
-      let ci = 0;
-      const THRESH = 2.5 * 2.5;
-      for (let i = 0; i < N && ci < MAX_LINES - 1; i++) {
-        for (let j = i + 1; j < N && ci < MAX_LINES - 1; j++) {
-          const dx = pos[i*3]-pos[j*3], dy = pos[i*3+1]-pos[j*3+1], dz = pos[i*3+2]-pos[j*3+2];
-          if (dx*dx + dy*dy + dz*dz < THRESH) {
-            lineArr[ci*6]   = pos[i*3];   lineArr[ci*6+1] = pos[i*3+1]; lineArr[ci*6+2] = pos[i*3+2];
-            lineArr[ci*6+3] = pos[j*3];   lineArr[ci*6+4] = pos[j*3+1]; lineArr[ci*6+5] = pos[j*3+2];
-            ci++;
-          }
+      // Update tube time uniform
+      scene.traverse(obj => {
+        if (obj instanceof THREE.Mesh) {
+          const mat = obj.material as THREE.ShaderMaterial;
+          if (mat.uniforms?.time) mat.uniforms.time.value = elapsed;
         }
+      });
+
+      // Move particles along curves
+      for (let i = 0; i < pInfo.length; i++) {
+        pInfo[i].cur = (pInfo[i].cur + pInfo[i].speed) % 1;
+        const pt = pInfo[i].curve.getPointAt(pInfo[i].cur);
+        pPos[i*3] = pt.x; pPos[i*3+1] = pt.y; pPos[i*3+2] = pt.z;
       }
-      for (let k = ci; k < MAX_LINES; k++) lineArr[k*6]=lineArr[k*6+1]=lineArr[k*6+2]=lineArr[k*6+3]=lineArr[k*6+4]=lineArr[k*6+5]=0;
-      lineGeo.attributes.position.needsUpdate = true;
-      lineGeo.setDrawRange(0, ci * 2);
-      (lineMat).opacity = 0.07 + ripple * 0.2;
+      pGeo.attributes.position.needsUpdate = true;
+      pMat.uniforms.time.value = elapsed;
 
       renderer.render(scene, camera);
     };
@@ -244,7 +247,6 @@ function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
       mount.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup",   onPointerUp);
-      mount.removeEventListener("click", onClick);
       window.removeEventListener("resize", onResize);
       renderer.dispose();
       if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);
