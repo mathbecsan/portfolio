@@ -43,185 +43,154 @@ const ROLES = [
 
 const WORDS = ["design", "build", "program"];
 
-// ── Three.js background — particle network + mouse parallax ───
+// ── Three.js — interactive neural brain network ────────────────
 function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
   useEffect(() => {
     const mount = mountRef.current;
     if (!mount) return;
-    const W = mount.clientWidth,
-      H = mount.clientHeight;
+    const W = mount.clientWidth, H = mount.clientHeight;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(W, H);
     renderer.setClearColor(0x000000, 0);
-    renderer.shadowMap.enabled = true;
     mount.appendChild(renderer.domElement);
 
-    const scene = new THREE.Scene();
+    const scene  = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(55, W / H, 0.1, 100);
     camera.position.z = 9;
 
-    // Particle field
-    const PARTICLE_COUNT = 120;
-    const pPositions = new Float32Array(PARTICLE_COUNT * 3);
-    const pVelocities: THREE.Vector3[] = [];
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      pPositions[i * 3] = (Math.random() - 0.5) * 18;
-      pPositions[i * 3 + 1] = (Math.random() - 0.5) * 12;
-      pPositions[i * 3 + 2] = (Math.random() - 0.5) * 8 - 4;
-      pVelocities.push(
-        new THREE.Vector3(
-          (Math.random() - 0.5) * 0.005,
-          (Math.random() - 0.5) * 0.005,
-          0,
-        ),
-      );
+    // ── Neural brain nodes distributed on a sphere ─────────────
+    const N = 180;
+    const basePos    = new Float32Array(N * 3); // original sphere positions
+    const currentPos = new Float32Array(N * 3);
+    const nodeColors = new Float32Array(N * 3);
+    const BAUHAUS = [
+      [0.902, 0.2,   0.161], // red   #E63329
+      [0.961, 0.773, 0.0],   // yellow #F5C500
+      [0.161, 0.322, 0.639], // blue  #2952A3
+      [0.941, 0.941, 0.906], // cream #F0EDE6
+    ];
+    const R = 3.2;
+    for (let i = 0; i < N; i++) {
+      const theta = Math.acos(2 * Math.random() - 1);
+      const phi   = Math.random() * Math.PI * 2;
+      const r     = R * (0.85 + Math.random() * 0.3);
+      basePos[i*3]   = r * Math.sin(theta) * Math.cos(phi);
+      basePos[i*3+1] = r * Math.sin(theta) * Math.sin(phi);
+      basePos[i*3+2] = r * Math.cos(theta);
+      currentPos[i*3]   = basePos[i*3];
+      currentPos[i*3+1] = basePos[i*3+1];
+      currentPos[i*3+2] = basePos[i*3+2];
+      const c = BAUHAUS[i % BAUHAUS.length];
+      nodeColors[i*3] = c[0]; nodeColors[i*3+1] = c[1]; nodeColors[i*3+2] = c[2];
     }
-    const pGeo = new THREE.BufferGeometry();
-    pGeo.setAttribute("position", new THREE.BufferAttribute(pPositions, 3));
-    scene.add(
-      new THREE.Points(
-        pGeo,
-        new THREE.PointsMaterial({
-          color: 0xf0ede6,
-          size: 0.055,
-          transparent: true,
-          opacity: 0.55,
-        }),
-      ),
-    );
 
-    const maxLines = PARTICLE_COUNT * 4;
-    const linePos = new Float32Array(maxLines * 6);
-    const lineGeo = new THREE.BufferGeometry();
-    lineGeo.setAttribute("position", new THREE.BufferAttribute(linePos, 3));
-    scene.add(
-      new THREE.LineSegments(
-        lineGeo,
-        new THREE.LineBasicMaterial({
-          color: 0xf0ede6,
-          transparent: true,
-          opacity: 0.08,
-        }),
-      ),
-    );
-
-    // Bauhaus floating shapes
-    const shapes = [
-      {
-        geo: new THREE.IcosahedronGeometry(1.4, 1),
-        color: 0xe63329,
-        x: 4.2,
-        y: 2.0,
-        rx: 0.0025,
-        ry: 0.004,
-      },
-      {
-        geo: new THREE.TorusGeometry(1.0, 0.25, 10, 32),
-        color: 0xf5c500,
-        x: 3.8,
-        y: -2.2,
-        rx: 0.004,
-        ry: 0.0018,
-      },
-      {
-        geo: new THREE.OctahedronGeometry(1.2),
-        color: 0x2952a3,
-        x: 1.8,
-        y: -0.5,
-        rx: 0.0015,
-        ry: 0.0035,
-      },
-    ].map((d) => {
-      const mat = new THREE.MeshBasicMaterial({
-        color: d.color,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.16,
-      });
-      const mesh = new THREE.Mesh(d.geo, mat);
-      mesh.position.set(d.x, d.y, -3);
-      mesh.userData = { rx: d.rx, ry: d.ry, ox: d.x, oy: d.y };
-      scene.add(mesh);
-      return mesh;
+    const nodeGeo = new THREE.BufferGeometry();
+    nodeGeo.setAttribute("position", new THREE.BufferAttribute(currentPos, 3));
+    nodeGeo.setAttribute("color",    new THREE.BufferAttribute(nodeColors, 3));
+    const nodeMat = new THREE.PointsMaterial({
+      vertexColors: true, size: 0.09,
+      transparent: true, opacity: 0.75,
     });
+    scene.add(new THREE.Points(nodeGeo, nodeMat));
 
-    // Mouse parallax
-    const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
+    // ── Connections ─────────────────────────────────────────────
+    const MAX_CONN = N * 6;
+    const connPos  = new Float32Array(MAX_CONN * 6);
+    const connGeo  = new THREE.BufferGeometry();
+    connGeo.setAttribute("position", new THREE.BufferAttribute(connPos, 3));
+    const connMat = new THREE.LineBasicMaterial({
+      color: 0xf0ede6, transparent: true, opacity: 0.06,
+    });
+    const connLines = new THREE.LineSegments(connGeo, connMat);
+    scene.add(connLines);
+
+    // ── Subtle Bauhaus wireframe orb ────────────────────────────
+    const orbGeo  = new THREE.IcosahedronGeometry(R * 1.05, 2);
+    const orbMat  = new THREE.MeshBasicMaterial({ color: 0xf0ede6, wireframe: true, transparent: true, opacity: 0.03 });
+    scene.add(new THREE.Mesh(orbGeo, orbMat));
+
+    // ── Interaction ─────────────────────────────────────────────
+    const mouse = { x: 0, y: 0, tx: 0, ty: 0, clicked: false };
+    let clickRipple = 0; // 0..1 fade
+
     const onMouseMove = (e: MouseEvent) => {
-      mouse.tx = (e.clientX / window.innerWidth - 0.5) * 2;
-      mouse.ty = -(e.clientY / window.innerHeight - 0.5) * 2;
+      const rect = mount.getBoundingClientRect();
+      mouse.tx =  (e.clientX / window.innerWidth  - 0.5) * 2.5;
+      mouse.ty = -(e.clientY / window.innerHeight - 0.5) * 2.5;
     };
+    const onClick = () => { clickRipple = 1.0; };
     window.addEventListener("mousemove", onMouseMove);
+    mount.addEventListener("click", onClick);
+    mount.style.cursor = "crosshair";
 
-    let raf: number,
-      t = 0;
+    let raf: number, t = 0;
     const tick = () => {
       raf = requestAnimationFrame(tick);
-      t += 0.008;
-      mouse.x += (mouse.tx - mouse.x) * 0.06;
-      mouse.y += (mouse.ty - mouse.y) * 0.06;
+      t += 0.005;
 
-      // Move particles
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
-        pPositions[i * 3] += pVelocities[i].x;
-        pPositions[i * 3 + 1] += pVelocities[i].y;
-        if (pPositions[i * 3] > 9) pPositions[i * 3] = -9;
-        if (pPositions[i * 3] < -9) pPositions[i * 3] = 9;
-        if (pPositions[i * 3 + 1] > 6) pPositions[i * 3 + 1] = -6;
-        if (pPositions[i * 3 + 1] < -6) pPositions[i * 3 + 1] = 6;
+      // Smooth mouse lerp
+      mouse.x += (mouse.tx - mouse.x) * 0.04;
+      mouse.y += (mouse.ty - mouse.y) * 0.04;
+
+      // Decay ripple
+      if (clickRipple > 0) clickRipple -= 0.025;
+
+      // Rotate brain group around Y-axis slowly
+      const rotY = t * 0.12 + mouse.x * 0.4;
+      const rotX = mouse.y * 0.3;
+
+      // Update node positions: rotate base positions + ripple distortion
+      for (let i = 0; i < N; i++) {
+        const bx = basePos[i*3], by = basePos[i*3+1], bz = basePos[i*3+2];
+        // Rotate around Y
+        const cx = bx * Math.cos(rotY) + bz * Math.sin(rotY);
+        const cy = by * Math.cos(rotX) - bz * Math.sin(rotX);
+        const cz = -bx * Math.sin(rotY) + bz * Math.cos(rotY);
+        // Click ripple: radial pulse outward
+        const rippleScale = 1 + clickRipple * 0.35 * Math.sin(t * 18 + i * 0.4);
+        currentPos[i*3]   = cx * rippleScale;
+        currentPos[i*3+1] = cy * rippleScale;
+        currentPos[i*3+2] = cz;
       }
-      pGeo.attributes.position.needsUpdate = true;
+      nodeGeo.attributes.position.needsUpdate = true;
 
-      // Connection lines
-      let lineIdx = 0;
-      for (let i = 0; i < PARTICLE_COUNT && lineIdx < maxLines - 1; i++) {
-        for (let j = i + 1; j < PARTICLE_COUNT && lineIdx < maxLines - 1; j++) {
-          const dx = pPositions[i * 3] - pPositions[j * 3],
-            dy = pPositions[i * 3 + 1] - pPositions[j * 3 + 1];
-          if (dx * dx + dy * dy < 12.25) {
-            linePos[lineIdx * 6] = pPositions[i * 3];
-            linePos[lineIdx * 6 + 1] = pPositions[i * 3 + 1];
-            linePos[lineIdx * 6 + 2] = pPositions[i * 3 + 2];
-            linePos[lineIdx * 6 + 3] = pPositions[j * 3];
-            linePos[lineIdx * 6 + 4] = pPositions[j * 3 + 1];
-            linePos[lineIdx * 6 + 5] = pPositions[j * 3 + 2];
-            lineIdx++;
+      // Connections — dynamic based on distance
+      let ci = 0;
+      const THRESH = 2.8 * 2.8;
+      for (let i = 0; i < N && ci < MAX_CONN - 1; i++) {
+        for (let j = i + 1; j < N && ci < MAX_CONN - 1; j++) {
+          const dx = currentPos[i*3] - currentPos[j*3];
+          const dy = currentPos[i*3+1] - currentPos[j*3+1];
+          const dz = currentPos[i*3+2] - currentPos[j*3+2];
+          if (dx*dx + dy*dy + dz*dz < THRESH) {
+            connPos[ci*6]   = currentPos[i*3];   connPos[ci*6+1] = currentPos[i*3+1]; connPos[ci*6+2] = currentPos[i*3+2];
+            connPos[ci*6+3] = currentPos[j*3];   connPos[ci*6+4] = currentPos[j*3+1]; connPos[ci*6+5] = currentPos[j*3+2];
+            ci++;
           }
         }
       }
-      for (let k = lineIdx; k < maxLines; k++)
-        linePos[k * 6] =
-          linePos[k * 6 + 1] =
-          linePos[k * 6 + 2] =
-          linePos[k * 6 + 3] =
-          linePos[k * 6 + 4] =
-          linePos[k * 6 + 5] =
-            0;
-      lineGeo.attributes.position.needsUpdate = true;
-      lineGeo.setDrawRange(0, lineIdx * 2);
+      for (let k = ci; k < MAX_CONN; k++)
+        connPos[k*6] = connPos[k*6+1] = connPos[k*6+2] = connPos[k*6+3] = connPos[k*6+4] = connPos[k*6+5] = 0;
+      connGeo.attributes.position.needsUpdate = true;
+      connGeo.setDrawRange(0, ci * 2);
 
-      // Shapes: rotate + float + parallax
-      shapes.forEach((m, i) => {
-        m.rotation.x += m.userData.rx;
-        m.rotation.y += m.userData.ry;
-        m.position.y = m.userData.oy + Math.sin(t + i * 1.2) * 0.3;
-        m.position.x = m.userData.ox + mouse.x * (0.4 + i * 0.15);
-      });
+      // Connection opacity reacts to ripple
+      (connLines.material as THREE.LineBasicMaterial).opacity = 0.06 + clickRipple * 0.18;
 
-      camera.position.x = mouse.x * 0.3;
-      camera.position.y = mouse.y * 0.2;
-      camera.lookAt(scene.position);
+      // Camera subtle drift
+      camera.position.x = mouse.x * 0.5;
+      camera.position.y = mouse.y * 0.4;
+      camera.lookAt(0, 0, 0);
+
       renderer.render(scene, camera);
     };
     tick();
 
     const onResize = () => {
-      const w = mount.clientWidth,
-        h = mount.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
+      const w = mount.clientWidth, h = mount.clientHeight;
+      camera.aspect = w / h; camera.updateProjectionMatrix();
       renderer.setSize(w, h);
     };
     window.addEventListener("resize", onResize);
@@ -230,9 +199,9 @@ function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
       cancelAnimationFrame(raf);
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("resize", onResize);
+      mount.removeEventListener("click", onClick);
       renderer.dispose();
-      if (mount.contains(renderer.domElement))
-        mount.removeChild(renderer.domElement);
+      if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);
     };
   }, [mountRef]);
 }
@@ -326,6 +295,11 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
         className="relative flex flex-col overflow-hidden bg-[#0d0d0d]"
         style={{ height: "100svh", minHeight: 600, padding: "3vh 6vw 2vh" }}
       >
+        {/* Subtle Bauhaus corner accents */}
+        <div style={{ position:"absolute", top:0, right:0, width:"clamp(60px,8vw,100px)", height:"clamp(60px,8vw,100px)", background:"#E63329", opacity:0.07, zIndex:0 }} />
+        <div style={{ position:"absolute", bottom:0, left:0, width:"clamp(80px,10vw,130px)", height:"clamp(80px,10vw,130px)", borderRadius:"0 100% 0 0", background:"#2952A3", opacity:0.08, zIndex:0 }} />
+        <div style={{ position:"absolute", bottom:"8%", right:"5%", width:"clamp(40px,5vw,70px)", height:"clamp(40px,5vw,70px)", borderRadius:"50%", background:"#F5C500", opacity:0.07, zIndex:0 }} />
+        <div style={{ position:"absolute", top:"20%", left:"3%", width:3, height:"clamp(60px,8vh,100px)", background:"#E63329", opacity:0.18, zIndex:0 }} />
         <div
           ref={mountRef}
           className="absolute inset-0 z-0 pointer-events-none"
