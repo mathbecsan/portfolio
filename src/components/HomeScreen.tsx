@@ -43,7 +43,7 @@ const ROLES = [
 
 const WORDS = ["design", "build", "program"];
 
-// ── Three.js — interactive neural brain network ────────────────
+// ── Three.js — brain particle animation (drag to rotate) ────────
 function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
   useEffect(() => {
     const mount = mountRef.current;
@@ -57,132 +57,177 @@ function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
     mount.appendChild(renderer.domElement);
 
     const scene  = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(55, W / H, 0.1, 100);
-    camera.position.z = 9;
+    const camera = new THREE.PerspectiveCamera(50, W / H, 0.1, 100);
+    camera.position.z = 10;
 
-    // ── Neural brain nodes distributed on a sphere ─────────────
-    const N = 180;
-    const basePos    = new Float32Array(N * 3); // original sphere positions
-    const currentPos = new Float32Array(N * 3);
-    const nodeColors = new Float32Array(N * 3);
-    const BAUHAUS = [
-      [0.902, 0.2,   0.161], // red   #E63329
-      [0.961, 0.773, 0.0],   // yellow #F5C500
-      [0.161, 0.322, 0.639], // blue  #2952A3
-      [0.941, 0.941, 0.906], // cream #F0EDE6
+    // ── Brain-shaped particle cloud ────────────────────────────
+    // Two hemispheres + surface noise = brain silhouette
+    const N = 400;
+    const positions = new Float32Array(N * 3);
+    const colors    = new Float32Array(N * 3);
+
+    // Color palette: cool blue → warm red → cream (brain lobe style)
+    const palette = [
+      new THREE.Color(0x4fc3f7), // light blue
+      new THREE.Color(0xe63329), // red
+      new THREE.Color(0xf5c500), // yellow
+      new THREE.Color(0x7c83fd), // lavender
+      new THREE.Color(0xf0ede6), // cream
     ];
-    const R = 3.2;
+
     for (let i = 0; i < N; i++) {
+      // Brain shape: squashed sphere + hemisphere offset
+      const hemisphere = i < N / 2 ? -0.5 : 0.5;
       const theta = Math.acos(2 * Math.random() - 1);
       const phi   = Math.random() * Math.PI * 2;
-      const r     = R * (0.85 + Math.random() * 0.3);
-      basePos[i*3]   = r * Math.sin(theta) * Math.cos(phi);
-      basePos[i*3+1] = r * Math.sin(theta) * Math.sin(phi);
-      basePos[i*3+2] = r * Math.cos(theta);
-      currentPos[i*3]   = basePos[i*3];
-      currentPos[i*3+1] = basePos[i*3+1];
-      currentPos[i*3+2] = basePos[i*3+2];
-      const c = BAUHAUS[i % BAUHAUS.length];
-      nodeColors[i*3] = c[0]; nodeColors[i*3+1] = c[1]; nodeColors[i*3+2] = c[2];
+      const r     = 3.0 + (Math.random() - 0.5) * 0.6;
+
+      // Brain squash: wider than tall, with frontal bulge
+      let x = r * Math.sin(theta) * Math.cos(phi) * 1.35 + hemisphere * 0.25;
+      let y = r * Math.sin(theta) * Math.sin(phi) * 0.95;
+      let z = r * Math.cos(theta) * 1.1;
+      // Cortex fold noise
+      x += (Math.random() - 0.5) * 0.3;
+      y += (Math.random() - 0.5) * 0.3;
+      z += (Math.random() - 0.5) * 0.3;
+
+      positions[i*3]   = x;
+      positions[i*3+1] = y;
+      positions[i*3+2] = z;
+
+      // Color based on position (top=blue, sides=red, bottom=yellow)
+      const t = (y / 3.5 + 0.5); // 0..1
+      const col = palette[Math.floor(t * (palette.length - 1) + Math.random())];
+      colors[i*3]   = col.r;
+      colors[i*3+1] = col.g;
+      colors[i*3+2] = col.b;
     }
 
-    const nodeGeo = new THREE.BufferGeometry();
-    nodeGeo.setAttribute("position", new THREE.BufferAttribute(currentPos, 3));
-    nodeGeo.setAttribute("color",    new THREE.BufferAttribute(nodeColors, 3));
-    const nodeMat = new THREE.PointsMaterial({
-      vertexColors: true, size: 0.09,
-      transparent: true, opacity: 0.75,
+    const ptGeo = new THREE.BufferGeometry();
+    ptGeo.setAttribute("position", new THREE.BufferAttribute(positions.slice(), 3));
+    ptGeo.setAttribute("color",    new THREE.BufferAttribute(colors, 3));
+    const ptMat = new THREE.PointsMaterial({
+      vertexColors: true, size: 0.075,
+      transparent: true, opacity: 0.85,
+      sizeAttenuation: true,
     });
-    scene.add(new THREE.Points(nodeGeo, nodeMat));
+    const brain = new THREE.Points(ptGeo, ptMat);
+    scene.add(brain);
 
-    // ── Connections ─────────────────────────────────────────────
-    const MAX_CONN = N * 6;
-    const connPos  = new Float32Array(MAX_CONN * 6);
-    const connGeo  = new THREE.BufferGeometry();
-    connGeo.setAttribute("position", new THREE.BufferAttribute(connPos, 3));
-    const connMat = new THREE.LineBasicMaterial({
-      color: 0xf0ede6, transparent: true, opacity: 0.06,
+    // ── Neural connections ─────────────────────────────────────
+    const MAX_LINES = N * 5;
+    const lineArr   = new Float32Array(MAX_LINES * 6);
+    const lineGeo   = new THREE.BufferGeometry();
+    lineGeo.setAttribute("position", new THREE.BufferAttribute(lineArr, 3));
+    const lineMat = new THREE.LineBasicMaterial({
+      color: 0x7fc8f8, transparent: true, opacity: 0.07,
     });
-    const connLines = new THREE.LineSegments(connGeo, connMat);
-    scene.add(connLines);
+    scene.add(new THREE.LineSegments(lineGeo, lineMat));
 
-    // ── Subtle Bauhaus wireframe orb ────────────────────────────
-    const orbGeo  = new THREE.IcosahedronGeometry(R * 1.05, 2);
-    const orbMat  = new THREE.MeshBasicMaterial({ color: 0xf0ede6, wireframe: true, transparent: true, opacity: 0.03 });
-    scene.add(new THREE.Mesh(orbGeo, orbMat));
-
-    // ── Interaction ─────────────────────────────────────────────
-    const mouse = { x: 0, y: 0, tx: 0, ty: 0, clicked: false };
-    let clickRipple = 0; // 0..1 fade
-
-    const onMouseMove = (e: MouseEvent) => {
-      const rect = mount.getBoundingClientRect();
-      mouse.tx =  (e.clientX / window.innerWidth  - 0.5) * 2.5;
-      mouse.ty = -(e.clientY / window.innerHeight - 0.5) * 2.5;
+    // ── Drag rotation state ────────────────────────────────────
+    const drag = {
+      active: false,
+      lastX: 0, lastY: 0,
+      rotX: 0.15, rotY: 0,   // current rotation
+      velX: 0, velY: 0.003,  // auto-spin velocity
     };
-    const onClick = () => { clickRipple = 1.0; };
-    window.addEventListener("mousemove", onMouseMove);
-    mount.addEventListener("click", onClick);
-    mount.style.cursor = "crosshair";
 
+    const onPointerDown = (e: PointerEvent) => {
+      drag.active = true;
+      drag.lastX  = e.clientX;
+      drag.lastY  = e.clientY;
+      drag.velX = 0; drag.velY = 0;
+      mount.style.cursor = "grabbing";
+    };
+    const onPointerMove = (e: PointerEvent) => {
+      if (!drag.active) return;
+      const dx = e.clientX - drag.lastX;
+      const dy = e.clientY - drag.lastY;
+      drag.velY = dx * 0.008;
+      drag.velX = dy * 0.008;
+      drag.rotY += drag.velY;
+      drag.rotX += drag.velX;
+      drag.rotX  = Math.max(-1.2, Math.min(1.2, drag.rotX));
+      drag.lastX = e.clientX;
+      drag.lastY = e.clientY;
+    };
+    const onPointerUp = () => {
+      drag.active = false;
+      mount.style.cursor = "grab";
+    };
+
+    // Click: ripple burst
+    let ripple = 0;
+    const onClick = () => { ripple = 1.0; };
+
+    mount.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerup",   onPointerUp);
+    mount.addEventListener("click",        onClick);
+    mount.style.cursor = "grab";
+
+    // ── Animate ────────────────────────────────────────────────
     let raf: number, t = 0;
+    const BASE = positions.slice(); // original positions
+
     const tick = () => {
       raf = requestAnimationFrame(tick);
-      t += 0.005;
+      t += 0.008;
 
-      // Smooth mouse lerp
-      mouse.x += (mouse.tx - mouse.x) * 0.04;
-      mouse.y += (mouse.ty - mouse.y) * 0.04;
-
-      // Decay ripple
-      if (clickRipple > 0) clickRipple -= 0.025;
-
-      // Rotate brain group around Y-axis slowly
-      const rotY = t * 0.12 + mouse.x * 0.4;
-      const rotX = mouse.y * 0.3;
-
-      // Update node positions: rotate base positions + ripple distortion
-      for (let i = 0; i < N; i++) {
-        const bx = basePos[i*3], by = basePos[i*3+1], bz = basePos[i*3+2];
-        // Rotate around Y
-        const cx = bx * Math.cos(rotY) + bz * Math.sin(rotY);
-        const cy = by * Math.cos(rotX) - bz * Math.sin(rotX);
-        const cz = -bx * Math.sin(rotY) + bz * Math.cos(rotY);
-        // Click ripple: radial pulse outward
-        const rippleScale = 1 + clickRipple * 0.35 * Math.sin(t * 18 + i * 0.4);
-        currentPos[i*3]   = cx * rippleScale;
-        currentPos[i*3+1] = cy * rippleScale;
-        currentPos[i*3+2] = cz;
+      // Inertia when not dragging
+      if (!drag.active) {
+        drag.velY += (0.003 - drag.velY) * 0.02; // settle to auto-spin
+        drag.velX += (0     - drag.velX) * 0.04;
+        drag.rotY += drag.velY;
+        drag.rotX += drag.velX;
       }
-      nodeGeo.attributes.position.needsUpdate = true;
 
-      // Connections — dynamic based on distance
+      // Ripple decay
+      if (ripple > 0) ripple -= 0.018;
+
+      // Build rotation matrix
+      const cosY = Math.cos(drag.rotY), sinY = Math.sin(drag.rotY);
+      const cosX = Math.cos(drag.rotX), sinX = Math.sin(drag.rotX);
+
+      // Breathe + ripple scale
+      const breathe  = 1 + 0.012 * Math.sin(t * 1.2);
+      const rScale   = 1 + ripple * 0.28 * Math.sin(t * 20);
+      const scale    = breathe * rScale;
+
+      // Rotate each point
+      const pos = ptGeo.attributes.position.array as Float32Array;
+      for (let i = 0; i < N; i++) {
+        const bx = BASE[i*3], by = BASE[i*3+1], bz = BASE[i*3+2];
+        // Y rotation
+        const x1 = bx * cosY - bz * sinY;
+        const z1 = bx * sinY + bz * cosY;
+        // X rotation
+        const y2 = by * cosX - z1 * sinX;
+        const z2 = by * sinX + z1 * cosX;
+
+        pos[i*3]   = x1 * scale;
+        pos[i*3+1] = y2 * scale;
+        pos[i*3+2] = z2 * scale;
+      }
+      ptGeo.attributes.position.needsUpdate = true;
+
+      // Update connections
       let ci = 0;
-      const THRESH = 2.8 * 2.8;
-      for (let i = 0; i < N && ci < MAX_CONN - 1; i++) {
-        for (let j = i + 1; j < N && ci < MAX_CONN - 1; j++) {
-          const dx = currentPos[i*3] - currentPos[j*3];
-          const dy = currentPos[i*3+1] - currentPos[j*3+1];
-          const dz = currentPos[i*3+2] - currentPos[j*3+2];
+      const THRESH = 2.5 * 2.5;
+      for (let i = 0; i < N && ci < MAX_LINES - 1; i++) {
+        for (let j = i + 1; j < N && ci < MAX_LINES - 1; j++) {
+          const dx = pos[i*3]-pos[j*3], dy = pos[i*3+1]-pos[j*3+1], dz = pos[i*3+2]-pos[j*3+2];
           if (dx*dx + dy*dy + dz*dz < THRESH) {
-            connPos[ci*6]   = currentPos[i*3];   connPos[ci*6+1] = currentPos[i*3+1]; connPos[ci*6+2] = currentPos[i*3+2];
-            connPos[ci*6+3] = currentPos[j*3];   connPos[ci*6+4] = currentPos[j*3+1]; connPos[ci*6+5] = currentPos[j*3+2];
+            lineArr[ci*6]   = pos[i*3];   lineArr[ci*6+1] = pos[i*3+1]; lineArr[ci*6+2] = pos[i*3+2];
+            lineArr[ci*6+3] = pos[j*3];   lineArr[ci*6+4] = pos[j*3+1]; lineArr[ci*6+5] = pos[j*3+2];
             ci++;
           }
         }
       }
-      for (let k = ci; k < MAX_CONN; k++)
-        connPos[k*6] = connPos[k*6+1] = connPos[k*6+2] = connPos[k*6+3] = connPos[k*6+4] = connPos[k*6+5] = 0;
-      connGeo.attributes.position.needsUpdate = true;
-      connGeo.setDrawRange(0, ci * 2);
-
-      // Connection opacity reacts to ripple
-      (connLines.material as THREE.LineBasicMaterial).opacity = 0.06 + clickRipple * 0.18;
-
-      // Camera subtle drift
-      camera.position.x = mouse.x * 0.5;
-      camera.position.y = mouse.y * 0.4;
-      camera.lookAt(0, 0, 0);
+      for (let k = ci; k < MAX_LINES; k++) lineArr[k*6]=lineArr[k*6+1]=lineArr[k*6+2]=lineArr[k*6+3]=lineArr[k*6+4]=lineArr[k*6+5]=0;
+      lineGeo.attributes.position.needsUpdate = true;
+      lineGeo.setDrawRange(0, ci * 2);
+      (lineMat).opacity = 0.07 + ripple * 0.2;
 
       renderer.render(scene, camera);
     };
@@ -197,9 +242,11 @@ function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
 
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("resize", onResize);
+      mount.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup",   onPointerUp);
       mount.removeEventListener("click", onClick);
+      window.removeEventListener("resize", onResize);
       renderer.dispose();
       if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);
     };
