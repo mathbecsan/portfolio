@@ -11,28 +11,28 @@ import SeventhScreen from "./SeventhScreen";
 import EighthScreen from "./EighthScreen";
 
 const NAV = [
-  { label: "Home",       href: "#home"       },
-  { label: "About",      href: "#about"      },
-  { label: "Process",    href: "#process"    },
-  { label: "Experience", href: "/experience"  },
-  { label: "Impact",     href: "#impact"     },
-  { label: "Contact",    href: "#contact"    },
+  { label: "Home", href: "#home" },
+  { label: "About", href: "#about" },
+  { label: "Process", href: "#process" },
+  { label: "Experience", href: "/experience" },
+  { label: "Impact", href: "#impact" },
+  { label: "Contact", href: "#contact" },
 ];
 
 const GREETINGS = [
-  { text: "Allinllachu!", lang: "Quechua",    script: "Latin"      },
-  { text: "Hello!",       lang: "English",    script: "Latin"      },
-  { text: "Bonjour!",     lang: "French",     script: "Latin"      },
-  { text: "こんにちは！",  lang: "Japanese",   script: "Kanji"      },
-  { text: "مرحباً!",      lang: "Arabic",     script: "Arabic"     },
-  { text: "안녕하세요!",   lang: "Korean",     script: "Hangul"     },
-  { text: "नमस्ते!",      lang: "Hindi",      script: "Devanagari" },
-  { text: "Привет!",      lang: "Russian",    script: "Cyrillic"   },
-  { text: "שָׁלוֹם!",     lang: "Hebrew",     script: "Hebrew"     },
-  { text: "Hola!",        lang: "Spanish",    script: "Latin"      },
-  { text: "สวัสดี!",       lang: "Thai",       script: "Thai"       },
-  { text: "Merhaba!",     lang: "Turkish",    script: "Latin"      },
-  { text: "Olá!",         lang: "Portuguese", script: "Latin"      },
+  { text: "Allinllachu!", lang: "Quechua", script: "Latin" },
+  { text: "Hello!", lang: "English", script: "Latin" },
+  { text: "Bonjour!", lang: "French", script: "Latin" },
+  { text: "こんにちは！", lang: "Japanese", script: "Kanji" },
+  { text: "مرحباً!", lang: "Arabic", script: "Arabic" },
+  { text: "안녕하세요!", lang: "Korean", script: "Hangul" },
+  { text: "नमस्ते!", lang: "Hindi", script: "Devanagari" },
+  { text: "Привет!", lang: "Russian", script: "Cyrillic" },
+  { text: "שָׁלוֹם!", lang: "Hebrew", script: "Hebrew" },
+  { text: "Hola!", lang: "Spanish", script: "Latin" },
+  { text: "สวัสดี!", lang: "Thai", script: "Thai" },
+  { text: "Merhaba!", lang: "Turkish", script: "Latin" },
+  { text: "Olá!", lang: "Portuguese", script: "Latin" },
 ];
 
 const ROLES = [
@@ -47,10 +47,10 @@ const WORDS = ["design", "build", "program"];
 // ── Build CatmullRom brain curves from data ────────────────────
 function buildBrainCurves(): THREE.CatmullRomCurve3[] {
   const paths = data.economics[0].paths;
-  return paths.map(path => {
+  return paths.map((path) => {
     const pts: THREE.Vector3[] = [];
     for (let i = 0; i < path.length; i += 3)
-      pts.push(new THREE.Vector3(path[i], path[i+1], path[i+2]));
+      pts.push(new THREE.Vector3(path[i], path[i + 1], path[i + 2]));
     return new THREE.CatmullRomCurve3(pts);
   });
 }
@@ -60,7 +60,8 @@ function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
   useEffect(() => {
     const mount = mountRef.current;
     if (!mount) return;
-    const W = mount.clientWidth, H = mount.clientHeight;
+    const W = mount.clientWidth,
+      H = mount.clientHeight;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -68,7 +69,7 @@ function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
     renderer.setClearColor(0x000000, 0);
     mount.appendChild(renderer.domElement);
 
-    const scene  = new THREE.Scene();
+    const scene = new THREE.Scene();
     // Camera matches original: z=0.3, near=0.001, far=5 — scaled up x30
     const camera = new THREE.PerspectiveCamera(50, W / H, 0.001, 150);
     camera.position.z = 9;
@@ -84,7 +85,7 @@ function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
     // ── Tube meshes with glowing shader ───────────────────────
     const tubeMat = new THREE.ShaderMaterial({
       uniforms: {
-        time:  { value: 0 },
+        time: { value: 0 },
         color: { value: new THREE.Color(0.1, 0.3, 0.6) },
         mouse: { value: new THREE.Vector3() },
       },
@@ -133,8 +134,8 @@ function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
       new THREE.Color(0x2952a3), // Bauhaus blue
     ];
     curves.forEach((curve, i) => {
-      const geo  = new THREE.TubeGeometry(curve, 64, 0.001, 2, false);
-      const mat  = tubeMat.clone();
+      const geo = new THREE.TubeGeometry(curve, 64, 0.001, 2, false);
+      const mat = tubeMat.clone();
       mat.uniforms.color.value = BRAIN_COLORS[i % 3];
       brainGroup.add(new THREE.Mesh(geo, mat));
     });
@@ -144,18 +145,28 @@ function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
     const nParticles = DENSITY * curves.length;
     const pPos = new Float32Array(nParticles * 3);
 
-    interface PInfo { cur: number; speed: number; curve: THREE.CatmullRomCurve3 }
+    interface PInfo {
+      cur: number;
+      speed: number;
+      curve: THREE.CatmullRomCurve3;
+    }
     const pInfo: PInfo[] = [];
-    curves.forEach(curve => {
+    curves.forEach((curve) => {
       for (let j = 0; j < DENSITY; j++) {
-        pInfo.push({ cur: Math.random(), speed: Math.random() * 0.003 + 0.001, curve });
+        pInfo.push({
+          cur: Math.random(),
+          speed: Math.random() * 0.003 + 0.001,
+          curve,
+        });
       }
     });
-    const randoms = new Float32Array(nParticles).map(() => 0.3 + Math.random() * 0.7);
+    const randoms = new Float32Array(nParticles).map(
+      () => 0.3 + Math.random() * 0.7,
+    );
 
     const pGeo = new THREE.BufferGeometry();
     pGeo.setAttribute("position", new THREE.BufferAttribute(pPos, 3));
-    pGeo.setAttribute("randoms",  new THREE.BufferAttribute(randoms, 1));
+    pGeo.setAttribute("randoms", new THREE.BufferAttribute(randoms, 1));
 
     const pMat = new THREE.ShaderMaterial({
       uniforms: { time: { value: 0 } },
@@ -186,32 +197,49 @@ function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
     brainGroup.add(new THREE.Points(pGeo, pMat));
 
     // ── Drag rotation ─────────────────────────────────────────
-    const drag = { active: false, lastX: 0, lastY: 0, rotX: 0, rotY: 0, velX: 0, velY: 0.003 };
+    const drag = {
+      active: false,
+      lastX: 0,
+      lastY: 0,
+      rotX: 0,
+      rotY: 0,
+      velX: 0,
+      velY: 0.003,
+    };
 
     const onPointerDown = (e: PointerEvent) => {
-      drag.active = true; drag.lastX = e.clientX; drag.lastY = e.clientY;
-      drag.velX = 0; drag.velY = 0;
+      drag.active = true;
+      drag.lastX = e.clientX;
+      drag.lastY = e.clientY;
+      drag.velX = 0;
+      drag.velY = 0;
       canvas.style.cursor = "grabbing";
     };
     const onPointerMove = (e: PointerEvent) => {
       if (!drag.active) return;
       drag.velY = (e.clientX - drag.lastX) * 0.008;
       drag.velX = (e.clientY - drag.lastY) * 0.008;
-      drag.rotY += drag.velY; drag.rotX += drag.velX;
+      drag.rotY += drag.velY;
+      drag.rotX += drag.velX;
       drag.rotX = Math.max(-1.2, Math.min(1.2, drag.rotX));
-      drag.lastX = e.clientX; drag.lastY = e.clientY;
+      drag.lastX = e.clientX;
+      drag.lastY = e.clientY;
     };
-    const onPointerUp = () => { drag.active = false; canvas.style.cursor = "grab"; };
+    const onPointerUp = () => {
+      drag.active = false;
+      canvas.style.cursor = "grab";
+    };
 
     // Attach to canvas element directly for reliable pointer capture
     const canvas = renderer.domElement;
     canvas.style.cursor = "grab";
     canvas.addEventListener("pointerdown", onPointerDown);
     window.addEventListener("pointermove", onPointerMove);
-    window.addEventListener("pointerup",   onPointerUp);
+    window.addEventListener("pointerup", onPointerUp);
 
     // ── Animate ───────────────────────────────────────────────
-    let raf: number, elapsed = 0;
+    let raf: number,
+      elapsed = 0;
     const tick = () => {
       raf = requestAnimationFrame(tick);
       elapsed += 0.01;
@@ -220,13 +248,14 @@ function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
       if (!drag.active) {
         drag.velY += (0.003 - drag.velY) * 0.02;
         drag.velX += (0 - drag.velX) * 0.05;
-        drag.rotY += drag.velY; drag.rotX += drag.velX;
+        drag.rotY += drag.velY;
+        drag.rotX += drag.velX;
       }
       brainGroup.rotation.y = drag.rotY;
       brainGroup.rotation.x = drag.rotX;
 
       // Update tube time uniform
-      scene.traverse(obj => {
+      scene.traverse((obj) => {
         if (obj instanceof THREE.Mesh) {
           const mat = obj.material as THREE.ShaderMaterial;
           if (mat.uniforms?.time) mat.uniforms.time.value = elapsed;
@@ -237,7 +266,9 @@ function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
       for (let i = 0; i < pInfo.length; i++) {
         pInfo[i].cur = (pInfo[i].cur + pInfo[i].speed) % 1;
         const pt = pInfo[i].curve.getPointAt(pInfo[i].cur);
-        pPos[i*3] = pt.x; pPos[i*3+1] = pt.y; pPos[i*3+2] = pt.z;
+        pPos[i * 3] = pt.x;
+        pPos[i * 3 + 1] = pt.y;
+        pPos[i * 3 + 2] = pt.z;
       }
       pGeo.attributes.position.needsUpdate = true;
       pMat.uniforms.time.value = elapsed;
@@ -247,8 +278,10 @@ function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
     tick();
 
     const onResize = () => {
-      const w = mount.clientWidth, h = mount.clientHeight;
-      camera.aspect = w / h; camera.updateProjectionMatrix();
+      const w = mount.clientWidth,
+        h = mount.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
       renderer.setSize(w, h);
     };
     window.addEventListener("resize", onResize);
@@ -257,10 +290,11 @@ function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
       cancelAnimationFrame(raf);
       canvas.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("pointerup",   onPointerUp);
+      window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("resize", onResize);
       renderer.dispose();
-      if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);
+      if (mount.contains(renderer.domElement))
+        mount.removeChild(renderer.domElement);
     };
   }, [mountRef]);
 }
@@ -351,15 +385,62 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
       {/* ══════════════════════════════════════════════
           SECTION 1 — Dark hero (full viewport)
       ══════════════════════════════════════════════ */}
-      <section id="home"
+      <section
+        id="home"
         className="relative flex flex-col overflow-hidden bg-[#0d0d0d]"
         style={{ height: "100svh", minHeight: 600, padding: "3vh 6vw 2vh" }}
       >
         {/* Subtle Bauhaus corner accents */}
-        <div style={{ position:"absolute", top:0, right:0, width:"clamp(60px,8vw,100px)", height:"clamp(60px,8vw,100px)", background:"#E63329", opacity:0.07, zIndex:0 }} />
-        <div style={{ position:"absolute", bottom:0, left:0, width:"clamp(80px,10vw,130px)", height:"clamp(80px,10vw,130px)", borderRadius:"0 100% 0 0", background:"#2952A3", opacity:0.08, zIndex:0 }} />
-        <div style={{ position:"absolute", bottom:"8%", right:"5%", width:"clamp(40px,5vw,70px)", height:"clamp(40px,5vw,70px)", borderRadius:"50%", background:"#F5C500", opacity:0.07, zIndex:0 }} />
-        <div style={{ position:"absolute", top:"20%", left:"3%", width:3, height:"clamp(60px,8vh,100px)", background:"#E63329", opacity:0.18, zIndex:0 }} />
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            width: "clamp(60px,8vw,100px)",
+            height: "clamp(60px,8vw,100px)",
+            background: "#E63329",
+            opacity: 0.07,
+            zIndex: 0,
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            width: "clamp(80px,10vw,130px)",
+            height: "clamp(80px,10vw,130px)",
+            borderRadius: "0 100% 0 0",
+            background: "#2952A3",
+            opacity: 0.08,
+            zIndex: 0,
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            bottom: "8%",
+            right: "5%",
+            width: "clamp(40px,5vw,70px)",
+            height: "clamp(40px,5vw,70px)",
+            borderRadius: "50%",
+            background: "#F5C500",
+            opacity: 0.07,
+            zIndex: 0,
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            top: "20%",
+            left: "3%",
+            width: 3,
+            height: "clamp(60px,8vh,100px)",
+            background: "#E63329",
+            opacity: 0.18,
+            zIndex: 0,
+          }}
+        />
         <div
           ref={mountRef}
           className="absolute inset-0 z-[5]"
@@ -378,40 +459,54 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
         <nav className="relative z-10 flex justify-between items-center mb-auto pb-4">
           {/* Brand logo */}
           <a href="#home">
-            <img src="/brand-logo.png" alt="MATHBECSAN"
-              style={{ height: "clamp(36px, 4vw, 52px)", width: "auto", display: "block" }} />
+            <img
+              src="/brand-logo.png"
+              alt="MATHBECSAN"
+              style={{
+                height: "clamp(100px,20vw, 200px)",
+                width: "auto",
+                display: "block",
+              }}
+            />
           </a>
-          <div className="flex gap-7 font-mono text-[#f0ede6]/90 tracking-[0.18em] uppercase"
-            style={{ fontSize: "clamp(11px, 1vw, 14px)" }}>
-            {NAV.map((n) => (
-              n.label === "Experience"
-                ? (
-                  <a key={n.label} href={n.href}
-                    style={{
-                      position: "relative",
-                      color: "#F5C500",
-                      fontWeight: 800,
-                      letterSpacing: "0.2em",
-                      textDecoration: "none",
-                      padding: "4px 12px",
-                      border: "1px solid rgba(245,197,0,0.5)",
-                      borderRadius: 3,
-                      background: "rgba(245,197,0,0.08)",
-                      boxShadow: "0 0 12px rgba(245,197,0,0.3), inset 0 0 8px rgba(245,197,0,0.05)",
-                      transition: "box-shadow 0.2s, background 0.2s",
-                      animation: "experienceGlow 2s ease-in-out infinite",
-                    }}>
-                    {n.label} ✦
-                  </a>
-                )
-                : (
-                  <a key={n.label} href={n.href}
-                    className="hover:text-[#f0ede6] transition-colors"
-                    style={{ textDecoration: "none" }}>
-                    {n.label}
-                  </a>
-                )
-            ))}
+          <div
+            className="flex gap-7 font-mono text-[#f0ede6]/90 tracking-[0.18em] uppercase"
+            style={{ fontSize: "clamp(11px, 1vw, 14px)" }}
+          >
+            {NAV.map((n) =>
+              n.label === "Experience" ? (
+                <a
+                  key={n.label}
+                  href={n.href}
+                  style={{
+                    position: "relative",
+                    color: "#F5C500",
+                    fontWeight: 800,
+                    letterSpacing: "0.2em",
+                    textDecoration: "none",
+                    padding: "4px 12px",
+                    border: "1px solid rgba(245,197,0,0.5)",
+                    borderRadius: 3,
+                    background: "rgba(245,197,0,0.08)",
+                    boxShadow:
+                      "0 0 12px rgba(245,197,0,0.3), inset 0 0 8px rgba(245,197,0,0.05)",
+                    transition: "box-shadow 0.2s, background 0.2s",
+                    animation: "experienceGlow 2s ease-in-out infinite",
+                  }}
+                >
+                  {n.label} ✦
+                </a>
+              ) : (
+                <a
+                  key={n.label}
+                  href={n.href}
+                  className="hover:text-[#f0ede6] transition-colors"
+                  style={{ textDecoration: "none" }}
+                >
+                  {n.label}
+                </a>
+              ),
+            )}
           </div>
         </nav>
 
@@ -451,8 +546,13 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
           >
             MATHIAS
           </h1>
-          <p className="mt-4 font-mono tracking-[0.3em] uppercase text-[#f0ede6]/90"
-            style={{ fontSize: "clamp(11px, 1.1vw, 15px)", letterSpacing: "0.3em" }}>
+          <p
+            className="mt-4 font-mono tracking-[0.3em] uppercase text-[#f0ede6]/90"
+            style={{
+              fontSize: "clamp(11px, 1.1vw, 15px)",
+              letterSpacing: "0.3em",
+            }}
+          >
             {GREETINGS[idx].lang} · {GREETINGS[idx].script}
           </p>
         </div>
@@ -577,22 +677,47 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
         />
 
         {/* ② Portrait + text — photo fills full height touching both strips */}
-        <div style={{ position: "relative", minHeight: "clamp(360px, 48vw, 640px)" }}>
-
+        <div
+          style={{
+            position: "relative",
+            minHeight: "clamp(360px, 48vw, 640px)",
+          }}
+        >
           {/* Photo — position absolute, full height right 45% */}
-          <div style={{
-            position: "absolute", top: 0, right: 0, bottom: 0, width: "45%",
-            overflow: "hidden",
-            animation: posterVisible ? "fadeRight 0.6s ease 0.1s both" : "none",
-          }}>
-            <img src="/profile-picture.png" alt="Mathias Becerra"
-              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 8%", display: "block" }} />
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              bottom: 0,
+              width: "45%",
+              overflow: "hidden",
+              animation: posterVisible
+                ? "fadeRight 0.6s ease 0.1s both"
+                : "none",
+            }}
+          >
+            <img
+              src="/profile-picture.png"
+              alt="Mathias Becerra"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                objectPosition: "50% 8%",
+                display: "block",
+              }}
+            />
           </div>
 
           {/* Text — left 58%, vertically centered */}
           <div
             style={{
-              position: "absolute", top: 0, left: 0, bottom: 0, width: "58%",
+              position: "absolute",
+              top: 0,
+              left: 0,
+              bottom: 0,
+              width: "58%",
               padding: "clamp(24px, 3vw, 48px) clamp(32px, 5vw, 80px)",
               display: "flex",
               flexDirection: "column",
@@ -672,7 +797,6 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
               />
             </p>
           </div>
-
         </div>
 
         {/* ③ Bottom Bauhaus strip — different pattern */}
