@@ -190,7 +190,8 @@ function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
 
     const onPointerDown = (e: PointerEvent) => {
       drag.active = true; drag.lastX = e.clientX; drag.lastY = e.clientY;
-      drag.velX = 0; drag.velY = 0; mount.style.cursor = "grabbing";
+      drag.velX = 0; drag.velY = 0;
+      canvas.style.cursor = "grabbing";
     };
     const onPointerMove = (e: PointerEvent) => {
       if (!drag.active) return;
@@ -200,12 +201,14 @@ function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
       drag.rotX = Math.max(-1.2, Math.min(1.2, drag.rotX));
       drag.lastX = e.clientX; drag.lastY = e.clientY;
     };
-    const onPointerUp = () => { drag.active = false; mount.style.cursor = "grab"; };
+    const onPointerUp = () => { drag.active = false; canvas.style.cursor = "grab"; };
 
-    mount.addEventListener("pointerdown", onPointerDown);
+    // Attach to canvas element directly for reliable pointer capture
+    const canvas = renderer.domElement;
+    canvas.style.cursor = "grab";
+    canvas.addEventListener("pointerdown", onPointerDown);
     window.addEventListener("pointermove", onPointerMove);
     window.addEventListener("pointerup",   onPointerUp);
-    mount.style.cursor = "grab";
 
     // ── Animate ───────────────────────────────────────────────
     let raf: number, elapsed = 0;
@@ -252,7 +255,7 @@ function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
 
     return () => {
       cancelAnimationFrame(raf);
-      mount.removeEventListener("pointerdown", onPointerDown);
+      canvas.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup",   onPointerUp);
       window.removeEventListener("resize", onResize);
@@ -358,7 +361,8 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
         <div style={{ position:"absolute", top:"20%", left:"3%", width:3, height:"clamp(60px,8vh,100px)", background:"#E63329", opacity:0.18, zIndex:0 }} />
         <div
           ref={mountRef}
-          className="absolute inset-0 z-0 pointer-events-none"
+          className="absolute inset-0 z-0"
+          style={{ cursor: "grab" }}
           style={{ left: "45%" }}
         />
         <div
