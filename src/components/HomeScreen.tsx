@@ -20,19 +20,19 @@ const NAV = [
 ];
 
 const GREETINGS = [
-  { text: "Allinllachu.", lang: "Quechua", script: "Latin" },
-  { text: "Hello.", lang: "English", script: "Latin" },
-  { text: "Bonjour.", lang: "French", script: "Latin" },
-  { text: "こんにちは。", lang: "Japanese", script: "Kanji" },
-  { text: "مرحباً.", lang: "Arabic", script: "Arabic" },
-  { text: "안녕하세요.", lang: "Korean", script: "Hangul" },
-  { text: "नमस्ते.", lang: "Hindi", script: "Devanagari" },
-  { text: "Привет.", lang: "Russian", script: "Cyrillic" },
-  { text: "שָׁלוֹם.", lang: "Hebrew", script: "Hebrew" },
-  { text: "Hola.", lang: "Spanish", script: "Latin" },
-  { text: "สวัสดี.", lang: "Thai", script: "Thai" },
-  { text: "Merhaba.", lang: "Turkish", script: "Latin" },
-  { text: "Olá.", lang: "Portuguese", script: "Latin" },
+  { text: "Allinllachu!", lang: "Quechua",    script: "Latin"      },
+  { text: "Hello!",       lang: "English",    script: "Latin"      },
+  { text: "Bonjour!",     lang: "French",     script: "Latin"      },
+  { text: "こんにちは！",  lang: "Japanese",   script: "Kanji"      },
+  { text: "مرحباً!",      lang: "Arabic",     script: "Arabic"     },
+  { text: "안녕하세요!",   lang: "Korean",     script: "Hangul"     },
+  { text: "नमस्ते!",      lang: "Hindi",      script: "Devanagari" },
+  { text: "Привет!",      lang: "Russian",    script: "Cyrillic"   },
+  { text: "שָׁלוֹם!",     lang: "Hebrew",     script: "Hebrew"     },
+  { text: "Hola!",        lang: "Spanish",    script: "Latin"      },
+  { text: "สวัสดี!",       lang: "Thai",       script: "Thai"       },
+  { text: "Merhaba!",     lang: "Turkish",    script: "Latin"      },
+  { text: "Olá!",         lang: "Portuguese", script: "Latin"      },
 ];
 
 const ROLES = [
@@ -343,7 +343,8 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
         @keyframes fadeUp   { from { transform:translateY(32px); opacity:0 } to { transform:translateY(0); opacity:1 } }
         @keyframes fadeLeft { from { transform:translateX(-40px); opacity:0 } to { transform:translateX(0); opacity:1 } }
         @keyframes fadeRight{ from { transform:translateX(40px); opacity:0 } to { transform:translateX(0); opacity:1 } }
-        @keyframes wordIn   { from { transform:translateY(14px); opacity:0 } to { transform:translateY(0); opacity:1 } }
+        @keyframes wordIn          { from { transform:translateY(14px); opacity:0 } to { transform:translateY(0); opacity:1 } }
+        @keyframes experienceGlow  { 0%,100% { box-shadow:0 0 10px rgba(245,197,0,0.3),inset 0 0 8px rgba(245,197,0,0.05) } 50% { box-shadow:0 0 22px rgba(245,197,0,0.7),inset 0 0 12px rgba(245,197,0,0.12) } }
         @keyframes ticker   { from { transform:translateX(0) } to { transform:translateX(-50%) } }
       `}</style>
 
@@ -375,32 +376,41 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
 
         {/* Nav — plain links, no background image */}
         <nav className="relative z-10 flex justify-between items-center mb-auto pb-4">
-          <div className="flex items-center gap-3">
-            <div
-              className="flex items-center justify-center font-mono font-bold text-white text-sm"
-              style={{
-                width: 36,
-                height: 36,
-                background: "#2952A3",
-                borderRadius: 4,
-                letterSpacing: "0.05em",
-              }}
-            >
-              MB
-            </div>
-            <span className="text-xs uppercase tracking-[0.1em] text-[#f0ede6]/80">
-              Portfolio
-            </span>
-          </div>
-          <div className="flex gap-6 font-mono text-sm text-[#f0ede6]/90 tracking-[0.22em] uppercase">
+          {/* Brand logo */}
+          <a href="#home">
+            <img src="/brand-logo.png" alt="MATHBECSAN"
+              style={{ height: "clamp(36px, 4vw, 52px)", width: "auto", display: "block" }} />
+          </a>
+          <div className="flex gap-7 font-mono text-[#f0ede6]/90 tracking-[0.18em] uppercase"
+            style={{ fontSize: "clamp(11px, 1vw, 14px)" }}>
             {NAV.map((n) => (
-              <a
-                key={n.label}
-                href={n.href}
-                className="hover:text-[#f0ede6] transition-colors"
-              >
-                {n.label}
-              </a>
+              n.label === "Experience"
+                ? (
+                  <a key={n.label} href={n.href}
+                    style={{
+                      position: "relative",
+                      color: "#F5C500",
+                      fontWeight: 800,
+                      letterSpacing: "0.2em",
+                      textDecoration: "none",
+                      padding: "4px 12px",
+                      border: "1px solid rgba(245,197,0,0.5)",
+                      borderRadius: 3,
+                      background: "rgba(245,197,0,0.08)",
+                      boxShadow: "0 0 12px rgba(245,197,0,0.3), inset 0 0 8px rgba(245,197,0,0.05)",
+                      transition: "box-shadow 0.2s, background 0.2s",
+                      animation: "experienceGlow 2s ease-in-out infinite",
+                    }}>
+                    {n.label} ✦
+                  </a>
+                )
+                : (
+                  <a key={n.label} href={n.href}
+                    className="hover:text-[#f0ede6] transition-colors"
+                    style={{ textDecoration: "none" }}>
+                    {n.label}
+                  </a>
+                )
             ))}
           </div>
         </nav>
@@ -439,7 +449,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
             className="font-mono font-bold text-[#f0ede6] leading-none tracking-tight"
             style={{ fontSize: "clamp(44px, 7.5vw, 118px)" }}
           >
-            MATHIAS.
+            MATHIAS
           </h1>
           <p className="mt-4 font-mono tracking-[0.3em] uppercase text-[#f0ede6]/90"
             style={{ fontSize: "clamp(11px, 1.1vw, 15px)", letterSpacing: "0.3em" }}>
