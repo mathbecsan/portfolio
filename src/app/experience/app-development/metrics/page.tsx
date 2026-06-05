@@ -29,7 +29,7 @@ export default function MetricsPage() {
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "clamp(20px,3vw,40px) clamp(16px,3vw,40px)" }}>
 
         {/* ── ROW 1: Hero header ── */}
-        <div style={{ display: "grid", gridTemplateColumns: "0.85fr 1.35fr 0.65fr", gap: 20, alignItems: "center", marginBottom: 28 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "0.85fr 1.35fr 0.65fr", gap: 20, alignItems: "flex-end", marginBottom: 28 }}>
 
           {/* Left: SPEAK.IO wordmark + subtitle */}
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
