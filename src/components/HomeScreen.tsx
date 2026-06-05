@@ -89,18 +89,26 @@ function useThreeBackground(
     // Scale the brain to fill the viewport (original data is ~0.0-0.3 range)
     brainGroup.scale.setScalar(30);
 
-    // ── Sample 14 points spread across brain BODY (not stem) ──
-    // Use varied curve indices + t-values to distribute across cortex lobes
-    const DOT_PICKS: [number, number][] = [
-      [5,  0.2], [12, 0.7], [20, 0.4], [28, 0.6],
-      [35, 0.3], [42, 0.8], [50, 0.15],[58, 0.5],
-      [65, 0.65],[72, 0.35],[79, 0.55],[86, 0.25],
-      [93, 0.45],[100,0.75],
-    ];
-    const nodeLocalPos: THREE.Vector3[] = DOT_PICKS.map(([ci, t]) => {
-      const idx = Math.min(ci, curves.length - 1);
-      return curves[idx].getPointAt(t).clone();
-    });
+    // ── Sample 14 points from UPPER brain only (lobes, not stem) ──
+    // Collect candidate points across all curves at multiple t values,
+    // then pick the 14 with the highest y (uppermost brain regions)
+    const candidates: THREE.Vector3[] = [];
+    const step = Math.max(1, Math.floor(curves.length / 60));
+    for (let ci = 0; ci < curves.length; ci += step) {
+      for (const t of [0.15, 0.35, 0.55, 0.75]) {
+        candidates.push(curves[ci].getPointAt(t).clone());
+      }
+    }
+    // Sort by y descending (highest = top of brain), pick top 14 spread by x
+    candidates.sort((a, b) => b.y - a.y);
+    // Deduplicate by spreading across x range to avoid clustering
+    const nodeLocalPos: THREE.Vector3[] = [];
+    for (const c of candidates) {
+      if (nodeLocalPos.length >= 14) break;
+      // Keep if far enough from existing picks (min distance 0.04 in local space)
+      const tooClose = nodeLocalPos.some(p => p.distanceTo(c) < 0.04);
+      if (!tooClose) nodeLocalPos.push(c);
+    }
 const _projVec = new THREE.Vector3();
 
     // ── Tube meshes with glowing shader ───────────────────────
