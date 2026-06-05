@@ -89,11 +89,17 @@ function useThreeBackground(
     // Scale the brain to fill the viewport (original data is ~0.0-0.3 range)
     brainGroup.scale.setScalar(30);
 
-    // ── Sample 14 points spread across brain curves for dots ──
-    const DOT_CURVE_PICKS = [0,8,16,24,32,40,48,56,64,72,80,88,96,104];
-    const nodeLocalPos: THREE.Vector3[] = DOT_CURVE_PICKS.map(ci => {
+    // ── Sample 14 points spread across brain BODY (not stem) ──
+    // Use varied curve indices + t-values to distribute across cortex lobes
+    const DOT_PICKS: [number, number][] = [
+      [5,  0.2], [12, 0.7], [20, 0.4], [28, 0.6],
+      [35, 0.3], [42, 0.8], [50, 0.15],[58, 0.5],
+      [65, 0.65],[72, 0.35],[79, 0.55],[86, 0.25],
+      [93, 0.45],[100,0.75],
+    ];
+    const nodeLocalPos: THREE.Vector3[] = DOT_PICKS.map(([ci, t]) => {
       const idx = Math.min(ci, curves.length - 1);
-      return curves[idx].getPointAt(0.5).clone();
+      return curves[idx].getPointAt(t).clone();
     });
 const _projVec = new THREE.Vector3();
 
@@ -306,8 +312,8 @@ const _projVec = new THREE.Vector3();
           }
           const vx = rect.left + (_projVec.x *  0.5 + 0.5) * rect.width;
           const vy = rect.top  + (_projVec.y * -0.5 + 0.5) * rect.height;
-          // Fade dots on back of rotating brain using viewZ range (~-5 to -13)
-          const opacity = Math.max(0.15, Math.min(1, 1 - (Math.abs(viewZ) - 5) / 10));
+          // Fade dots on back of rotating brain — keep minimum at 0.5 so always readable
+          const opacity = Math.max(0.5, Math.min(1, 1 - (Math.abs(viewZ) - 5) / 10));
           return { x: vx, y: vy, opacity };
         });
         onDotPositions(results);
@@ -646,19 +652,21 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
             display: "flex", alignItems: "center", gap: 6,
           }}>
             <div style={{
-              width: 8, height: 8, borderRadius: "50%",
+              width: 9, height: 9, borderRadius: "50%",
               background: "#E63329",
-              border: "1.5px solid rgba(255,255,255,0.8)",
+              border: "2px solid rgba(255,255,255,0.95)",
               flexShrink: 0,
               animation: `dotPulse 2.5s ease-in-out ${i * 0.2}s infinite`,
+              boxShadow: "0 0 6px rgba(230,51,41,0.8)",
             }} />
             <span style={{
-              fontFamily: "monospace", fontSize: 10, fontWeight: 700,
-              letterSpacing: "0.07em", textTransform: "uppercase",
-              color: "#f0ede6", whiteSpace: "nowrap",
-              background: "rgba(0,0,0,0.6)",
-              padding: "2px 7px", borderRadius: 3,
-              boxShadow: "0 1px 10px rgba(0,0,0,0.9)",
+              fontFamily: "monospace", fontSize: 11, fontWeight: 800,
+              letterSpacing: "0.08em", textTransform: "uppercase",
+              color: "#ffffff", whiteSpace: "nowrap",
+              background: "rgba(0,0,0,0.82)",
+              padding: "3px 8px", borderRadius: 3,
+              boxShadow: "0 2px 12px rgba(0,0,0,1)",
+              border: "1px solid rgba(255,255,255,0.12)",
             }}>
               {label}
             </span>
