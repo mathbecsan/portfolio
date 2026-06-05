@@ -64,33 +64,29 @@ export default function MetricsPage() {
           <img src={`${BASE}/Container (4) copy.svg`} alt="Impact metrics stats" style={{ width: "100%", height: "auto", display: "block", borderRadius: 12 }} />
         </div>
 
-        {/* ── ROW 3: Technology Stack + Features Developed ── */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
+        {/* ── ROW 3: Technology Stack (left) + Features Developed (right) ── */}
+        <div style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: 20, alignItems: "start", marginBottom: 20 }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <img src={`${BASE}/TECHNOLOGY STACK.svg`} alt="Technology Stack" style={{ width: "clamp(180px,22vw,340px)", height: "auto" }} />
+            <img src={`${BASE}/TECHNOLOGY STACK.svg`} alt="Technology Stack" style={{ width: "clamp(180px,22vw,320px)", height: "auto" }} />
             <img src={`${BASE}/Container (6).svg`} alt="Technology stack detail" style={{ width: "100%", height: "auto", borderRadius: 10 }} />
           </div>
-          <div>
-            <img src={`${BASE}/Container (6) copy.svg`} alt="Features developed" style={{ width: "100%", height: "auto", borderRadius: 10 }} />
-          </div>
+          {/* Container (7) = Features Developed with 11+ breakdown */}
+          <img src={`${BASE}/Container (7).svg`} alt="Features developed" style={{ width: "100%", height: "auto", borderRadius: 10 }} />
         </div>
 
-        {/* ── ROW 4: Quote + Engagement ── */}
-        <div style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: 20, marginBottom: 20 }}>
-          <img src={`${BASE}/Container (7).svg`} alt="Quote and engagement" style={{ width: "100%", height: "auto", borderRadius: 10 }} />
+        {/* ── ROW 4: Dark quote + % Engagement (left) | DAU + Interviews + Hours (right) ── */}
+        <div style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: 20, alignItems: "start", marginBottom: 20 }}>
+          {/* Left: dark quote block stacked above % engagement */}
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            <img src={`${BASE}/Container (5).svg`} alt="Metrics block" style={{ width: "100%", height: "auto", borderRadius: 10 }} />
-            <img src={`${BASE}/Container (7) copy.svg`} alt="Engagement metrics" style={{ width: "100%", height: "auto", borderRadius: 10 }} />
+            <img src={`${BASE}/Container (margin).svg`} alt="Quote block" style={{ width: "100%", height: "auto", borderRadius: 10 }} />
+            <img src={`${BASE}/Container (6) copy.svg`} alt="% Engagement" style={{ width: "100%", height: "auto", borderRadius: 10 }} />
           </div>
-        </div>
-
-        {/* ── ROW 5: Active Users + Interviews wide ── */}
-        <div style={{ display: "grid", gridTemplateColumns: "0.4fr 1fr", gap: 20, marginBottom: 20 }}>
+          {/* Right: daily active users + interviews + hours stacked */}
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <img src={`${BASE}/Container (8).svg`} alt="Daily active users" style={{ width: "100%", height: "auto", borderRadius: 10 }} />
+            <img src={`${BASE}/Container (7) copy.svg`} alt="Interviews" style={{ width: "100%", height: "auto", borderRadius: 10 }} />
             <img src={`${BASE}/Container (9).svg`} alt="Hours of development" style={{ width: "100%", height: "auto", borderRadius: 10 }} />
           </div>
-          <img src={`${BASE}/Container (8) copy.svg`} alt="Interviews" style={{ width: "100%", height: "auto", borderRadius: 10, alignSelf: "start" }} />
         </div>
 
         {/* ── ROW 6: 4 Phone Screenshots ── */}
@@ -106,7 +102,7 @@ export default function MetricsPage() {
             User Growth Over Time &nbsp;
             <span style={{ fontSize: 14 }}>📈</span>
           </p>
-          <img src={`${BASE}/Container (margin).svg`} alt="User growth chart" style={{ width: "100%", maxWidth: 800, height: "auto", borderRadius: 10, display: "block" }} />
+          <img src={`${BASE}/Container (8) copy.svg`} alt="User growth chart" style={{ width: "100%", height: "auto", borderRadius: 10, display: "block" }} />
         </div>
 
       </div>
