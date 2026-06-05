@@ -29,21 +29,21 @@ export default function MetricsPage() {
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "clamp(20px,3vw,40px) clamp(16px,3vw,40px)" }}>
 
         {/* ── ROW 1: Hero header ── */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 0.7fr", gap: 24, alignItems: "center", marginBottom: 32 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "0.85fr 1.35fr 0.65fr", gap: 20, alignItems: "center", marginBottom: 28 }}>
 
           {/* Left: SPEAK.IO wordmark + subtitle */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <img src={`${BASE}/speakio intro.svg`} alt="SPEAK.IO" style={{ width: "100%", maxWidth: 380, height: "auto" }} />
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <img src={`${BASE}/speakio intro.svg`} alt="SPEAK.IO" style={{ width: "100%", height: "auto" }} />
             <div style={{ paddingLeft: 4 }}>
               <p style={{ fontFamily: "monospace", fontSize: 11, letterSpacing: "0.18em", color: "#555", textTransform: "uppercase", margin: "0 0 4px" }}>Language Education App</p>
               <p style={{ fontFamily: "monospace", fontSize: 11, letterSpacing: "0.18em", color: "#555", textTransform: "uppercase", margin: 0 }}>Portfolio Case Study</p>
             </div>
-            <img src={`${BASE}/IMPACT METRICS.svg`} alt="IMPACT METRICS" style={{ width: "clamp(160px,20vw,260px)", height: "auto", marginTop: 8 }} />
+            <img src={`${BASE}/IMPACT METRICS.svg`} alt="IMPACT METRICS" style={{ width: "100%", height: "auto", marginTop: 8 }} />
           </div>
 
-          {/* Center: chameleon */}
-          <div style={{ display: "flex", justifyContent: "center", alignItems: "flex-end" }}>
-            <img src={`${BASE}/prismthechamaleon.svg`} alt="Prism the Chameleon" style={{ width: "100%", maxWidth: 420, height: "auto" }} />
+          {/* Center: chameleon — large, overflows upward to feel dynamic */}
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "flex-end", marginBottom: -24 }}>
+            <img src={`${BASE}/prismthechamaleon.svg`} alt="Prism the Chameleon" style={{ width: "100%", height: "auto" }} />
           </div>
 
           {/* Right: Human Purpose quote */}
@@ -84,8 +84,8 @@ export default function MetricsPage() {
           {/* Right: daily active users + interviews + hours stacked */}
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <img src={`${BASE}/Container (8).svg`} alt="Daily active users" style={{ width: "100%", height: "auto", borderRadius: 10 }} />
-            <img src={`${BASE}/Container (7) copy.svg`} alt="Interviews" style={{ width: "100%", height: "auto", borderRadius: 10 }} />
-            <img src={`${BASE}/Container (9).svg`} alt="Hours of development" style={{ width: "100%", height: "auto", borderRadius: 10 }} />
+            <img src={`${BASE}/Container (9).svg`} alt="Interviews" style={{ width: "100%", height: "auto", borderRadius: 10 }} />
+            <img src={`${BASE}/Container (7) copy.svg`} alt="Hours of development" style={{ width: "100%", height: "auto", borderRadius: 10 }} />
           </div>
         </div>
 
