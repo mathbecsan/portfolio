@@ -24,6 +24,13 @@ const CATEGORIES: Record<string, { title: string; description: string; accent: s
 
 export default function CategoryPage({ params }: { params: Promise<{ category: string }> }) {
   const { category } = use(params);
+
+  // Redirect categories with dedicated pages
+  if (category === "app-development" && typeof window !== "undefined") {
+    window.location.replace("/experience/app-development");
+    return null;
+  }
+
   const cat = CATEGORIES[category];
   const title = cat?.title ?? category.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
   const description = cat?.description ?? "Projects and case studies in this category.";
