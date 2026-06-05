@@ -9,6 +9,8 @@ import FifthScreen from "./FifthScreen";
 import SixthScreen from "./SixthScreen";
 import SeventhScreen from "./SeventhScreen";
 import EighthScreen from "./EighthScreen";
+import ScrollReveal from "./ScrollReveal";
+import BauhausScrollOrnament from "./BauhausScrollOrnament";
 
 const NAV = [
   { label: "Home", href: "#home" },
@@ -55,8 +57,13 @@ function buildBrainCurves(): THREE.CatmullRomCurve3[] {
   });
 }
 
+interface DotScreen { x: number; y: number; opacity: number; }
+
 // ── Three.js — real anatomical brain (drag to rotate) ──────────
-function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
+function useThreeBackground(
+  mountRef: RefObject<HTMLDivElement | null>,
+  onDotPositions?: (dots: DotScreen[]) => void
+) {
   useEffect(() => {
     const mount = mountRef.current;
     if (!mount) return;
@@ -81,6 +88,14 @@ function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
 
     // Scale the brain to fill the viewport (original data is ~0.0-0.3 range)
     brainGroup.scale.setScalar(30);
+
+    // ── Sample 14 points spread across brain curves for dots ──
+    const DOT_CURVE_PICKS = [0,8,16,24,32,40,48,56,64,72,80,88,96,104];
+    const nodeLocalPos: THREE.Vector3[] = DOT_CURVE_PICKS.map(ci => {
+      const idx = Math.min(ci, curves.length - 1);
+      return curves[idx].getPointAt(0.5).clone();
+    });
+    const _projVec = new THREE.Vector3();
 
     // ── Tube meshes with glowing shader ───────────────────────
     const tubeMat = new THREE.ShaderMaterial({
@@ -274,6 +289,24 @@ function useThreeBackground(mountRef: RefObject<HTMLDivElement | null>) {
       pMat.uniforms.time.value = elapsed;
 
       renderer.render(scene, camera);
+
+      // Project brain-local dot positions → 2D screen coords
+      if (onDotPositions) {
+        const W = mount.clientWidth, H = mount.clientHeight;
+        const results: DotScreen[] = nodeLocalPos.map(local => {
+          _projVec.copy(local);
+          brainGroup.localToWorld(_projVec);   // apply scale + rotation
+          _projVec.project(camera);            // NDC [-1,1]
+          // Canvas pixel coords
+          const cx = (_projVec.x *  0.5 + 0.5) * W;
+          const cy = (_projVec.y * -0.5 + 0.5) * H;
+          // Fade when rotating to back (ndcZ > 1 = behind near plane; use z for depth cue)
+          const depth = _projVec.z;
+          const opacity = depth > 0.9 ? 0 : Math.max(0, 1 - depth * 1.1);
+          return { x: cx, y: cy, opacity };
+        });
+        onDotPositions(results);
+      }
     };
     tick();
 
@@ -332,9 +365,13 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
   const [roleExit, setRoleExit] = useState(false);
   const [wordExit, setWordExit] = useState(false);
   const [fadeIn, setFadeIn] = useState(false);
+  const [activeDot, setActiveDot] = useState<number | null>(null);
+  const [dotPositions, setDotPositions] = useState<DotScreen[]>([]);
+  // Stable bubble position captured on mouseenter — doesn't update while hovering
+  const [bubblePos, setBubblePos] = useState<{x: number; y: number} | null>(null);
   const posterVisible = useReveal(posterRef as RefObject<HTMLElement>);
 
-  useThreeBackground(mountRef);
+  useThreeBackground(mountRef, setDotPositions);
 
   useEffect(() => {
     if (visible) setTimeout(() => setFadeIn(true), 100);
@@ -380,6 +417,59 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
         @keyframes wordIn          { from { transform:translateY(14px); opacity:0 } to { transform:translateY(0); opacity:1 } }
         @keyframes experienceGlow  { 0%,100% { box-shadow:0 0 10px rgba(245,197,0,0.3),inset 0 0 8px rgba(245,197,0,0.05) } 50% { box-shadow:0 0 22px rgba(245,197,0,0.7),inset 0 0 12px rgba(245,197,0,0.12) } }
         @keyframes ticker   { from { transform:translateX(0) } to { transform:translateX(-50%) } }
+        @keyframes dotPulse { 0%,100%{transform:scale(1);opacity:0.9} 50%{transform:scale(1.5);opacity:0.6} }
+        @keyframes bubbleIn { from{transform:scale(0.85) translateY(4px);opacity:0} to{transform:scale(1) translateY(0);opacity:1} }
+
+        /* Nav link hover */
+        .nav-link { position:relative; text-decoration:none; padding:4px 0; overflow:hidden; }
+        .nav-link::after {
+          content:''; position:absolute; bottom:0; left:0; width:100%; height:1.5px;
+          background:#E63329; transform:scaleX(0); transform-origin:right;
+          transition:transform 0.3s cubic-bezier(0.22,1,0.36,1);
+        }
+        .nav-link:hover::after { transform:scaleX(1); transform-origin:left; }
+        .nav-link:hover { color:#fff !important; }
+        .nav-link span { display:inline-block; transition:transform 0.25s cubic-bezier(0.22,1,0.36,1); }
+        .nav-link:hover span { transform:translateY(-2px); }
+
+        /* Brain dot */
+        .brain-dot {
+          position:absolute; width:16px; height:16px; border-radius:50%;
+          background:#E63329; border:2px solid rgba(255,255,255,0.6);
+          cursor:pointer; z-index:20;
+          animation:dotPulse 2.5s ease-in-out infinite;
+          transition:transform 0.15s, background 0.15s;
+          /* Large invisible hit area for instant hover sensitivity */
+        }
+        .brain-dot::before {
+          content:''; position:absolute;
+          inset:-16px;
+          border-radius:50%;
+        }
+        .brain-dot:hover { transform:scale(1.5); background:#F5C500; }
+        .brain-dot.active { background:#F5C500; transform:scale(1.5); }
+
+        /* Speech bubble */
+        .brain-bubble {
+          position:absolute; z-index:21;
+          background:#0d0d0d; color:#f0ede6;
+          font-family:monospace; font-size:11px; font-weight:700;
+          letter-spacing:0.08em; text-transform:uppercase;
+          padding:6px 12px; border-radius:4px;
+          border:1px solid rgba(245,197,0,0.5);
+          box-shadow:0 4px 20px rgba(0,0,0,0.5);
+          white-space:nowrap; pointer-events:none;
+          transform-origin:bottom center;
+          animation:bubbleIn 0.12s cubic-bezier(0.22,1,0.36,1) forwards;
+        }
+        .brain-bubble::after {
+          content:''; position:absolute; bottom:-5px; left:50%;
+          transform:translateX(-50%);
+          width:8px; height:8px; background:#0d0d0d;
+          border-right:1px solid rgba(245,197,0,0.5);
+          border-bottom:1px solid rgba(245,197,0,0.5);
+          transform:translateX(-50%) rotate(45deg);
+        }
       `}</style>
 
       {/* ══════════════════════════════════════════════
@@ -446,12 +536,13 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
           className="absolute inset-0 z-[5]"
           style={{ left: "45%" }}
         />
+        {/* Grid — more visible */}
         <div
           className="absolute inset-0 z-[1] pointer-events-none"
           style={{
             backgroundImage:
-              "linear-gradient(90deg,rgba(255,255,255,0.04) 1px,transparent 1px)",
-            backgroundSize: "100px 100%",
+              "linear-gradient(90deg,rgba(255,255,255,0.07) 1px,transparent 1px), linear-gradient(0deg,rgba(255,255,255,0.04) 1px,transparent 1px)",
+            backgroundSize: "80px 80px",
           }}
         />
 
@@ -500,17 +591,16 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
                 <a
                   key={n.label}
                   href={n.href}
-                  className="hover:text-[#f0ede6] transition-colors"
-                  style={{ textDecoration: "none" }}
+                  className="nav-link text-[#f0ede6]/75"
                 >
-                  {n.label}
+                  <span>{n.label}</span>
                 </a>
               ),
             )}
           </div>
         </nav>
 
-        {/* Greeting + name — pointer-events-none so brain canvas beneath is draggable */}
+        {/* Greeting + name */}
         <div className="relative z-10 flex-1 flex flex-col justify-center pointer-events-none">
           <div
             className="overflow-hidden"
@@ -553,9 +643,58 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
               letterSpacing: "0.3em",
             }}
           >
-            {GREETINGS[idx].lang} · {GREETINGS[idx].script}
+            {GREETINGS[idx].lang}
           </p>
         </div>
+
+        {/* ── Brain Dots — projected from 3D, rotate with brain ── */}
+        {[
+          "HCI","AI","Ethics","Policy","Philosophy","Linguistics",
+          "Psychology","Cognition","Education","Design","Learning",
+          "Data Science","Equity & Inclusion","Innovation"
+        ].map((label, i) => {
+          const pos = dotPositions[i];
+          if (!pos) return null;
+          return (
+            <div key={label}
+              className={`brain-dot${activeDot === i ? " active" : ""}`}
+              style={{
+                left: `calc(45% + ${pos.x}px)`,
+                top: `${pos.y}px`,
+                opacity: pos.opacity,
+                animationDelay: `${i * 0.18}s`,
+                transition: "opacity 0.15s ease",
+                pointerEvents: pos.opacity < 0.1 ? "none" : "auto",
+              }}
+              onMouseEnter={(e) => {
+                // Capture stable viewport position at the moment of hover
+                const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                setBubblePos({ x: r.left + r.width / 2, y: r.top });
+                setActiveDot(i);
+              }}
+              onMouseLeave={() => { setActiveDot(null); setBubblePos(null); }}
+            />
+          );
+        })}
+
+        {/* ── Stable bubble — fixed overlay, immune to brain rotation ── */}
+        {activeDot !== null && bubblePos && (
+          <div
+            className="brain-bubble"
+            style={{
+              position: "fixed",
+              left: bubblePos.x,
+              top: bubblePos.y - 44,
+              transform: "translateX(-50%)",
+              zIndex: 9999,
+              pointerEvents: "none",
+            }}
+          >
+            {["HCI","AI","Ethics","Policy","Philosophy","Linguistics",
+              "Psychology","Cognition","Education","Design","Learning",
+              "Data Science","Equity & Inclusion","Innovation"][activeDot]}
+          </div>
+        )}
 
         {/* Scroll hint */}
         <div className="relative z-10 flex items-center gap-3 pb-2">
@@ -653,9 +792,10 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
       </div>
 
       {/* ══════════════════════════════════════════════
-          SECTION 2 — Profile card
+          SECTION 2 — Profile card (scroll reveal)
           ① Bauhaus top  ② Portrait + text  ③ Bauhaus bottom
       ══════════════════════════════════════════════ */}
+      <ScrollReveal from="bottom" threshold={0.05}>
       <section
         id="about"
         ref={posterRef}
@@ -701,7 +841,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
               src="/profile-picture.png"
               alt="Mathias Becerra"
               style={{
-                width: "100%",
+                width: "150%",
                 height: "100%",
                 objectFit: "cover",
                 objectPosition: "50% 8%",
@@ -809,6 +949,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
           }}
         />
       </section>
+      </ScrollReveal>
 
       {/* ══════════════════════════════════════════════
           SECTION 2b — Mission statement
@@ -826,6 +967,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
         />
 
         {/* Text — equal top/bottom padding */}
+        <ScrollReveal from="bottom" threshold={0.1}>
         <div
           style={{
             padding:
@@ -860,6 +1002,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
             }
           </p>
         </div>
+        </ScrollReveal>
 
         {/* Bottom Bauhaus strip */}
         <div
@@ -873,12 +1016,15 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
         />
       </section>
 
-      <ThirdScreen />
-      <FourthScreen />
-      <FifthScreen />
-      <SixthScreen />
-      <SeventhScreen />
-      <EighthScreen />
+      <ScrollReveal from="bottom"><ThirdScreen /></ScrollReveal>
+      <ScrollReveal from="bottom" delay={60}><FourthScreen /></ScrollReveal>
+      <ScrollReveal from="bottom" delay={60}><FifthScreen /></ScrollReveal>
+      <ScrollReveal from="bottom" delay={60}><SixthScreen /></ScrollReveal>
+      <ScrollReveal from="bottom" delay={60}><SeventhScreen /></ScrollReveal>
+      <ScrollReveal from="bottom" delay={60}><EighthScreen /></ScrollReveal>
+
+      {/* ── Floating Bauhaus ornament (fixed, follows scroll) ── */}
+      <BauhausScrollOrnament />
     </div>
   );
 }
