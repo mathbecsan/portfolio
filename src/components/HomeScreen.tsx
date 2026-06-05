@@ -300,9 +300,9 @@ function useThreeBackground(
           // Canvas pixel coords
           const cx = (_projVec.x *  0.5 + 0.5) * W;
           const cy = (_projVec.y * -0.5 + 0.5) * H;
-          // Fade when rotating to back (ndcZ > 1 = behind near plane; use z for depth cue)
-          const depth = _projVec.z;
-          const opacity = depth > 0.9 ? 0 : Math.max(0, 1 - depth * 1.1);
+          // Show when in front of camera (NDC z in -1..1), fade at back
+          const depth = _projVec.z; // -1 = near, 1 = far, >1 = behind
+          const opacity = depth > 0.98 ? 0 : Math.max(0.15, 1 - Math.max(0, depth) * 1.4);
           return { x: cx, y: cy, opacity };
         });
         onDotPositions(results);
@@ -365,10 +365,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
   const [roleExit, setRoleExit] = useState(false);
   const [wordExit, setWordExit] = useState(false);
   const [fadeIn, setFadeIn] = useState(false);
-  const [activeDot, setActiveDot] = useState<number | null>(null);
   const [dotPositions, setDotPositions] = useState<DotScreen[]>([]);
-  // Stable bubble position captured on mouseenter — doesn't update while hovering
-  const [bubblePos, setBubblePos] = useState<{x: number; y: number} | null>(null);
   const posterVisible = useReveal(posterRef as RefObject<HTMLElement>);
 
   useThreeBackground(mountRef, setDotPositions);
@@ -417,8 +414,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
         @keyframes wordIn          { from { transform:translateY(14px); opacity:0 } to { transform:translateY(0); opacity:1 } }
         @keyframes experienceGlow  { 0%,100% { box-shadow:0 0 10px rgba(245,197,0,0.3),inset 0 0 8px rgba(245,197,0,0.05) } 50% { box-shadow:0 0 22px rgba(245,197,0,0.7),inset 0 0 12px rgba(245,197,0,0.12) } }
         @keyframes ticker   { from { transform:translateX(0) } to { transform:translateX(-50%) } }
-        @keyframes dotPulse { 0%,100%{transform:scale(1);opacity:0.9} 50%{transform:scale(1.5);opacity:0.6} }
-        @keyframes bubbleIn { from{transform:scale(0.85) translateY(4px);opacity:0} to{transform:scale(1) translateY(0);opacity:1} }
+        @keyframes dotPulse { 0%,100%{transform:scale(1);opacity:0.9} 50%{transform:scale(1.6);opacity:0.5} }
 
         /* Nav link hover */
         .nav-link { position:relative; text-decoration:none; padding:4px 0; overflow:hidden; }
@@ -432,44 +428,6 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
         .nav-link span { display:inline-block; transition:transform 0.25s cubic-bezier(0.22,1,0.36,1); }
         .nav-link:hover span { transform:translateY(-2px); }
 
-        /* Brain dot */
-        .brain-dot {
-          position:absolute; width:16px; height:16px; border-radius:50%;
-          background:#E63329; border:2px solid rgba(255,255,255,0.6);
-          cursor:pointer; z-index:20;
-          animation:dotPulse 2.5s ease-in-out infinite;
-          transition:transform 0.15s, background 0.15s;
-          /* Large invisible hit area for instant hover sensitivity */
-        }
-        .brain-dot::before {
-          content:''; position:absolute;
-          inset:-16px;
-          border-radius:50%;
-        }
-        .brain-dot:hover { transform:scale(1.5); background:#F5C500; }
-        .brain-dot.active { background:#F5C500; transform:scale(1.5); }
-
-        /* Speech bubble */
-        .brain-bubble {
-          position:absolute; z-index:21;
-          background:#0d0d0d; color:#f0ede6;
-          font-family:monospace; font-size:11px; font-weight:700;
-          letter-spacing:0.08em; text-transform:uppercase;
-          padding:6px 12px; border-radius:4px;
-          border:1px solid rgba(245,197,0,0.5);
-          box-shadow:0 4px 20px rgba(0,0,0,0.5);
-          white-space:nowrap; pointer-events:none;
-          transform-origin:bottom center;
-          animation:bubbleIn 0.12s cubic-bezier(0.22,1,0.36,1) forwards;
-        }
-        .brain-bubble::after {
-          content:''; position:absolute; bottom:-5px; left:50%;
-          transform:translateX(-50%);
-          width:8px; height:8px; background:#0d0d0d;
-          border-right:1px solid rgba(245,197,0,0.5);
-          border-bottom:1px solid rgba(245,197,0,0.5);
-          transform:translateX(-50%) rotate(45deg);
-        }
       `}</style>
 
       {/* ══════════════════════════════════════════════
@@ -647,54 +605,60 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
           </p>
         </div>
 
-        {/* ── Brain Dots — projected from 3D, rotate with brain ── */}
-        {[
-          "HCI","AI","Ethics","Policy","Philosophy","Linguistics",
-          "Psychology","Cognition","Education","Design","Learning",
-          "Data Science","Equity & Inclusion","Innovation"
-        ].map((label, i) => {
-          const pos = dotPositions[i];
-          if (!pos) return null;
-          return (
-            <div key={label}
-              className={`brain-dot${activeDot === i ? " active" : ""}`}
-              style={{
-                left: `calc(45% + ${pos.x}px)`,
-                top: `${pos.y}px`,
-                opacity: pos.opacity,
-                animationDelay: `${i * 0.18}s`,
-                transition: "opacity 0.15s ease",
-                pointerEvents: pos.opacity < 0.1 ? "none" : "auto",
-              }}
-              onMouseEnter={(e) => {
-                // Capture stable viewport position at the moment of hover
-                const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
-                setBubblePos({ x: r.left + r.width / 2, y: r.top });
-                setActiveDot(i);
-              }}
-              onMouseLeave={() => { setActiveDot(null); setBubblePos(null); }}
-            />
-          );
-        })}
-
-        {/* ── Stable bubble — fixed overlay, immune to brain rotation ── */}
-        {activeDot !== null && bubblePos && (
+        {/* ── Brain labels — static overlay, always visible ── */}
+        {([
+          { label:"HCI",           left:"52%", top:"18%" },
+          { label:"AI",            left:"72%", top:"13%" },
+          { label:"Ethics",        left:"82%", top:"26%" },
+          { label:"Policy",        left:"84%", top:"40%" },
+          { label:"Philosophy",    left:"67%", top:"44%" },
+          { label:"Linguistics",   left:"55%", top:"33%" },
+          { label:"Psychology",    left:"62%", top:"55%" },
+          { label:"Cognition",     left:"76%", top:"52%" },
+          { label:"Education",     left:"54%", top:"62%" },
+          { label:"Design",        left:"50%", top:"46%" },
+          { label:"Learning",      left:"82%", top:"60%" },
+          { label:"Data Science",  left:"70%", top:"67%" },
+          { label:"Equity",        left:"57%", top:"73%" },
+          { label:"Innovation",    left:"78%", top:"35%" },
+        ]).map(({ label, left, top }, i) => (
           <div
-            className="brain-bubble"
+            key={label}
             style={{
-              position: "fixed",
-              left: bubblePos.x,
-              top: bubblePos.y - 44,
-              transform: "translateX(-50%)",
-              zIndex: 9999,
+              position: "absolute",
+              left, top,
               pointerEvents: "none",
+              zIndex: 22,
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              transform: "translate(-50%, -50%)",
             }}
           >
-            {["HCI","AI","Ethics","Policy","Philosophy","Linguistics",
-              "Psychology","Cognition","Education","Design","Learning",
-              "Data Science","Equity & Inclusion","Innovation"][activeDot]}
+            <div style={{
+              width: 7, height: 7, borderRadius: "50%",
+              background: "#E63329",
+              border: "1.5px solid rgba(255,255,255,0.8)",
+              flexShrink: 0,
+              animation: `dotPulse 2.5s ease-in-out ${i * 0.2}s infinite`,
+            }} />
+            <span style={{
+              fontFamily: "monospace",
+              fontSize: "clamp(8px, 0.7vw, 11px)",
+              fontWeight: 700,
+              letterSpacing: "0.07em",
+              textTransform: "uppercase",
+              color: "#f0ede6",
+              whiteSpace: "nowrap",
+              background: "rgba(0,0,0,0.55)",
+              padding: "2px 7px",
+              borderRadius: 3,
+              boxShadow: "0 1px 8px rgba(0,0,0,0.8)",
+            }}>
+              {label}
+            </span>
           </div>
-        )}
+        ))}
 
         {/* Scroll hint */}
         <div className="relative z-10 flex items-center gap-3 pb-2">
