@@ -95,7 +95,7 @@ function useThreeBackground(
       const idx = Math.min(ci, curves.length - 1);
       return curves[idx].getPointAt(0.5).clone();
     });
-    const _projVec = new THREE.Vector3();
+const _projVec = new THREE.Vector3();
 
     // ── Tube meshes with glowing shader ───────────────────────
     const tubeMat = new THREE.ShaderMaterial({
@@ -290,20 +290,25 @@ function useThreeBackground(
 
       renderer.render(scene, camera);
 
-      // Project brain-local dot positions → 2D screen coords
+      // Project brain-local dot positions → fixed viewport coords
       if (onDotPositions) {
-        const W = mount.clientWidth, H = mount.clientHeight;
+        const rect = mount.getBoundingClientRect();
+        if (rect.width === 0) return; // not laid out yet
         const results: DotScreen[] = nodeLocalPos.map(local => {
-          _projVec.copy(local);
-          brainGroup.localToWorld(_projVec);   // apply scale + rotation
-          _projVec.project(camera);            // NDC [-1,1]
-          // Canvas pixel coords
-          const cx = (_projVec.x *  0.5 + 0.5) * W;
-          const cy = (_projVec.y * -0.5 + 0.5) * H;
-          // Show when in front of camera (NDC z in -1..1), fade at back
-          const depth = _projVec.z; // -1 = near, 1 = far, >1 = behind
-          const opacity = depth > 0.98 ? 0 : Math.max(0.15, 1 - Math.max(0, depth) * 1.4);
-          return { x: cx, y: cy, opacity };
+          _projVec.copy(local).multiplyScalar(30);
+          _projVec.applyEuler(brainGroup.rotation);
+          const worldZ = _projVec.z;                // save before project()
+          const viewZ  = worldZ - camera.position.z; // negative = in front
+          _projVec.project(camera);                  // NDC
+          // Hide if behind camera or outside frustum
+          if (viewZ >= 0 || Math.abs(_projVec.x) > 1.1 || Math.abs(_projVec.y) > 1.1) {
+            return { x: 0, y: 0, opacity: 0 };
+          }
+          const vx = rect.left + (_projVec.x *  0.5 + 0.5) * rect.width;
+          const vy = rect.top  + (_projVec.y * -0.5 + 0.5) * rect.height;
+          // Fade dots on back of rotating brain using viewZ range (~-5 to -13)
+          const opacity = Math.max(0.15, Math.min(1, 1 - (Math.abs(viewZ) - 5) / 10));
+          return { x: vx, y: vy, opacity };
         });
         onDotPositions(results);
       }
@@ -605,60 +610,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
           </p>
         </div>
 
-        {/* ── Brain labels — static overlay, always visible ── */}
-        {([
-          { label:"HCI",           left:"52%", top:"18%" },
-          { label:"AI",            left:"72%", top:"13%" },
-          { label:"Ethics",        left:"82%", top:"26%" },
-          { label:"Policy",        left:"84%", top:"40%" },
-          { label:"Philosophy",    left:"67%", top:"44%" },
-          { label:"Linguistics",   left:"55%", top:"33%" },
-          { label:"Psychology",    left:"62%", top:"55%" },
-          { label:"Cognition",     left:"76%", top:"52%" },
-          { label:"Education",     left:"54%", top:"62%" },
-          { label:"Design",        left:"50%", top:"46%" },
-          { label:"Learning",      left:"82%", top:"60%" },
-          { label:"Data Science",  left:"70%", top:"67%" },
-          { label:"Equity",        left:"57%", top:"73%" },
-          { label:"Innovation",    left:"78%", top:"35%" },
-        ]).map(({ label, left, top }, i) => (
-          <div
-            key={label}
-            style={{
-              position: "absolute",
-              left, top,
-              pointerEvents: "none",
-              zIndex: 22,
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-              transform: "translate(-50%, -50%)",
-            }}
-          >
-            <div style={{
-              width: 7, height: 7, borderRadius: "50%",
-              background: "#E63329",
-              border: "1.5px solid rgba(255,255,255,0.8)",
-              flexShrink: 0,
-              animation: `dotPulse 2.5s ease-in-out ${i * 0.2}s infinite`,
-            }} />
-            <span style={{
-              fontFamily: "monospace",
-              fontSize: "clamp(8px, 0.7vw, 11px)",
-              fontWeight: 700,
-              letterSpacing: "0.07em",
-              textTransform: "uppercase",
-              color: "#f0ede6",
-              whiteSpace: "nowrap",
-              background: "rgba(0,0,0,0.55)",
-              padding: "2px 7px",
-              borderRadius: 3,
-              boxShadow: "0 1px 8px rgba(0,0,0,0.8)",
-            }}>
-              {label}
-            </span>
-          </div>
-        ))}
+        {/* ── Brain nodes — fixed viewport coords, rotate with brain ── */}
 
         {/* Scroll hint */}
         <div className="relative z-10 flex items-center gap-3 pb-2">
@@ -674,6 +626,45 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
           </span>
         </div>
       </section>
+
+      {/* ── Brain nodes rendered as fixed overlay (only when home visible) ── */}
+      {fadeIn && ([
+        "HCI","AI","Ethics","Policy","Philosophy","Linguistics",
+        "Psychology","Cognition","Education","Design","Learning",
+        "Data Science","Equity","Innovation",
+      ]).map((label, i) => {
+        const pos = dotPositions[i];
+        if (!pos || pos.opacity === 0) return null;
+        return (
+          <div key={label} style={{
+            position: "fixed",
+            left: pos.x, top: pos.y,
+            transform: "translate(-50%, -50%)",
+            opacity: pos.opacity,
+            pointerEvents: "none",
+            zIndex: 30,
+            display: "flex", alignItems: "center", gap: 6,
+          }}>
+            <div style={{
+              width: 8, height: 8, borderRadius: "50%",
+              background: "#E63329",
+              border: "1.5px solid rgba(255,255,255,0.8)",
+              flexShrink: 0,
+              animation: `dotPulse 2.5s ease-in-out ${i * 0.2}s infinite`,
+            }} />
+            <span style={{
+              fontFamily: "monospace", fontSize: 10, fontWeight: 700,
+              letterSpacing: "0.07em", textTransform: "uppercase",
+              color: "#f0ede6", whiteSpace: "nowrap",
+              background: "rgba(0,0,0,0.6)",
+              padding: "2px 7px", borderRadius: 3,
+              boxShadow: "0 1px 10px rgba(0,0,0,0.9)",
+            }}>
+              {label}
+            </span>
+          </div>
+        );
+      })}
 
       {/* ══════════════════════════════════════════════
           TICKER — Quick facts marquee
