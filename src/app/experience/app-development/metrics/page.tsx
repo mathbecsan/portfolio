@@ -28,11 +28,19 @@ export default function MetricsPage() {
       {/* ══ CONTENT ══════════════════════════════════════════════════════════ */}
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "clamp(20px,3vw,40px) clamp(16px,3vw,40px)" }}>
 
-        {/* ── ROW 1: Hero header ── */}
-        <div style={{ display: "grid", gridTemplateColumns: "0.85fr 1.35fr 0.65fr", gap: 20, alignItems: "flex-end", marginBottom: 28 }}>
+        {/* ── ROW 1: Hero header — chameleon overflows into stats row ── */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "0.7fr 1.55fr 0.6fr",
+          gap: 20,
+          alignItems: "flex-end",
+          marginBottom: 0,
+          overflow: "visible",
+          position: "relative",
+        }}>
 
           {/* Left: SPEAK.IO wordmark + subtitle */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingBottom: 12 }}>
             <img src={`${BASE}/speakio intro.svg`} alt="SPEAK.IO" style={{ width: "100%", height: "auto" }} />
             <div style={{ paddingLeft: 4 }}>
               <p style={{ fontFamily: "monospace", fontSize: 11, letterSpacing: "0.18em", color: "#555", textTransform: "uppercase", margin: "0 0 4px" }}>Language Education App</p>
@@ -41,15 +49,26 @@ export default function MetricsPage() {
             <img src={`${BASE}/IMPACT METRICS.svg`} alt="IMPACT METRICS" style={{ width: "100%", height: "auto", marginTop: 8 }} />
           </div>
 
-          {/* Center: chameleon — large, overflows upward to feel dynamic */}
-          <div style={{ display: "flex", justifyContent: "center", alignItems: "flex-end", marginBottom: -24 }}>
-            <img src={`${BASE}/prismthechamaleon.svg`} alt="Prism the Chameleon" style={{ width: "100%", height: "auto" }} />
+          {/* Center: chameleon — oversized, tail overlaps into stats row */}
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "flex-end" }}>
+            <img
+              src={`${BASE}/prismthechamaleon.svg`}
+              alt="Prism the Chameleon"
+              style={{
+                width: "130%",
+                marginLeft: "-15%",
+                height: "auto",
+                marginBottom: "-70px",
+                position: "relative",
+                zIndex: 2,
+              }}
+            />
           </div>
 
           {/* Right: Human Purpose quote */}
           <div style={{
             background: "#FEFCE8", border: "1.5px solid #E5E7EB", borderRadius: 10,
-            padding: "16px 18px",
+            padding: "16px 18px", marginBottom: 12,
           }}>
             <p style={{ fontFamily: "monospace", fontSize: 9, letterSpacing: "0.15em", color: "#E7000B", textTransform: "uppercase", margin: "0 0 8px" }}>Human Purpose</p>
             <p style={{ fontFamily: "sans-serif", fontWeight: 700, fontSize: 15, color: "#111", lineHeight: 1.35, margin: 0 }}>
