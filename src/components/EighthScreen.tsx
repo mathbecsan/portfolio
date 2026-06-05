@@ -63,37 +63,14 @@ export default function EighthScreen() {
       {/* ── LET'S TALK ── */}
       <div style={{ background: "#FFE4B4", position: "relative", overflow: "hidden" }}>
 
-        {/* Bauhaus corners — pure CSS */}
-        {/* Top-left red quarter circle */}
+        {/* Top-left red quarter circle only */}
         <div style={{
           position: "absolute", top: 0, left: 0,
-          width: "clamp(100px,16vw,240px)", height: "clamp(100px,16vw,240px)",
+          width: "clamp(80px,12vw,180px)", height: "clamp(80px,12vw,180px)",
           background: "#E7000B",
           borderRadius: "0 0 100% 0",
           zIndex: 0,
         }} />
-        {/* Top-right: blue rect + yellow circle */}
-        <div style={{
-          position: "absolute", top: 0, right: 0, zIndex: 0,
-          display: "flex", alignItems: "stretch",
-        }}>
-          <div style={{ width: "clamp(60px,8vw,120px)", background: "#E7000B" }} />
-          <div style={{ width: "clamp(120px,18vw,280px)", background: "#155DFC", position: "relative", paddingBottom: "clamp(120px,18vw,280px)" }}>
-            <div style={{
-              position: "absolute",
-              top: "50%", left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: "62%", height: "62%",
-              borderRadius: "50%", background: "#F0B100",
-              display: "flex", alignItems: "center", justifyContent: "center",
-            }}>
-              <div style={{ width: "38%", height: "38%", borderRadius: "50%", background: "#0d0d0d" }} />
-            </div>
-          </div>
-        </div>
-        {/* Bottom-left Bauhaus cluster */}
-        <img src="/second-screen/word-2.svg" aria-hidden alt=""
-          style={{ position: "absolute", bottom: 0, left: 0, width: "clamp(80px,14vw,220px)", zIndex: 0 }} />
 
         {/* Content */}
         <div style={{
