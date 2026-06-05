@@ -1,5 +1,5 @@
 "use client";
-import { use, useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const SCREENS = [
   "/app-dev/screen1.svg",
@@ -11,121 +11,124 @@ const SCREENS = [
 ];
 
 const ACTIONS = [
-  { label: "Case Study",      img: "/app-dev/case-study.svg",   active: false, href: "#" },
-  { label: "Metrics of Impact", img: "/app-dev/metrics.svg",    active: true,  href: "/experience/app-development/metrics" },
-  { label: "Try the Demo",    img: "/app-dev/try-demo.svg",     active: false, href: "#" },
-  { label: "CS377U Award",    img: "/app-dev/award.svg",        active: false, href: "#" },
+  { label: "Metrics of Impact", img: "/app-dev/metrics.svg",    href: "/experience/app-development/metrics", active: true  },
+  { label: "Case Study",        img: "/app-dev/case-study.svg", href: "#",                                    active: false },
+  { label: "Try the Demo",      img: "/app-dev/try-demo.svg",   href: "#",                                    active: false },
+  { label: "CS377U Award",      img: "/app-dev/award.svg",      href: "#",                                    active: false },
 ];
 
-// ── Infinite Carousel ─────────────────────────────────────────────────────
-function Carousel() {
-  const [paused, setPaused] = useState(false);
-  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
+// ── Swiper Coverflow Carousel ─────────────────────────────────────────────
+function SwiperCarousel() {
+  const swiperRef = useRef<HTMLDivElement>(null);
 
-  // Duplicate slides so the loop is seamless
-  const slides = [...SCREENS, ...SCREENS];
+  useEffect(() => {
+    let sw: unknown;
+    (async () => {
+      const { Swiper } = await import("swiper");
+      const { Autoplay, EffectCoverflow, Navigation, Pagination } = await import("swiper/modules");
+      // @ts-ignore
+      sw = new Swiper(swiperRef.current, {
+        modules: [Autoplay, EffectCoverflow, Navigation, Pagination],
+        effect: "coverflow",
+        grabCursor: true,
+        centeredSlides: true,
+        slidesPerView: "auto",
+        loop: true,
+        coverflowEffect: {
+          rotate: 0,
+          depth: 120,
+          modifier: 2.5,
+          slideShadows: true,
+          stretch: 0,
+        },
+        autoplay: {
+          delay: 2800,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: true,
+        },
+        navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+        pagination: { el: ".swiper-pagination", clickable: true },
+      });
+    })();
+    return () => { if (sw && (sw as any).destroy) (sw as any).destroy(); };
+  }, []);
 
   return (
-    <div style={{ position: "relative", overflow: "hidden", padding: "40px 0 60px" }}>
+    <div style={{ width: "100%", padding: "20px 0 40px", position: "relative" }}>
       <style>{`
-        @keyframes carousel-scroll {
-          0%   { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .carousel-track {
-          display: flex;
-          gap: 28px;
-          width: max-content;
-          animation: carousel-scroll 28s linear infinite;
-          will-change: transform;
-        }
-        .carousel-track.paused { animation-play-state: paused; }
-        .carousel-slide {
-          flex-shrink: 0;
-          width: clamp(160px, 16vw, 220px);
-          cursor: pointer;
-          transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s ease, z-index 0s;
-          border-radius: 20px;
+        .app-swiper { width: 100%; padding-bottom: 48px !important; overflow: visible !important; }
+        .app-swiper .swiper-slide {
+          width: 200px !important;
+          border-radius: 22px;
           overflow: hidden;
-          position: relative;
-          z-index: 1;
+          filter: grayscale(75%) brightness(0.7);
+          transition: filter 0.5s ease, transform 0.5s cubic-bezier(0.25,0.4,0.45,1.4);
+          cursor: grab;
         }
-        .carousel-slide:hover,
-        .carousel-slide.hovered {
-          transform: scale(1.55) translateY(-12px) !important;
-          box-shadow: 0 32px 80px rgba(0,0,0,0.5);
-          z-index: 10;
+        .app-swiper .swiper-slide-active {
+          filter: grayscale(0%) brightness(1) !important;
         }
-        .carousel-slide img {
-          width: 100%;
-          height: auto;
-          display: block;
-          border-radius: 20px;
+        .app-swiper .swiper-slide-active:hover {
+          transform: scale(1.08) !important;
+          transition: transform 0.3s ease !important;
         }
+        .app-swiper .swiper-slide img { width: 100%; height: auto; display: block; border-radius: 22px; }
+        .app-swiper .swiper-button-next,
+        .app-swiper .swiper-button-prev {
+          color: #E7000B;
+          width: 36px; height: 36px;
+          background: rgba(255,255,255,0.9);
+          border-radius: 50%;
+          box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+        .app-swiper .swiper-button-next::after,
+        .app-swiper .swiper-button-prev::after { font-size: 14px; font-weight: 900; }
+        .app-swiper .swiper-pagination-bullet { background: #1F2937; opacity: 0.3; }
+        .app-swiper .swiper-pagination-bullet-active { background: #E7000B; opacity: 1; }
       `}</style>
 
-      <div
-        ref={trackRef}
-        className={`carousel-track${paused ? " paused" : ""}`}
-        style={{ alignItems: "flex-end" }}
-      >
-        {slides.map((src, i) => (
-          <div
-            key={i}
-            className={`carousel-slide${hoveredIdx === i ? " hovered" : ""}`}
-            style={{
-              height: i % 3 === 1 ? "clamp(320px,38vw,500px)" : i % 3 === 2 ? "clamp(260px,30vw,420px)" : "clamp(290px,34vw,460px)",
-            }}
-            onMouseEnter={() => { setPaused(true); setHoveredIdx(i); }}
-            onMouseLeave={() => { setPaused(false); setHoveredIdx(null); }}
-          >
-            <img src={src} alt={`Speak.io screen ${(i % SCREENS.length) + 1}`} />
-          </div>
-        ))}
+      <div ref={swiperRef} className="swiper app-swiper">
+        <div className="swiper-wrapper">
+          {SCREENS.map((src, i) => (
+            <div key={i} className="swiper-slide">
+              <img src={src} alt={`Screen ${i + 1}`} draggable={false} />
+            </div>
+          ))}
+        </div>
+        <div className="swiper-button-prev" />
+        <div className="swiper-button-next" />
+        <div className="swiper-pagination" />
       </div>
-
-      {/* Gradient edges */}
-      <div style={{ position: "absolute", inset: 0, top: 0, left: 0, width: "10%", background: "linear-gradient(90deg, #F5F1E8, transparent)", pointerEvents: "none", zIndex: 5 }} />
-      <div style={{ position: "absolute", inset: 0, top: 0, right: 0, left: "auto", width: "10%", background: "linear-gradient(-90deg, #F5F1E8, transparent)", pointerEvents: "none", zIndex: 5 }} />
     </div>
   );
 }
 
 // ── Action Button ─────────────────────────────────────────────────────────
-function ActionButton({ img, label, active, href }: typeof ACTIONS[0]) {
+function ActionBtn({ img, label, href, active }: typeof ACTIONS[0]) {
   const [hovered, setHovered] = useState(false);
-
   return (
-    <a
-      href={active ? href : undefined}
-      style={{
-        display: "block", textDecoration: "none", cursor: active ? "pointer" : "default",
-        flex: "1 1 220px", maxWidth: 340,
-        transform: hovered && active ? "translateY(-6px)" : hovered ? "translateY(-3px)" : "none",
-        transition: "transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s ease, filter 0.3s ease",
-        boxShadow: hovered ? "0 16px 48px rgba(0,0,0,0.18)" : "none",
-        borderRadius: 8, overflow: "hidden",
-        filter: !active && hovered ? "brightness(0.85)" : "none",
+    <a href={active ? href : undefined}
+      style={{ display: "block", textDecoration: "none", position: "relative",
+        cursor: active ? "pointer" : "default",
+        transform: hovered ? "translateY(-5px) scale(1.02)" : "none",
+        transition: "transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s ease",
+        boxShadow: hovered && active ? "0 16px 48px rgba(0,0,0,0.18)" : hovered ? "0 8px 24px rgba(0,0,0,0.1)" : "none",
+        borderRadius: 10, overflow: "hidden",
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
       <img src={img} alt={label} style={{ width: "100%", height: "auto", display: "block" }} />
-      {/* "Coming soon" badge for inactive */}
       {!active && hovered && (
         <div style={{
-          position: "absolute",
-          inset: 0,
-          display: "flex", alignItems: "center", justifyContent: "center",
-          background: "rgba(0,0,0,0.35)",
-          borderRadius: 8,
+          position: "absolute", inset: 0, background: "rgba(0,0,0,0.4)",
+          display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 10,
         }}>
-          <span style={{
-            fontFamily: "monospace", fontWeight: 800, fontSize: 13,
-            color: "#fff", letterSpacing: "0.12em", textTransform: "uppercase",
-            background: "rgba(0,0,0,0.6)", padding: "6px 16px", borderRadius: 4,
-          }}>Coming Soon</span>
+          <span style={{ fontFamily: "monospace", fontWeight: 800, fontSize: 11, color: "#fff",
+            letterSpacing: "0.12em", textTransform: "uppercase",
+            background: "rgba(0,0,0,0.65)", padding: "5px 14px", borderRadius: 4 }}>
+            Coming Soon
+          </span>
         </div>
       )}
     </a>
@@ -140,84 +143,114 @@ export default function AppDevelopmentPage() {
       {/* ── Nav ── */}
       <nav style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 50,
-        padding: "14px 40px", display: "flex", alignItems: "center", justifyContent: "space-between",
-        background: "rgba(245,241,232,0.92)", backdropFilter: "blur(8px)",
+        padding: "12px 40px", display: "flex", alignItems: "center", justifyContent: "space-between",
+        background: "rgba(245,241,232,0.95)", backdropFilter: "blur(8px)",
         borderBottom: "1.5px solid rgba(31,41,55,0.08)",
       }}>
         <a href="/experience" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-          <img src="/experience-screen1/mathbecsanbrandnewlogo.svg" alt="MATHBECSAN" style={{ height: 24 }} />
-          <span style={{ fontFamily: "monospace", fontSize: 11, color: "#1F2937", opacity: 0.5, letterSpacing: "0.15em" }}>← Experience</span>
+          <img src="/experience-screen1/mathbecsanbrandnewlogo.svg" alt="MATHBECSAN" style={{ height: 22 }} />
+          <span style={{ fontFamily: "monospace", fontSize: 10, color: "#1F2937", opacity: 0.5, letterSpacing: "0.15em" }}>← Experience</span>
         </a>
-        <img src="/app-dev/logo.svg" alt="Speak.io" style={{ height: 28, width: "auto" }} />
+        <img src="/app-dev/logo.svg" alt="Speak.io" style={{ height: 26, width: "auto" }} />
       </nav>
 
       {/* ── Top Bauhaus strip ── */}
-      <div style={{ paddingTop: 58, lineHeight: 0, overflow: "hidden" }}>
-        <img src="/app-dev/bauhaus-top.svg" alt="" style={{ width: "100%", height: "auto", display: "block" }} />
+      <div style={{ paddingTop: 52, lineHeight: 0, overflow: "hidden" }}>
+        <img src="/app-dev/bauhaus-top.svg" alt="" style={{ width: "100%", height: "clamp(50px,6vw,80px)", objectFit: "cover", objectPosition: "top", display: "block" }} />
       </div>
 
-      {/* ── Section 1: YouTube Video ── */}
-      <section style={{ background: "#F5F1E8", padding: "clamp(48px,6vw,80px) clamp(24px,6vw,80px)" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <p style={{ fontFamily: "monospace", fontSize: 11, letterSpacing: "0.2em", color: "rgba(31,41,55,0.4)", textTransform: "uppercase", margin: "0 0 16px" }}>
-            App Development · Speak.io
-          </p>
-          <h1 style={{
-            fontFamily: "monospace", fontWeight: 900, fontSize: "clamp(32px,5vw,64px)",
-            color: "#1F2937", margin: "0 0 clamp(24px,3vw,40px)", lineHeight: 0.95,
-            textTransform: "uppercase", letterSpacing: "-0.02em",
-          }}>
-            AI Language<br />Learning App
-          </h1>
+      {/* ══ HERO — everything in one view ══════════════════════════════════ */}
+      <section style={{
+        padding: "clamp(24px,4vw,48px) clamp(24px,5vw,64px)",
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        gap: "clamp(24px,4vw,48px)",
+        alignItems: "center",
+        minHeight: "calc(100vh - 180px)",
+      }}>
 
-          {/* YouTube Short embed — autoplay, muted */}
-          <div style={{
-            position: "relative", borderRadius: 16, overflow: "hidden",
-            maxWidth: 420, boxShadow: "0 24px 80px rgba(0,0,0,0.2)",
-          }}>
-            <div style={{ position: "relative", paddingBottom: "177.78%", height: 0 }}>
-              <iframe
-                src="https://www.youtube.com/embed/i_Wo3F2ZhFY?autoplay=1&mute=1&loop=1&playlist=i_Wo3F2ZhFY&controls=0&modestbranding=1&playsinline=1"
-                style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
-                allow="autoplay; encrypted-media"
-                allowFullScreen
-                title="Speak.io demo"
-              />
+        {/* LEFT — logo + video phone + second phone mockup */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "clamp(16px,2vw,28px)" }}>
+          <img src="/app-dev/logo.svg" alt="Speak.io" style={{ width: "clamp(160px,20vw,260px)", height: "auto" }} />
+
+          <div style={{ display: "flex", gap: "clamp(12px,2vw,24px)", alignItems: "flex-end" }}>
+
+            {/* YouTube Short — cropped to phone only */}
+            <div style={{
+              position: "relative",
+              width: "clamp(130px,14vw,190px)",
+              borderRadius: 28,
+              overflow: "hidden",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
+              background: "#000",
+              flexShrink: 0,
+            }}>
+              {/* Clip iframe to show only video, hide player chrome */}
+              <div style={{ position: "relative", paddingBottom: "216.67%", overflow: "hidden" }}>
+                {/* Cover bottom YouTube watermark */}
+                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "12%", background: "#000", zIndex: 2 }} />
+                {/* Cover top YouTube UI */}
+                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "8%", background: "#000", zIndex: 2 }} />
+                <iframe
+                  src="https://www.youtube.com/embed/i_Wo3F2ZhFY?autoplay=1&mute=1&loop=1&playlist=i_Wo3F2ZhFY&controls=0&showinfo=0&modestbranding=1&playsinline=1&iv_load_policy=3&rel=0&disablekb=1"
+                  style={{
+                    position: "absolute",
+                    top: "-12%",
+                    left: "-3%",
+                    width: "106%",
+                    height: "124%",
+                    border: "none",
+                    pointerEvents: "none",
+                  }}
+                  allow="autoplay; encrypted-media"
+                  allowFullScreen
+                  title="Speak.io demo"
+                />
+              </div>
             </div>
+
+            {/* Second phone — app screen mockup */}
+            <div style={{
+              flex: 1,
+              borderRadius: 24,
+              overflow: "hidden",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.25)",
+              transform: "translateY(-20px)",
+            }}>
+              <img src="/app-dev/screen3.svg" alt="Speak.io screen" style={{ width: "100%", height: "auto", display: "block" }} />
+            </div>
+
           </div>
         </div>
-      </section>
 
-      {/* ── Section 2: Carousel ── */}
-      <section style={{ background: "#F5F1E8", paddingBottom: "clamp(24px,4vw,48px)" }}>
-        <div style={{ padding: "0 clamp(24px,6vw,80px)", marginBottom: 24 }}>
-          <p style={{ fontFamily: "monospace", fontSize: 11, letterSpacing: "0.2em", color: "rgba(31,41,55,0.4)", textTransform: "uppercase", margin: 0 }}>
-            Product Screens
-          </p>
+        {/* RIGHT — action buttons */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "clamp(12px,1.5vw,20px)" }}>
+          {ACTIONS.map(a => <ActionBtn key={a.label} {...a} />)}
         </div>
-        <Carousel />
+
       </section>
 
       {/* ── Bauhaus divider ── */}
       <div style={{ lineHeight: 0, overflow: "hidden" }}>
-        <img src="/app-dev/bauhaus-top.svg" alt="" style={{ width: "100%", height: "auto", display: "block", transform: "scaleY(-1)" }} />
+        <img src="/app-dev/bauhaus-top.svg" alt="" style={{ width: "100%", height: "clamp(50px,6vw,80px)", objectFit: "cover", objectPosition: "top", display: "block", transform: "scaleY(-1)" }} />
       </div>
 
-      {/* ── Section 3: Action Buttons ── */}
-      <section style={{ background: "#F5F1E8", padding: "clamp(48px,6vw,80px) clamp(24px,6vw,80px)" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <p style={{ fontFamily: "monospace", fontSize: 11, letterSpacing: "0.2em", color: "rgba(31,41,55,0.4)", textTransform: "uppercase", margin: "0 0 32px" }}>
-            Explore
+      {/* ── Coverflow Carousel ── */}
+      <section style={{ background: "#F5F1E8", paddingBottom: "clamp(32px,4vw,56px)" }}>
+        <div style={{ padding: "clamp(24px,3vw,40px) 0 0", textAlign: "center" }}>
+          <p style={{ fontFamily: "monospace", fontSize: 11, letterSpacing: "0.22em", color: "rgba(31,41,55,0.4)", textTransform: "uppercase", margin: "0 0 4px" }}>
+            Product Screens
           </p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "clamp(16px,2vw,24px)", position: "relative" }}>
-            {ACTIONS.map(a => <ActionButton key={a.label} {...a} />)}
-          </div>
+          <p style={{ fontFamily: "Georgia, serif", fontSize: "clamp(12px,1.1vw,15px)", color: "rgba(31,41,55,0.5)", margin: 0 }}>
+            Drag or hover to explore
+          </p>
         </div>
+        <SwiperCarousel />
       </section>
 
       {/* ── Bottom Bauhaus strip ── */}
       <div style={{ lineHeight: 0, overflow: "hidden" }}>
-        <img src="/app-dev/bauhaus-bottom.svg" alt="" style={{ width: "100%", height: "auto", display: "block" }} />
+        <img src="/app-dev/bauhaus-bottom.svg" alt="" style={{ width: "100%", height: "clamp(50px,6vw,80px)", objectFit: "cover", objectPosition: "top", display: "block" }} />
       </div>
 
     </main>
