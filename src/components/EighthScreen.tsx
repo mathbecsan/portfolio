@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type MouseEvent } from "react";
 
 const TOPICS  = ["Mentoring", "Collaboration", "Freelance", "Research", "Just saying hi!"];
 
@@ -110,23 +110,36 @@ export default function EighthScreen() {
               { label: "BOOK A CALL",     href: "https://calendly.com/mathbecsan",     bg: "#155DFC", border: "#155DFC", color: "#fff",    icon: "📅" },
               { label: "BUY ME A COFFEE", href: "https://buymeacoffee.com/mathbecsan", bg: "#E7000B", border: "#E7000B", color: "#fff",    icon: "☕" },
               { label: "RESUME ←",        href: "/resume.pdf",                         bg: "transparent", border: "transparent", color: "#F0B100", icon: "" },
-            ].map(b => (
-              <a key={b.label} href={b.href} target="_blank" rel="noopener noreferrer"
-                style={{
-                  padding: "11px 22px", borderRadius: 6,
-                  border: `2px solid ${b.border}`,
-                  background: b.bg, color: b.color,
-                  fontFamily: "var(--font-geist-sans), sans-serif", fontWeight: 700,
-                  fontSize: "clamp(10px, 1vw, 13px)", letterSpacing: ".08em",
-                  textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6,
-                  transition: "transform .18s, box-shadow .18s",
-                }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 20px rgba(0,0,0,.15)"; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = ""; }}
-              >
-                {b.icon && <span>{b.icon}</span>}{b.label}
-              </a>
-            ))}
+            ].map(b => {
+              const sharedStyle = {
+                padding: "11px 22px", borderRadius: 6,
+                border: `2px solid ${b.border}`,
+                background: b.bg, color: b.color,
+                fontFamily: "var(--font-geist-sans), sans-serif", fontWeight: 700,
+                fontSize: "clamp(10px, 1vw, 13px)", letterSpacing: ".08em",
+                textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6,
+                transition: "transform .18s, box-shadow .18s",
+                cursor: "pointer",
+              } as const;
+              const handlers = {
+                onMouseEnter: (e: MouseEvent<HTMLElement>) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,0,0,.15)"; },
+                onMouseLeave: (e: MouseEvent<HTMLElement>) => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = ""; },
+              };
+              if (b.label === "RESUME ←") {
+                return (
+                  <button key={b.label} type="button" style={sharedStyle} {...handlers}
+                    onClick={() => alert("Request via email")}
+                  >
+                    {b.icon && <span>{b.icon}</span>}{b.label}
+                  </button>
+                );
+              }
+              return (
+                <a key={b.label} href={b.href} target="_blank" rel="noopener noreferrer" style={sharedStyle} {...handlers}>
+                  {b.icon && <span>{b.icon}</span>}{b.label}
+                </a>
+              );
+            })}
           </div>
 
           {/* Form */}
