@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, type MouseEvent } from "react";
 import BauhausScrollOrnament from "@/components/BauhausScrollOrnament";
 
 
@@ -570,24 +570,36 @@ export default function ExperiencePage() {
               { label: "GITHUB",          href: "https://github.com/mathbecsan",       bg: "#fff",    border: "#1a1a2e", color: "#1a1a2e", hoverBg: "#1a1a2e", hoverColor: "#fff",    icon: "⊞" },
               { label: "BOOK A CALL",     href: "https://calendly.com/mathbecsan",     bg: "#155DFC", border: "#155DFC", color: "#fff",    hoverBg: "#0d47d9", hoverColor: "#fff",    icon: "📅" },
               { label: "BUY ME A COFFEE", href: "https://buymeacoffee.com/mathbecsan", bg: "#E7000B", border: "#E7000B", color: "#fff",    hoverBg: "#c00",    hoverColor: "#fff",    icon: "☕" },
-              { label: "RESUME →",        href: "https://drive.google.com/file/d/1R0fMltGM6YKY0Yp9eQJrPOIduTBiLSNt/view?usp=sharing", bg: "#F0B100", border: "#F0B100", color: "#1a1a2e", hoverBg: "#d49e00", hoverColor: "#1a1a2e", icon: "↗" },
-            ].map(b => (
-              <a key={b.label} href={b.href} target="_blank" rel="noopener noreferrer"
-                style={{ padding: "11px 22px", borderRadius: 6, border: `2px solid ${b.border}`, background: b.bg, color: b.color, fontFamily: "monospace", fontWeight: 700, fontSize: "clamp(10px, 1vw, 13px)", letterSpacing: ".08em", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6, transition: "transform .18s, box-shadow .18s, background .18s, color .18s" }}
-                onMouseEnter={e => {
-                  const el = e.currentTarget as HTMLElement;
+              { label: "RESUME →",        href: "",                                   bg: "#F0B100", border: "#F0B100", color: "#1a1a2e", hoverBg: "#d49e00", hoverColor: "#1a1a2e", icon: "↗" },
+            ].map(b => {
+              const sharedProps = {
+                style: { padding: "11px 22px", borderRadius: 6, border: `2px solid ${b.border}`, background: b.bg, color: b.color, fontFamily: "monospace", fontWeight: 700, fontSize: "clamp(10px, 1vw, 13px)", letterSpacing: ".08em", textDecoration: "none", display: "inline-flex" as const, alignItems: "center" as const, gap: 6, transition: "transform .18s, box-shadow .18s, background .18s, color .18s", cursor: "pointer" },
+                onMouseEnter: (e: MouseEvent<HTMLElement>) => {
+                  const el = e.currentTarget;
                   el.style.transform = "translateY(-3px) scale(1.03)";
                   el.style.boxShadow = `0 8px 24px rgba(0,0,0,.18)`;
-                  el.style.background = (b as any).hoverBg;
-                  el.style.color = (b as any).hoverColor;
-                }}
-                onMouseLeave={e => {
-                  const el = e.currentTarget as HTMLElement;
+                  el.style.background = b.hoverBg;
+                  el.style.color = b.hoverColor;
+                },
+                onMouseLeave: (e: MouseEvent<HTMLElement>) => {
+                  const el = e.currentTarget;
                   el.style.transform = ""; el.style.boxShadow = "";
                   el.style.background = b.bg; el.style.color = b.color;
-                }}
-              >{b.icon && <span>{b.icon}</span>}{b.label}</a>
-            ))}
+                },
+              };
+              if (b.label === "RESUME →") {
+                return (
+                  <button key={b.label} type="button" {...sharedProps} onClick={() => alert("Request via email")}>
+                    {b.icon && <span>{b.icon}</span>}{b.label}
+                  </button>
+                );
+              }
+              return (
+                <a key={b.label} href={b.href} target="_blank" rel="noopener noreferrer" {...sharedProps}>
+                  {b.icon && <span>{b.icon}</span>}{b.label}
+                </a>
+              );
+            })}
           </div>
 
           {sent ? (
