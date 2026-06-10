@@ -145,10 +145,10 @@ export default function ExperiencePage() {
         }}
       >
         {/* Download My Resume */}
-        <button
-          type="button"
-          onClick={() => alert("Request via email")}
-          style={{ display: "block", textDecoration: "none", maxWidth: 760, transition: "transform 0.2s ease, filter 0.2s ease", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+        <a
+          href="https://drive.google.com/file/d/1R0fMltGM6YKY0Yp9eQJrPOIduTBiLSNt/view?usp=sharing"
+          target="_blank" rel="noopener noreferrer"
+          style={{ display: "block", textDecoration: "none", maxWidth: 760, transition: "transform 0.2s ease, filter 0.2s ease" }}
           onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-4px) scale(1.02)"; (e.currentTarget as HTMLElement).style.filter = "drop-shadow(0 8px 24px rgba(230,51,41,0.35))"; }}
           onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.filter = ""; }}
         >
@@ -157,7 +157,7 @@ export default function ExperiencePage() {
             alt="Download My Resume"
             style={{ width: "100%", height: "auto", display: "block" }}
           />
-        </button>
+        </a>
 
         {/* Hire Me + Arrow row */}
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
