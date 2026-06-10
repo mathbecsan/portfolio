@@ -78,7 +78,7 @@ export default function SecondScreen() {
         transition: "opacity 0.7s ease, transform 0.7s ease",
       }}>
         <p style={{
-          fontFamily: "Georgia, 'Times New Roman', serif",
+          fontFamily: "var(--font-geist-sans), sans-serif",
           fontWeight: 700,
           fontSize: "clamp(28px, 4.5vw, 68px)",
           lineHeight: 1.2,

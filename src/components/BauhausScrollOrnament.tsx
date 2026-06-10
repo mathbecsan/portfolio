@@ -29,6 +29,14 @@ export default function BauhausScrollOrnament() {
   }, []);
 
   const s = scrollY;
+  // Scroll-driven "breathing" pulse — shapes gently grow/shrink as you move through sections
+  const pulse = 1 + Math.sin(s / 220) * 0.18;
+  // Orbit angle — drives satellite shapes that swing around their anchors as you scroll
+  const orbit = s * 0.012;
+  const orbitX = Math.cos(orbit) * 26;
+  const orbitY = Math.sin(orbit) * 26;
+  // Morph factor 0..1, oscillates so shapes shift between circle/diamond
+  const morph = (Math.sin(s / 260) + 1) / 2;
 
   return (
     <>
@@ -39,53 +47,44 @@ export default function BauhausScrollOrnament() {
         opacity: visible ? 1 : 0, transition: "opacity 0.8s ease",
         overflow: "hidden",
       }}>
-        {/* Large red circle — drifts down slowly */}
+        {/* Large red circle — drifts down, breathes, and spins as you scroll */}
         <div style={{
           position: "absolute",
           left: "-30%",
           top: `calc(15% + ${s * 0.06}px)`,
           width: "clamp(80px, 10vw, 140px)",
           height: "clamp(80px, 10vw, 140px)",
-          borderRadius: "50%",
+          borderRadius: `${50 - morph * 35}%`,
           background: "#E7000B",
           opacity: 0.82,
-          transform: `rotate(${s * 0.03}deg)`,
+          transform: `rotate(${s * 0.12}deg) scale(${pulse})`,
+          transition: "transform 0.3s ease-out, border-radius 0.4s ease-out",
         }} />
 
-        {/* Yellow square — rotates on scroll, drifts up */}
+        {/* Yellow satellite — orbits around the red circle as you scroll */}
         <div style={{
           position: "absolute",
-          left: "10%",
-          top: `calc(42% - ${s * 0.04}px)`,
-          width: "clamp(40px, 5vw, 70px)",
-          height: "clamp(40px, 5vw, 70px)",
+          left: `calc(-30% + clamp(40px,5vw,70px) + ${orbitX}px)`,
+          top: `calc(15% + ${s * 0.06}px + clamp(40px,5vw,70px) + ${orbitY}px)`,
+          width: "clamp(18px, 2.4vw, 32px)",
+          height: "clamp(18px, 2.4vw, 32px)",
+          borderRadius: "50%",
           background: "#F0B100",
-          opacity: 0.75,
-          transform: `rotate(${45 + s * 0.06}deg)`,
+          opacity: 0.85,
         }} />
 
-        {/* Blue quarter-circle — slow drift */}
+        {/* Blue quarter-circle — slow drift, morphs corner radius with scroll */}
         <div style={{
           position: "absolute",
           left: "-40%",
           top: `calc(68% + ${s * 0.02}px)`,
           width: "clamp(90px, 12vw, 160px)",
           height: "clamp(90px, 12vw, 160px)",
-          borderRadius: "0 100% 0 0",
+          borderRadius: `0 ${50 + Math.sin(s / 180) * 50}% 0 0`,
           background: "#155DFC",
           opacity: 0.65,
-        }} />
-
-        {/* Small dark circle — fastest drift */}
-        <div style={{
-          position: "absolute",
-          left: "20%",
-          top: `calc(28% + ${s * 0.11}px)`,
-          width: "clamp(14px, 2vw, 22px)",
-          height: "clamp(14px, 2vw, 22px)",
-          borderRadius: "50%",
-          background: "#1F2937",
-          opacity: 0.6,
+          transform: `rotate(${-s * 0.05}deg)`,
+          transition: "border-radius 0.4s ease-out, transform 0.3s ease-out",
         }} />
       </div>
 
@@ -96,7 +95,7 @@ export default function BauhausScrollOrnament() {
         opacity: visible ? 1 : 0, transition: "opacity 0.8s ease",
         overflow: "hidden",
       }}>
-        {/* Blue morphing blob — drifts down */}
+        {/* Blue morphing blob — drifts down, breathes opposite the left circle */}
         <div className="b-morph" style={{
           position: "absolute",
           right: "-20%",
@@ -105,33 +104,37 @@ export default function BauhausScrollOrnament() {
           height: "clamp(70px, 9vw, 120px)",
           background: "#155DFC",
           opacity: 0.78,
+          transform: `scale(${2 - pulse}) rotate(${s * 0.08}deg)`,
+          transition: "transform 0.3s ease-out",
         }} />
 
-        {/* Red tall rectangle — counter-drift */}
-        <div style={{
-          position: "absolute",
-          right: "5%",
-          top: `calc(38% - ${s * 0.05}px)`,
-          width: "clamp(22px, 3vw, 40px)",
-          height: "clamp(80px, 11vw, 140px)",
-          background: "#E7000B",
-          opacity: 0.7,
-          transform: `rotate(${s * -0.02}deg)`,
-        }} />
-
-        {/* Yellow circle — bobs + drifts */}
+        {/* Yellow circle — bobs + drifts + morphs between circle and diamond as you scroll */}
         <div className="b-bob" style={{
           position: "absolute",
           right: "-15%",
           top: `calc(62% + ${s * 0.03}px)`,
           width: "clamp(60px, 8vw, 110px)",
           height: "clamp(60px, 8vw, 110px)",
-          borderRadius: "50%",
+          borderRadius: `${50 - morph * 50}%`,
           background: "#F0B100",
           opacity: 0.72,
+          transform: `scale(${pulse}) rotate(${morph * 45}deg)`,
+          transition: "transform 0.3s ease-out, border-radius 0.4s ease-out",
         }} />
 
-        {/* Spinning ring — outline only */}
+        {/* Red satellite — orbits the spinning ring as you scroll */}
+        <div style={{
+          position: "absolute",
+          right: `calc(8% + ${-orbitX}px)`,
+          top: `calc(22% + ${s * 0.08}px + ${orbitY}px)`,
+          width: "clamp(14px, 1.8vw, 24px)",
+          height: "clamp(14px, 1.8vw, 24px)",
+          borderRadius: "50%",
+          background: "#E7000B",
+          opacity: 0.8,
+        }} />
+
+        {/* Spinning ring — speed tied to scroll velocity */}
         <div className="b-spin" style={{
           position: "absolute",
           right: "8%",
@@ -139,20 +142,9 @@ export default function BauhausScrollOrnament() {
           width: "clamp(28px, 3.5vw, 48px)",
           height: "clamp(28px, 3.5vw, 48px)",
           borderRadius: "50%",
-          border: "3px solid #E7000B",
+          border: "3px solid #155DFC",
           opacity: 0.55,
-        }} />
-
-        {/* Small cream square */}
-        <div style={{
-          position: "absolute",
-          right: "18%",
-          top: `calc(80% - ${s * 0.06}px)`,
-          width: "clamp(12px, 1.8vw, 20px)",
-          height: "clamp(12px, 1.8vw, 20px)",
-          background: "#F5F1E8",
-          opacity: 0.45,
-          transform: `rotate(${s * 0.08}deg)`,
+          transform: `rotate(${s * 0.4}deg)`,
         }} />
       </div>
     </>

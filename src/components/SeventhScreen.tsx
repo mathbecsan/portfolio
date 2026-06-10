@@ -69,7 +69,7 @@ export default function SeventhScreen() {
       {/* ── Subtitle above logos ── */}
       <div style={{ background: "#F5E6C0", textAlign: "center", paddingTop: "clamp(18px, 3vw, 36px)", paddingBottom: 0 }}>
         <p style={{
-          fontFamily: "monospace", fontWeight: 700,
+          fontFamily: "var(--font-geist-sans), sans-serif", fontWeight: 700,
           fontSize: "clamp(11px, 1.1vw, 15px)",
           letterSpacing: "0.22em", color: "#4a3a1a",
           textTransform: "uppercase", margin: 0,

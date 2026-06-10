@@ -71,7 +71,7 @@ export default function ExperienceScreen() {
             ))}
           </div>
           <h2 style={{
-            fontFamily: "monospace", fontWeight: 900,
+            fontFamily: "var(--font-geist-sans), sans-serif", fontWeight: 900,
             fontSize: "clamp(28px, 5vw, 64px)",
             color: "#f0ede6", margin: 0, letterSpacing: "-.01em",
             textTransform: "uppercase",
@@ -82,7 +82,7 @@ export default function ExperienceScreen() {
 
           {/* Work Experience */}
           <div>
-            <p style={{ fontFamily: "monospace", fontSize: 11, letterSpacing: ".2em", color: "rgba(240,237,230,.35)", textTransform: "uppercase", margin: "0 0 20px" }}>
+            <p style={{ fontFamily: "var(--font-geist-sans), sans-serif", fontSize: 11, letterSpacing: ".2em", color: "rgba(240,237,230,.35)", textTransform: "uppercase", margin: "0 0 20px" }}>
               Work
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
@@ -91,9 +91,9 @@ export default function ExperienceScreen() {
                   borderLeft: `3px solid ${e.color}`,
                   paddingLeft: 20,
                 }}>
-                  <p style={{ fontFamily: "monospace", fontWeight: 700, fontSize: "clamp(14px, 1.4vw, 18px)", color: "#f0ede6", margin: "0 0 4px" }}>{e.role}</p>
-                  <p style={{ fontFamily: "monospace", fontSize: 12, color: e.color, margin: "0 0 6px", letterSpacing: ".06em" }}>{e.org} · {e.period}</p>
-                  <p style={{ fontFamily: "Georgia, serif", fontSize: "clamp(12px, 1.1vw, 15px)", color: "rgba(240,237,230,.6)", margin: 0, lineHeight: 1.6 }}>{e.desc}</p>
+                  <p style={{ fontFamily: "var(--font-geist-sans), sans-serif", fontWeight: 700, fontSize: "clamp(14px, 1.4vw, 18px)", color: "#f0ede6", margin: "0 0 4px" }}>{e.role}</p>
+                  <p style={{ fontFamily: "var(--font-geist-sans), sans-serif", fontSize: 12, color: e.color, margin: "0 0 6px", letterSpacing: ".06em" }}>{e.org} · {e.period}</p>
+                  <p style={{ fontFamily: "var(--font-geist-sans), sans-serif", fontSize: "clamp(12px, 1.1vw, 15px)", color: "rgba(240,237,230,.6)", margin: 0, lineHeight: 1.6 }}>{e.desc}</p>
                 </div>
               ))}
             </div>
@@ -101,31 +101,31 @@ export default function ExperienceScreen() {
 
           {/* Education */}
           <div>
-            <p style={{ fontFamily: "monospace", fontSize: 11, letterSpacing: ".2em", color: "rgba(240,237,230,.35)", textTransform: "uppercase", margin: "0 0 20px" }}>
+            <p style={{ fontFamily: "var(--font-geist-sans), sans-serif", fontSize: 11, letterSpacing: ".2em", color: "rgba(240,237,230,.35)", textTransform: "uppercase", margin: "0 0 20px" }}>
               Education
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
               {EDUCATION.map(e => (
                 <div key={e.degree} style={{ borderLeft: `3px solid ${e.color}`, paddingLeft: 20 }}>
-                  <p style={{ fontFamily: "monospace", fontWeight: 700, fontSize: "clamp(14px, 1.4vw, 18px)", color: "#f0ede6", margin: "0 0 4px" }}>{e.degree}</p>
-                  <p style={{ fontFamily: "monospace", fontSize: 12, color: e.color, margin: "0 0 6px", letterSpacing: ".06em" }}>{e.school} · {e.period}</p>
-                  <p style={{ fontFamily: "Georgia, serif", fontSize: "clamp(12px, 1.1vw, 15px)", color: "rgba(240,237,230,.6)", margin: 0, lineHeight: 1.6 }}>{e.detail}</p>
+                  <p style={{ fontFamily: "var(--font-geist-sans), sans-serif", fontWeight: 700, fontSize: "clamp(14px, 1.4vw, 18px)", color: "#f0ede6", margin: "0 0 4px" }}>{e.degree}</p>
+                  <p style={{ fontFamily: "var(--font-geist-sans), sans-serif", fontSize: 12, color: e.color, margin: "0 0 6px", letterSpacing: ".06em" }}>{e.school} · {e.period}</p>
+                  <p style={{ fontFamily: "var(--font-geist-sans), sans-serif", fontSize: "clamp(12px, 1.1vw, 15px)", color: "rgba(240,237,230,.6)", margin: 0, lineHeight: 1.6 }}>{e.detail}</p>
                 </div>
               ))}
             </div>
 
             {/* Skills */}
-            <p style={{ fontFamily: "monospace", fontSize: 11, letterSpacing: ".2em", color: "rgba(240,237,230,.35)", textTransform: "uppercase", margin: "36px 0 20px" }}>
+            <p style={{ fontFamily: "var(--font-geist-sans), sans-serif", fontSize: 11, letterSpacing: ".2em", color: "rgba(240,237,230,.35)", textTransform: "uppercase", margin: "36px 0 20px" }}>
               Skills
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               {SKILLS.map(s => (
                 <div key={s.cat}>
-                  <p style={{ fontFamily: "monospace", fontSize: 11, color: "#F5C500", letterSpacing: ".1em", textTransform: "uppercase", margin: "0 0 8px" }}>{s.cat}</p>
+                  <p style={{ fontFamily: "var(--font-geist-sans), sans-serif", fontSize: 11, color: "#F5C500", letterSpacing: ".1em", textTransform: "uppercase", margin: "0 0 8px" }}>{s.cat}</p>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                     {s.items.map(item => (
                       <span key={item} style={{
-                        fontFamily: "monospace", fontSize: 11,
+                        fontFamily: "var(--font-geist-sans), sans-serif", fontSize: 11,
                         color: "rgba(240,237,230,.7)",
                         border: "1px solid rgba(240,237,230,.15)",
                         padding: "4px 10px", borderRadius: 3,

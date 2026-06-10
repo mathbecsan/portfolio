@@ -28,7 +28,7 @@ export default function EighthScreen() {
   const inputCls: React.CSSProperties = {
     flex: "1 1 150px", padding: "14px 20px",
     borderRadius: 999, border: "1.5px solid #1a1a2e",
-    background: "transparent", fontFamily: "Georgia, serif",
+    background: "transparent", fontFamily: "var(--font-geist-sans), sans-serif",
     fontSize: "clamp(13px,1.1vw,15px)", color: "#1a1a2e",
     outline: "none", minWidth: 0,
   };
@@ -39,7 +39,7 @@ export default function EighthScreen() {
       {/* ── Big email ── */}
       <div style={{ background: "#F5E6C0", textAlign: "center", padding: "clamp(32px,5vw,64px) 20px", lineHeight: 1 }}>
         <a href="mailto:mathbecsan@gmail.com" style={{
-          fontFamily: "Georgia, 'Times New Roman', serif",
+          fontFamily: "var(--font-geist-sans), sans-serif",
           fontSize: "clamp(28px,6vw,88px)",
           fontWeight: 700, color: "#364153",
           textDecoration: "none", letterSpacing: "-.02em",
@@ -82,16 +82,17 @@ export default function EighthScreen() {
           {/* Title row */}
           <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start", gap: "clamp(24px,4vw,56px)", marginBottom: "clamp(24px,4vw,40px)" }}>
             <h2 style={{
-              fontFamily: "monospace", fontWeight: 900,
-              fontSize: "clamp(56px,10vw,130px)",
+              fontFamily: "var(--font-bebas), sans-serif", fontWeight: 400,
+              fontSize: "clamp(64px,11vw,150px)",
               color: "#0d0d0d", margin: 0,
-              lineHeight: .88, letterSpacing: "-.02em",
+              lineHeight: .9, letterSpacing: "0.02em",
+              textTransform: "uppercase",
               flexShrink: 0,
             }}>
               LET&apos;S<br /><span style={{ color: "#E7000B" }}>TALK</span>
             </h2>
             <p style={{
-              fontFamily: "Georgia, serif",
+              fontFamily: "var(--font-geist-sans), sans-serif",
               fontSize: "clamp(16px,1.8vw,24px)",
               color: "#364153", lineHeight: 1.6,
               margin: "clamp(8px,1vw,16px) 0 0",
@@ -115,7 +116,7 @@ export default function EighthScreen() {
                   padding: "11px 22px", borderRadius: 6,
                   border: `2px solid ${b.border}`,
                   background: b.bg, color: b.color,
-                  fontFamily: "monospace", fontWeight: 700,
+                  fontFamily: "var(--font-geist-sans), sans-serif", fontWeight: 700,
                   fontSize: "clamp(10px, 1vw, 13px)", letterSpacing: ".08em",
                   textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6,
                   transition: "transform .18s, box-shadow .18s",
@@ -131,9 +132,9 @@ export default function EighthScreen() {
           {/* Form */}
           {sent ? (
             <div style={{ padding: "24px 0" }}>
-              <p style={{ fontFamily: "Georgia, serif", fontSize: 20, color: "#1a1a2e", margin: "0 0 12px" }}>✉️ Mail client opened — talk soon!</p>
+              <p style={{ fontFamily: "var(--font-geist-sans), sans-serif", fontSize: 20, color: "#1a1a2e", margin: "0 0 12px" }}>✉️ Mail client opened — talk soon!</p>
               <button onClick={() => { setSent(false); setName(""); setEmail(""); setMessage(""); }}
-                style={{ fontFamily: "monospace", fontSize: 11, letterSpacing: ".1em", background: "none", border: "1.5px solid #1a1a2e", padding: "9px 22px", borderRadius: 999, cursor: "pointer", color: "#1a1a2e" }}>
+                style={{ fontFamily: "var(--font-geist-sans), sans-serif", fontSize: 11, letterSpacing: ".1em", background: "none", border: "1.5px solid #1a1a2e", padding: "9px 22px", borderRadius: 999, cursor: "pointer", color: "#1a1a2e" }}>
                 SEND ANOTHER
               </button>
             </div>
@@ -151,7 +152,7 @@ export default function EighthScreen() {
               {/* Row 2 */}
               <div style={{ display: "flex", borderRadius: 999, border: "1.5px solid #1a1a2e", overflow: "hidden" }}>
                 <input type="text" placeholder="How may I help you?" value={message} onChange={e => setMessage(e.target.value)} required
-                  style={{ flex: 1, padding: "14px 22px", border: "none", background: "transparent", fontFamily: "Georgia, serif", fontSize: "clamp(13px,1.1vw,15px)", color: "#1a1a2e", outline: "none" }} />
+                  style={{ flex: 1, padding: "14px 22px", border: "none", background: "transparent", fontFamily: "var(--font-geist-sans), sans-serif", fontSize: "clamp(13px,1.1vw,15px)", color: "#1a1a2e", outline: "none" }} />
                 <button type="submit"
                   style={{ padding: "14px 22px", background: "#1a1a2e", border: "none", color: "#fff", fontSize: 16, cursor: "pointer", transition: "background .2s" }}
                   onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#155DFC"; }}
@@ -162,7 +163,7 @@ export default function EighthScreen() {
 
           {/* Footer */}
           <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 12, marginTop: "clamp(28px,4vw,48px)" }}>
-            <span style={{ fontFamily: "monospace", fontSize: "clamp(10px,.9vw,13px)", color: "#4A5565", letterSpacing: ".08em" }}>
+            <span style={{ fontFamily: "var(--font-geist-sans), sans-serif", fontSize: "clamp(10px,.9vw,13px)", color: "#4A5565", letterSpacing: ".08em" }}>
               © 2026 MATHIAS BECERRA
             </span>
             <div style={{ display: "flex", gap: 8 }}>
@@ -185,6 +186,23 @@ export default function EighthScreen() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* ── Black footer bar — cohesion accent ── */}
+      <div style={{
+        background: "#0d0d0d",
+        textAlign: "center",
+        padding: "clamp(14px, 2vw, 22px) 20px",
+      }}>
+        <span style={{
+          fontFamily: "var(--font-geist-sans), sans-serif",
+          fontSize: "clamp(10px,.9vw,12px)",
+          letterSpacing: ".2em",
+          textTransform: "uppercase",
+          color: "rgba(240,237,230,0.5)",
+        }}>
+          Designed &amp; built by Mathias Becerra
+        </span>
       </div>
     </section>
   );

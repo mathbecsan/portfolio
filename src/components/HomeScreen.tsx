@@ -39,9 +39,7 @@ const GREETINGS = [
 
 const ROLES = [
   { src: "/first-screen/role-uxui.svg", label: "UX/UI Engineer" },
-  { src: "/first-screen/role-data.svg", label: "Data Scientist" },
   { src: "/first-screen/role-product.svg", label: "Product Designer" },
-  { src: "/first-screen/role-fullstack.svg", label: "Fullstack Developer" },
 ];
 
 const WORDS = ["design", "build", "program"];
@@ -406,7 +404,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
     return () => clearInterval(t);
   }, []);
 
-  // Role + word cycle every 3s
+  // Role + word cycle — each phrase displays ~4.5s, with a 400ms fade transition
   useEffect(() => {
     const t = setInterval(() => {
       setRoleExit(true);
@@ -416,8 +414,8 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
         setWordIdx((p) => (p + 1) % WORDS.length);
         setRoleExit(false);
         setWordExit(false);
-      }, 300);
-    }, 3000);
+      }, 400);
+    }, 4500);
     return () => clearInterval(t);
   }, []);
 
@@ -431,7 +429,6 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
         @keyframes fadeLeft { from { transform:translateX(-40px); opacity:0 } to { transform:translateX(0); opacity:1 } }
         @keyframes fadeRight{ from { transform:translateX(40px); opacity:0 } to { transform:translateX(0); opacity:1 } }
         @keyframes wordIn          { from { transform:translateY(14px); opacity:0 } to { transform:translateY(0); opacity:1 } }
-        @keyframes experienceGlow  { 0%,100% { box-shadow:0 0 10px rgba(245,197,0,0.3),inset 0 0 8px rgba(245,197,0,0.05) } 50% { box-shadow:0 0 22px rgba(245,197,0,0.7),inset 0 0 12px rgba(245,197,0,0.12) } }
         @keyframes ticker   { from { transform:translateX(0) } to { transform:translateX(-50%) } }
         @keyframes dotPulse { 0%,100%{transform:scale(1);opacity:0.9} 50%{transform:scale(1.6);opacity:0.5} }
 
@@ -484,31 +481,6 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
           }}
         />
         <div
-          style={{
-            position: "absolute",
-            bottom: "8%",
-            right: "5%",
-            width: "clamp(40px,5vw,70px)",
-            height: "clamp(40px,5vw,70px)",
-            borderRadius: "50%",
-            background: "#F5C500",
-            opacity: 0.07,
-            zIndex: 0,
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            top: "20%",
-            left: "3%",
-            width: 3,
-            height: "clamp(60px,8vh,100px)",
-            background: "#E63329",
-            opacity: 0.18,
-            zIndex: 0,
-          }}
-        />
-        <div
           ref={mountRef}
           className="absolute inset-0 z-[5]"
           style={{ left: "45%" }}
@@ -538,7 +510,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
             />
           </a>
           <div
-            className="flex gap-7 font-mono text-[#f0ede6]/90 tracking-[0.18em] uppercase"
+            className="flex gap-7 font-sans text-[#f0ede6]/90 tracking-[0.18em] uppercase"
             style={{ fontSize: "clamp(11px, 1vw, 14px)" }}
           >
             {NAV.map((n) =>
@@ -548,19 +520,18 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
                   href={n.href}
                   style={{
                     position: "relative",
-                    color: "#F5C500",
+                    color: "#f0ede6",
                     fontWeight: 800,
                     letterSpacing: "0.2em",
                     textDecoration: "none",
                     padding: "4px 12px",
-                    border: "1px solid rgba(245,197,0,0.5)",
+                    border: "1px solid rgba(240,237,230,0.4)",
                     borderRadius: 3,
-                    background: "rgba(245,197,0,0.08)",
-                    boxShadow:
-                      "0 0 12px rgba(245,197,0,0.3), inset 0 0 8px rgba(245,197,0,0.05)",
-                    transition: "box-shadow 0.2s, background 0.2s",
-                    animation: "experienceGlow 2s ease-in-out infinite",
+                    background: "#0d0d0d",
+                    transition: "background 0.2s, border-color 0.2s, color 0.2s",
                   }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#f0ede6"; (e.currentTarget as HTMLElement).style.color = "#0d0d0d"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#0d0d0d"; (e.currentTarget as HTMLElement).style.color = "#f0ede6"; }}
                 >
                   {n.label} ✦
                 </a>
@@ -585,7 +556,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
           >
             <span
               key={animKey}
-              className="block font-mono text-[#f0ede6]"
+              className="block font-sans text-[#f0ede6]"
               style={{
                 fontSize: "clamp(50px, 10vw, 140px)",
                 opacity: greetExit ? 0 : 1,
@@ -602,19 +573,19 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
             </span>
           </div>
           <p
-            className="font-mono text-[#f0ede6] leading-none mt-1"
+            className="font-sans text-[#f0ede6] leading-none mt-1"
             style={{ fontSize: "clamp(32px, 5.5vw, 88px)" }}
           >
             I&apos;M
           </p>
           <h1
-            className="font-mono font-bold text-[#f0ede6] leading-none tracking-tight"
+            className="font-sans font-bold text-[#f0ede6] leading-none tracking-tight"
             style={{ fontSize: "clamp(44px, 7.5vw, 118px)" }}
           >
             MATHIAS
           </h1>
           <p
-            className="mt-4 font-mono tracking-[0.3em] uppercase text-[#f0ede6]/90"
+            className="mt-4 font-sans tracking-[0.3em] uppercase text-[#f0ede6]/90"
             style={{
               fontSize: "clamp(11px, 1.1vw, 15px)",
               letterSpacing: "0.3em",
@@ -635,7 +606,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
               background: "rgba(240,237,230,0.25)",
             }}
           />
-          <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-[#f0ede6]/80">
+          <span className="font-sans text-[10px] tracking-[0.3em] uppercase text-[#f0ede6]/80">
             scroll
           </span>
         </div>
@@ -668,7 +639,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
               boxShadow: "0 0 6px rgba(230,51,41,0.8)",
             }} />
             <span style={{
-              fontFamily: "monospace", fontSize: 11, fontWeight: 800,
+              fontFamily: "var(--font-geist-sans), sans-serif", fontSize: 11, fontWeight: 800,
               letterSpacing: "0.08em", textTransform: "uppercase",
               color: "#ffffff", whiteSpace: "nowrap",
               background: "rgba(0,0,0,0.82)",
@@ -717,7 +688,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
                   color: "#E63329",
                 },
                 { text: "Symbolic Systems · HCI / HAI", color: "#F5C500" },
-                { text: "UX/UI Engineer", color: "#2952A3" },
+                { text: "UX/UI Engineer and Product Designer", color: "#2952A3" },
                 { text: "From Lambayeque, Peru 🇵🇪", color: "#E63329" },
                 { text: "AI Enthusiast & Builder", color: "#F5C500" },
                 { text: "10+ Products Shipped", color: "#2952A3" },
@@ -735,7 +706,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
                 >
                   <span
                     style={{
-                      fontFamily: "monospace",
+                      fontFamily: "var(--font-geist-sans), sans-serif",
                       fontWeight: 700,
                       fontSize: "clamp(11px, 1.1vw, 14px)",
                       letterSpacing: "0.08em",
@@ -841,7 +812,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
           >
             <p
               style={{
-                fontFamily: "Georgia, serif",
+                fontFamily: "var(--font-geist-sans), sans-serif",
                 fontStyle: "italic",
                 fontSize: "clamp(32px, 5vw, 52px)",
                 color: "#6B1A1A",
@@ -877,7 +848,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
                           ? "translateY(-8px)"
                           : "translateY(0)"
                         : "translateY(8px)",
-                    transition: "opacity 0.3s ease, transform 0.3s ease",
+                    transition: "opacity 0.4s ease, transform 0.4s ease",
                     pointerEvents: roleIdx === i ? "auto" : "none",
                   }}
                 />
@@ -886,7 +857,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
 
             <p
               style={{
-                fontFamily: "monospace",
+                fontFamily: "var(--font-geist-sans), sans-serif",
                 fontSize: "clamp(16px, 2vw, 26px)",
                 color: "#6B1A1A",
                 margin: 0,
@@ -947,7 +918,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
         >
           <p
             style={{
-              fontFamily: "Georgia, 'Times New Roman', serif",
+              fontFamily: "var(--font-geist-sans), sans-serif",
               fontWeight: 700,
               fontSize: "clamp(26px, 4.2vw, 62px)",
               lineHeight: 1.2,
@@ -963,7 +934,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
                 color: "#6B1A1A",
                 fontStyle: "italic",
                 opacity: wordExit ? 0 : 1,
-                transition: "opacity 0.26s ease",
+                transition: "opacity 0.4s ease",
               }}
             >
               {WORDS[wordIdx]}
@@ -988,6 +959,40 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
       </section>
 
       <ScrollReveal from="bottom"><ThirdScreen /></ScrollReveal>
+
+      {/* ── Full-width black divider — Artistic Inspirations ── */}
+      <section
+        style={{
+          background: "#0d0d0d",
+          textAlign: "center",
+          padding: "clamp(48px, 8vw, 96px) 24px clamp(20px, 3vw, 36px)",
+        }}
+      >
+        <h2
+          style={{
+            fontFamily: "var(--font-bebas), sans-serif",
+            fontWeight: 400,
+            fontSize: "clamp(32px, 6vw, 72px)",
+            letterSpacing: "0.06em",
+            textTransform: "uppercase",
+            color: "#f0ede6",
+            margin: 0,
+          }}
+        >
+          Artistic Inspirations
+        </h2>
+        <p
+          style={{
+            fontFamily: "var(--font-geist-sans), sans-serif",
+            fontSize: "clamp(14px, 1.4vw, 20px)",
+            color: "rgba(240,237,230,0.7)",
+            marginTop: "clamp(10px, 1.5vw, 18px)",
+          }}
+        >
+          The artists and ideas that shape how I design.
+        </p>
+      </section>
+
       <ScrollReveal from="bottom" delay={60}><FourthScreen /></ScrollReveal>
       <ScrollReveal from="bottom" delay={60}><FifthScreen /></ScrollReveal>
       <ScrollReveal from="bottom" delay={60}><SixthScreen /></ScrollReveal>

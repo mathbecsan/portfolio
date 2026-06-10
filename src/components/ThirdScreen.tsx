@@ -19,62 +19,80 @@ export default function ThirdScreen() {
           maxWidth: 1100,
           margin: "0 auto",
           display: "flex",
+          flexWrap: "wrap",
           alignItems: "stretch",
           minHeight: "clamp(480px, 62vw, 720px)",
         }}
       >
-        {/* Photo — 40% wide, fills full height */}
-        <div style={{ flex: "0 0 40%", overflow: "hidden" }}>
-          <img
-            src="/screen3/mathias-profile2.png"
-            alt="Mathias Becerra"
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              objectPosition: "center",
-              display: "block",
-            }}
-          />
-        </div>
-
-        {/* Content — 58% wide */}
+        {/* Photo — framed, no awkward clipping across breakpoints */}
         <div
           style={{
-            flex: "1 1 0",
+            flex: "1 1 320px",
+            minHeight: "clamp(280px, 40vw, 480px)",
+            padding: "clamp(20px, 3vw, 40px)",
+            display: "flex",
+          }}
+        >
+          <div
+            style={{
+              position: "relative",
+              width: "100%",
+              borderRadius: "16px",
+              overflow: "hidden",
+              border: "4px solid #0d0d0d",
+              boxShadow: "0 12px 40px rgba(0,0,0,0.18)",
+            }}
+          >
+            <img
+              src="/screen3/mathias-profile2.png"
+              alt="Mathias Becerra"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                objectPosition: "50% 22%",
+                aspectRatio: "4 / 5",
+                display: "block",
+              }}
+            />
+            {/* Stanford S — badge over the bottom-right corner */}
+            <img
+              src="/screen3/image-136.svg"
+              alt="Stanford"
+              style={{
+                position: "absolute",
+                bottom: "clamp(8px, 1.5vw, 16px)",
+                right: "clamp(8px, 1.5vw, 16px)",
+                width: "clamp(110px, 20vw, 200px)",
+                height: "auto",
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Content */}
+        <div
+          style={{
+            flex: "1 1 380px",
             padding: "clamp(20px, 3vw, 40px) clamp(24px, 3.5vw, 52px)",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            gap: "clamp(6px, 0.9vw, 12px)",
-            position: "relative",
+            gap: "clamp(14px, 1.6vw, 22px)",
           }}
         >
-          {/* Stanford S — top right, bigger */}
-          <img
-            src="/screen3/image-136.svg"
-            alt="Stanford"
-            style={{
-              position: "absolute",
-              top: "clamp(300px,20vw,20px)",
-              right: "clamp(-150px,-50vw,70px)",
-              width: "clamp(100px,70vw,300px)",
-              height: "auto",
-            }}
-          />
-
           {/* "I AM A SENIOR MAJORING IN" */}
           <img
             src="/screen3/senior-majoring.svg"
             alt="I am a senior majoring in"
-            style={{ width: "clamp(700px, 200%, 100px)", height: "auto" }}
+            style={{ width: "clamp(380px, 100%, 720px)", height: "auto" }}
           />
 
-          {/* "SYMBOLIC SYSTEMS" — bigger */}
+          {/* "SYMBOLIC SYSTEMS" */}
           <img
             src="/screen3/symbolic-systems.svg"
             alt="Symbolic Systems"
-            style={{ width: "clamp(260px, 72%, 600px)", height: "auto" }}
+            style={{ width: "clamp(320px, 88%, 720px)", height: "auto" }}
           />
 
           {/* HCI / HAI */}
@@ -88,9 +106,10 @@ export default function ThirdScreen() {
           >
             <span
               style={{
-                fontFamily: "Georgia,serif",
-                fontSize: "clamp(12px,1.3vw,17px)",
-                color: "#1a1a2e",
+                fontFamily: "var(--font-geist-sans), sans-serif",
+                fontWeight: 500,
+                fontSize: "clamp(13px,1.3vw,17px)",
+                color: "#364153",
               }}
             >
               (HCI
@@ -102,9 +121,10 @@ export default function ThirdScreen() {
             />
             <span
               style={{
-                fontFamily: "Georgia,serif",
-                fontSize: "clamp(12px,1.3vw,17px)",
-                color: "#1a1a2e",
+                fontFamily: "var(--font-geist-sans), sans-serif",
+                fontWeight: 500,
+                fontSize: "clamp(13px,1.3vw,17px)",
+                color: "#364153",
               }}
             >
               /
@@ -116,39 +136,41 @@ export default function ThirdScreen() {
             />
             <span
               style={{
-                fontFamily: "Georgia,serif",
-                fontSize: "clamp(12px,1.3vw,17px)",
-                color: "#1a1a2e",
+                fontFamily: "var(--font-geist-sans), sans-serif",
+                fontWeight: 500,
+                fontSize: "clamp(13px,1.3vw,17px)",
+                color: "#364153",
               }}
             >
-              HAI CONCENTRATION)
+              Concentration)
             </span>
           </div>
 
           {/* AT STANFORD */}
           <p
             style={{
-              fontFamily: "monospace",
-              fontWeight: 900,
-              fontSize: "clamp(12px,1.5vw,20px)",
+              fontFamily: "var(--font-geist-sans), sans-serif",
+              fontWeight: 800,
+              fontSize: "clamp(12px, 1.4vw, 18px)",
               color: "#E63329",
               margin: 0,
-              letterSpacing: ".07em",
+              letterSpacing: "0.12em",
               textTransform: "uppercase",
             }}
           >
-            AT STANFORD UNIVERSITY
+            At Stanford University
           </p>
 
           {/* Description */}
           <p
             style={{
-              fontFamily: "Georgia,serif",
-              fontSize: "clamp(18px, 1.5vw, 24px)",
+              fontFamily: "var(--font-geist-sans), sans-serif",
+              fontWeight: 400,
+              fontSize: "clamp(15px, 1.4vw, 19px)",
               color: "#364153",
               margin: 0,
               lineHeight: 1.6,
-              maxWidth: 500,
+              maxWidth: 480,
             }}
           >
             An interdisciplinary Bachelor of Science degree program designed to
@@ -156,22 +178,89 @@ export default function ThirdScreen() {
             systems.
           </p>
 
-          {/* KEY PRINCIPLES flush with grid */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-            <img
-              src="/screen3/keyprinciples.svg"
-              alt="Key Principles"
-              style={{ width: "clamp(200px, 50%, 440px)", height: "auto" }}
-            />
-            <img
-              src="/screen3/principles.svg"
-              alt="Principles"
+          {/* Key Principles */}
+          <div style={{ marginTop: "clamp(-8px, -0.4vw, -2px)" }}>
+            <p
               style={{
-                width: "clamp(300px, 90%, 600px)",
-                height: "auto",
-                marginTop: "-50px",
+                fontFamily: "var(--font-bebas), sans-serif",
+                fontWeight: 400,
+                fontSize: "clamp(20px, 2.6vw, 32px)",
+                letterSpacing: "0.04em",
+                textTransform: "uppercase",
+                color: "#0d0d0d",
+                margin: "0 0 12px",
               }}
-            />
+            >
+              Key Principles
+            </p>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(2, minmax(160px, 1fr))",
+                gap: "clamp(10px, 1.2vw, 16px)",
+                maxWidth: 520,
+              }}
+            >
+              {[
+                { text: "Ship early, refine later.", color: "#E63329", shape: "circle" },
+                { text: "Design for accessibility.", color: "#2952A3", shape: "square" },
+                { text: "Lead with kindness.", color: "#F5C500", shape: "triangle" },
+                { text: "Stay open to feedback.", color: "#0d0d0d", shape: "circle" },
+              ].map(({ text, color, shape }) => (
+                <div
+                  key={text}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    border: "1px solid #0d0d0d",
+                    borderRadius: 10,
+                    padding: "clamp(10px, 1.2vw, 14px)",
+                    background: "rgba(13,13,13,0.03)",
+                  }}
+                >
+                  {shape === "circle" && (
+                    <span style={{
+                      flexShrink: 0,
+                      width: "clamp(12px,1.4vw,18px)",
+                      height: "clamp(12px,1.4vw,18px)",
+                      borderRadius: "50%",
+                      background: color,
+                    }} />
+                  )}
+                  {shape === "square" && (
+                    <span style={{
+                      flexShrink: 0,
+                      width: "clamp(12px,1.4vw,18px)",
+                      height: "clamp(12px,1.4vw,18px)",
+                      background: color,
+                    }} />
+                  )}
+                  {shape === "triangle" && (
+                    <span style={{
+                      flexShrink: 0,
+                      width: 0,
+                      height: 0,
+                      borderLeft: "clamp(7px,0.8vw,9px) solid transparent",
+                      borderRight: "clamp(7px,0.8vw,9px) solid transparent",
+                      borderBottom: "clamp(12px,1.4vw,18px) solid " + color,
+                    }} />
+                  )}
+                  <p
+                    style={{
+                      fontFamily: "var(--font-geist-sans), sans-serif",
+                      fontWeight: 600,
+                      fontSize: "clamp(13px, 1.1vw, 15.5px)",
+                      color: "#364153",
+                      lineHeight: 1.4,
+                      margin: 0,
+                    }}
+                  >
+                    {text}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

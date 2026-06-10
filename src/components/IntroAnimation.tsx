@@ -150,6 +150,14 @@ export default function IntroAnimation({ onComplete }: IntroAnimationProps) {
       {/* ── Canvas grid — draws itself line by line ────────── */}
       <GridCanvas active={gridActive} />
 
+      {/* ── Gradient fade — shared black tone bridges into hero ── */}
+      <div style={{
+        position: "absolute", inset: 0, pointerEvents: "none",
+        background: "linear-gradient(to bottom, transparent 60%, #0d0d0d 100%)",
+        opacity: exiting ? 1 : 0,
+        transition: "opacity 0.9s ease",
+      }} />
+
       {/* ── Corner shapes ─────────────────────────────────── */}
       {/* Yellow triangle — top left */}
       <div style={{

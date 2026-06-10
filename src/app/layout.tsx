@@ -19,8 +19,12 @@ const bebasNeue = Bebas_Neue({
 });
 
 export const metadata: Metadata = {
-  title: "Mathias Becerra",
-  description: "Personal portfolio",
+  title: "Mathias Becerra — UX/UI Engineer and Product Designer",
+  description: "Portfolio of Mathias Becerra, UX/UI Engineer and Product Designer.",
+  openGraph: {
+    title: "Mathias Becerra — UX/UI Engineer and Product Designer",
+    description: "Portfolio of Mathias Becerra, UX/UI Engineer and Product Designer.",
+  },
 };
 
 export default function RootLayout({
