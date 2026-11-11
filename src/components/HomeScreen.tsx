@@ -10,9 +10,8 @@ import SeventhScreen from "./SeventhScreen";
 import EighthScreen from "./EighthScreen";
 import ScrollReveal from "./ScrollReveal";
 import BauhausScrollOrnament from "./BauhausScrollOrnament";
-import { SITE_LINKS } from "./SiteNav";
+import SiteNav from "./SiteNav";
 
-const NAV = SITE_LINKS;
 
 const GREETINGS = [
   { text: "Allinllachu!", lang: "Quechua", script: "Latin" },
@@ -425,21 +424,6 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
         @keyframes ticker   { from { transform:translateX(0) } to { transform:translateX(-50%) } }
         @keyframes dotPulse { 0%,100%{transform:scale(1);opacity:0.9} 50%{transform:scale(1.6);opacity:0.5} }
 
-        /* Nav link hover */
-        .nav-link { position:relative; text-decoration:none; padding:4px 0; overflow:hidden; }
-        .home-nav-links { scrollbar-width:none; -webkit-overflow-scrolling:touch; padding:2px 0; }
-        .home-nav-links::-webkit-scrollbar { display:none; }
-        .home-nav-links > a { flex-shrink:0; white-space:nowrap; }
-        .nav-link::after {
-          content:''; position:absolute; bottom:0; left:0; width:100%; height:1.5px;
-          background:#E63329; transform:scaleX(0); transform-origin:right;
-          transition:transform 0.3s cubic-bezier(0.22,1,0.36,1);
-        }
-        .nav-link:hover::after { transform:scaleX(1); transform-origin:left; }
-        .nav-link:hover { color:#fff !important; }
-        .nav-link span { display:inline-block; transition:transform 0.25s cubic-bezier(0.22,1,0.36,1); }
-        .nav-link:hover span { transform:translateY(-2px); }
-
       `}</style>
 
       {/* ══════════════════════════════════════════════
@@ -491,58 +475,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
           }}
         />
 
-        {/* Nav — plain links, no background image */}
-        <nav className="relative z-10 flex flex-col items-start gap-2 md:flex-row md:justify-between md:items-center mb-auto pb-4">
-          {/* Brand logo */}
-          <a href="#home">
-            <img
-              src="/brand-logo.webp"
-              alt="MATHBECSAN"
-              style={{
-                height: "clamp(100px,20vw, 200px)",
-                width: "auto",
-                display: "block",
-              }}
-            />
-          </a>
-          <div
-            className="home-nav-links flex items-center gap-5 md:gap-7 max-w-full overflow-x-auto font-sans text-[#f0ede6]/90 tracking-[0.18em] uppercase"
-            style={{ fontSize: "clamp(11px, 1vw, 14px)" }}
-          >
-            {NAV.map((n) =>
-              n.label === "Experience" ? (
-                <a
-                  key={n.label}
-                  href={n.href}
-                  style={{
-                    position: "relative",
-                    color: "#f0ede6",
-                    fontWeight: 800,
-                    letterSpacing: "0.2em",
-                    textDecoration: "none",
-                    padding: "4px 12px",
-                    border: "1px solid rgba(240,237,230,0.4)",
-                    borderRadius: 3,
-                    background: "#0d0d0d",
-                    transition: "background 0.2s, border-color 0.2s, color 0.2s",
-                  }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#f0ede6"; (e.currentTarget as HTMLElement).style.color = "#0d0d0d"; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#0d0d0d"; (e.currentTarget as HTMLElement).style.color = "#f0ede6"; }}
-                >
-                  {n.label} ✦
-                </a>
-              ) : (
-                <a
-                  key={n.label}
-                  href={n.href}
-                  className="nav-link text-[#f0ede6]/75"
-                >
-                  <span>{n.label}</span>
-                </a>
-              ),
-            )}
-          </div>
-        </nav>
+        <SiteNav variant="hero" />
 
         {/* Greeting + name */}
         <div className="relative z-10 flex-1 flex flex-col justify-center pointer-events-none">

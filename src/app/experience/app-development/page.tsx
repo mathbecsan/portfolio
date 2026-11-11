@@ -1,4 +1,5 @@
 "use client";
+import SiteNav, { Breadcrumbs } from "@/components/SiteNav";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
@@ -192,22 +193,13 @@ export default function AppDevelopmentPage() {
     <main style={{ background: "#FFFFFF", minHeight: "100vh", overflowX: "hidden" }}>
       {soon && <ComingSoonDialog label={soon} onClose={() => setSoon(null)} />}
 
-      {/* ── Nav ── */}
-      <nav style={{
-        position: "fixed", top: 0, left: 0, right: 0, zIndex: 50,
-        padding: "10px 32px", display: "flex", alignItems: "center", justifyContent: "space-between",
-        background: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)",
-        borderBottom: "1.5px solid rgba(31,41,55,0.08)",
-      }}>
-        <a href="/experience" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-          <img src="/experience-screen1/mathbecsanbrandnewlogo.svg" alt="MATHBECSAN" style={{ height: 22 }} />
-          <span style={{ fontFamily: "monospace", fontSize: 10, color: "#1F2937", opacity: 0.5, letterSpacing: "0.15em" }}>← Experience</span>
-        </a>
-        <img src="/app-dev/logo.svg" alt="Speak.io" style={{ height: 24, width: "auto" }} />
-      </nav>
+      <SiteNav current="Projects" />
+      <div className="below-site-nav">
+        <Breadcrumbs bar items={[{ label: "Projects", href: "/projects" }, { label: "App Development" }]} />
+      </div>
 
       {/* ── Top Bauhaus strip ── */}
-      <div style={{ paddingTop: 48, lineHeight: 0, overflow: "hidden" }}>
+      <div style={{ lineHeight: 0, overflow: "hidden" }}>
         <img src="/app-dev/bauhaus-top.svg" alt="" style={{ width: "100%", height: "clamp(40px,4.5vw,60px)", objectFit: "cover", objectPosition: "top", display: "block" }} />
       </div>
 

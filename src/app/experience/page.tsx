@@ -60,7 +60,7 @@ export default function ExperiencePage() {
 
       {/* ── Top Bauhaus Strip (small) ── */}
       <div
-        style={{ width: "100%", overflow: "hidden", lineHeight: 0, paddingTop: 58, maxHeight: 120,
+        style={{ width: "100%", overflow: "hidden", lineHeight: 0, paddingTop: "var(--site-nav-h)", maxHeight: "calc(var(--site-nav-h) + 62px)",
           transition: "filter 0.3s ease, transform 0.3s ease", cursor: "default" }}
         onMouseEnter={e => { (e.currentTarget as HTMLElement).style.filter = "brightness(1.08) saturate(1.15)"; (e.currentTarget as HTMLElement).style.transform = "scaleY(1.04)"; }}
         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.filter = ""; (e.currentTarget as HTMLElement).style.transform = ""; }}

@@ -1,7 +1,7 @@
 "use client";
 import { use } from "react";
 import ComingSoon from "@/components/ComingSoon";
-import SiteNav from "@/components/SiteNav";
+import SiteNav, { PageHero } from "@/components/SiteNav";
 
 // ── Category metadata ─────────────────────────────────────────────────────
 const CATEGORIES: Record<string, { title: string; description: string; accent: string; thumb: string }> = {
@@ -43,29 +43,21 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
 
       <SiteNav current="Projects" />
 
-      {/* ── Hero ── */}
-      <div style={{ paddingTop: 58 }}>
-        <div style={{ background: accent, padding: "clamp(48px,7vw,96px) clamp(32px,6vw,80px)" }}>
-          <p style={{ fontFamily: "monospace", fontSize: 11, letterSpacing: "0.22em", color: "rgba(255,255,255,0.6)", textTransform: "uppercase", margin: "0 0 12px" }}>
-            Category
-          </p>
-          <h1 style={{
-            fontFamily: "monospace", fontWeight: 900, fontSize: "clamp(40px,8vw,100px)",
-            color: "#fff", margin: "0 0 16px", lineHeight: 0.95, textTransform: "uppercase", letterSpacing: "-0.02em",
-          }}>{title}</h1>
-          <p style={{ fontFamily: "Georgia, serif", fontSize: "clamp(14px,1.4vw,18px)", color: "rgba(255,255,255,0.8)", margin: 0, maxWidth: 560, lineHeight: 1.65 }}>
-            {description}
-          </p>
-        </div>
-      </div>
+      <PageHero
+        eyebrow="Field"
+        title={title}
+        intro={description}
+        accent={accent === "#1F2937" ? "var(--cream)" : accent}
+        crumbs={[{ label: "Projects", href: "/projects" }, { label: title }]}
+      />
 
       {/* ── Projects Grid ── */}
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "clamp(48px,6vw,80px) clamp(32px,6vw,80px)" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "clamp(48px,6vw,80px) var(--gutter)" }}>
 
         {/* Section label */}
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: "clamp(32px,4vw,48px)" }}>
           <div style={{ width: 4, height: 32, background: accent, borderRadius: 2 }} />
-          <h2 style={{ fontFamily: "monospace", fontWeight: 700, fontSize: "clamp(14px,1.5vw,18px)", color: "#1F2937", margin: 0, textTransform: "uppercase", letterSpacing: "0.1em" }}>
+          <h2 style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "clamp(14px,1.5vw,18px)", color: "var(--charcoal)", margin: 0, textTransform: "uppercase", letterSpacing: "0.1em" }}>
             Projects & Case Studies
           </h2>
         </div>

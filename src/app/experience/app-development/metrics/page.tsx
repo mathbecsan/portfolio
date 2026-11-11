@@ -1,4 +1,5 @@
 "use client";
+import SiteNav, { Breadcrumbs } from "@/components/SiteNav";
 
 const BASE = "/app-dev/metrics";
 
@@ -7,58 +8,13 @@ export default function MetricsPage() {
     <main
       style={{ background: "#F5F1E8", minHeight: "100vh", overflowX: "hidden" }}
     >
-      {/* ── Nav ── */}
-      <nav
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 50,
-          padding: "10px 32px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          background: "rgba(245,241,232,0.95)",
-          backdropFilter: "blur(8px)",
-          borderBottom: "1.5px solid rgba(31,41,55,0.08)",
-        }}
-      >
-        <a
-          href="/experience/app-development"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            textDecoration: "none",
-          }}
-        >
-          <img
-            src="/experience-screen1/mathbecsanbrandnewlogo.svg"
-            alt="MATHBECSAN"
-            style={{ height: 22 }}
-          />
-          <span
-            style={{
-              fontFamily: "monospace",
-              fontSize: 10,
-              color: "#1F2937",
-              opacity: 0.5,
-              letterSpacing: "0.15em",
-            }}
-          >
-            ← App Development
-          </span>
-        </a>
-        <img
-          src="/app-dev/logo.svg"
-          alt="Speak.io"
-          style={{ height: 24, width: "auto" }}
-        />
-      </nav>
+      <SiteNav current="Projects" />
+      <div className="below-site-nav">
+        <Breadcrumbs bar items={[{ label: "Projects", href: "/projects" }, { label: "App Development", href: "/experience/app-development" }, { label: "Metrics of Impact" }]} />
+      </div>
 
       {/* ── Top Bauhaus strip ── */}
-      <div style={{ paddingTop: 48, lineHeight: 0, overflow: "hidden" }}>
+      <div style={{ lineHeight: 0, overflow: "hidden" }}>
         <img
           src="/app-dev/bauhaus-top.svg"
           alt=""
