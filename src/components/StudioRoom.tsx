@@ -26,7 +26,7 @@ type Action = {
   src: string;            // one-shot animated WebP
   durationMs: number;     // frames × frame delay
   still?: string;         // shown instead of the animation for reduced motion
-  cta: string;            // hover/focus hint, e.g. "Wake me up!"
+  cta: string;            // accessible hint read by screen readers, e.g. "Wake me up!"
 };
 
 type Asset = {
@@ -172,7 +172,6 @@ function RoomAsset({ a }: { a: Asset }) {
       {a.sleepy && !acting && (
         <span className="studio__zzz" aria-hidden="true"><i>z</i><i>z</i><i>z</i></span>
       )}
-      {!acting && <span className="studio__cta" aria-hidden="true">{a.action.cta}</span>}
     </button>
   );
 }
@@ -239,16 +238,6 @@ export default function StudioRoom() {
         .studio__zzz i:nth-child(3) { left: 62%; bottom: 62%; font-size: clamp(13px, 1.35vw, 21px); animation-delay: 1.8s; }
         @keyframes studioZ { 0% { opacity: 0; transform: translateY(6px); } 30% { opacity: 1; } 80% { opacity: 0.9; } 100% { opacity: 0; transform: translateY(-10px); } }
 
-        /* hint bubble on hover / keyboard focus */
-        .studio__cta {
-          position: absolute; left: 50%; bottom: 100%; transform: translate(-50%, 4px); white-space: nowrap; pointer-events: none;
-          padding: 6px 12px; border-radius: 999px; background: var(--ink); color: var(--cream);
-          font-family: var(--font-body); font-size: clamp(11px, 0.95vw, 14px); font-weight: 700; letter-spacing: 0.04em;
-          opacity: 0; transition: opacity 0.2s, transform 0.2s;
-        }
-        .studio__asset--interactive:hover .studio__cta,
-        .studio__asset--interactive:focus-visible .studio__cta { opacity: 1; transform: translate(-50%, -4px); }
-        @media (hover: none) { .studio__cta { opacity: 1; transform: translate(-50%, -4px); } }
         @media (prefers-reduced-motion: reduce) { .studio__zzz i { animation: none; opacity: 0.8; } }
 
         .studio__label {
