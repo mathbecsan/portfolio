@@ -7,8 +7,8 @@ const CATEGORIES: Record<string, { title: string; description: string; accent: s
   "human-robot-interaction": { title: "Human-Robot Interaction", description: "Designing how people and robots communicate, collaborate, and build trust.", accent: "#E63329", thumb: "/experience-screen3/hri-7eff3147.webp" },
   "data-visualization": { title: "Data Visualization", description: "Turning complex data into clear, honest, and engaging visual stories.", accent: "#FBBF24", thumb: "/experience-screen3/data-visualization-fb352c8b.mp4" },
   "digital-fabrication": { title: "Digital Fabrication", description: "3D printing, laser cutting, and turning digital models into physical objects.", accent: "#3B82F6", thumb: "/experience-screen3/digital-fabrication-0070749c.webp" },
-  "ethics":            { title: "Ethics",               description: "Research and projects at the intersection of technology and ethics.",  accent: "#1F2937", thumb: "/experience-screen3/ethics.svg"           },
-  "xr":                { title: "VR / AR / XR / MR",    description: "Immersive experiences across virtual, augmented, extended, and mixed reality.", accent: "#E63329", thumb: "/experience-screen3/xr-d4098b87.webp" },
+  "photography": { title: "Photography", description: "Portraits, places, and moments captured through the lens.", accent: "#1F2937", thumb: "/experience-screen3/photography-5abf5689.webp" },
+  "immersive-technologies": { title: "Immersive Technologies",    description: "Immersive experiences across virtual, augmented, extended, and mixed reality.", accent: "#E63329", thumb: "/experience-screen3/xr-d4098b87.webp" },
   "visual-arts-crafting": { title: "Visual Arts & Crafting", description: "Painting, illustration, and hands-on craft work.", accent: "#FBBF24", thumb: "/experience-screen3/visual-arts-crafting-6b251eff.webp" },
   "uxui":              { title: "UX/UI Implementation", description: "End-to-end product design and front-end engineering projects.",       accent: "#3B82F6", thumb: "/experience-screen3/uxui.svg"             },
   "logo-story":        { title: "Logo Story",           description: "The evolution of the MATHBECSAN brand identity.",                    accent: "#1F2937", thumb: "/experience-screen4/logostory.mp4"         },
@@ -17,8 +17,8 @@ const CATEGORIES: Record<string, { title: string; description: string; accent: s
   "app-development":   { title: "App Development",      description: "Mobile and web apps built from concept to production.",              accent: "#3B82F6", thumb: "/experience-screen4/app-development.svg"   },
   "filmmaking":        { title: "Filmmaking",           description: "Short films, documentary work, and video production projects.",      accent: "#E63329", thumb: "/experience-screen4/filmmaking.mp4"        },
   "web-development":   { title: "Web Development",      description: "Websites, web apps, and digital experiences.",                      accent: "#3B82F6", thumb: "/experience-screen4/web-development-fdd1f636.webp"   },
-  "electronics":       { title: "Electronics",          description: "Hardware projects, prototyping, and embedded systems.",              accent: "#1F2937", thumb: "/experience-screen4/electronics-4ddf0a91.webp"       },
-  "research":          { title: "Research",             description: "Academic research, papers, and human-centered inquiry.",             accent: "#FBBF24", thumb: "/experience-screen4/research.svg"          },
+  "physical-computing-hardware": { title: "Physical Computing & Hardware", description: "Microcontrollers, sensors, prototyping, and embedded systems.",              accent: "#1F2937", thumb: "/experience-screen4/electronics-4ddf0a91.webp"       },
+  "ai-governance-research": { title: "AI Governance Research", description: "Research on the policy, ethics, and governance of AI systems.",             accent: "#FBBF24", thumb: "/experience-screen4/research.svg"          },
   "community-education": { title: "Community-Centered Education Prototypes", description: "Learning tools co-designed with families, students, and educators.", accent: "#E63329", thumb: "/experience-screen4/community-education-ced63005.webp" },
 };
 

@@ -78,7 +78,8 @@ const TILE_CSS = `
   .tile-overlay:hover { background: rgba(0,0,0,0.45); backdrop-filter: blur(6px); }
   .tile-label {
     opacity: 0; color: #fff; font-family: monospace; font-weight: 900;
-    font-size: clamp(14px, 2vw, 24px); letter-spacing: 0.18em; text-transform: uppercase;
+    font-size: clamp(13px, 1.6vw, 22px); letter-spacing: 0.14em; line-height: 1.35; text-transform: uppercase;
+    text-align: center; text-wrap: balance; max-width: 100%; padding: 0 clamp(12px, 2vw, 28px);
     transition: opacity 0.3s ease;
   }
   .tile-overlay:hover .tile-label { opacity: 1; }
@@ -88,7 +89,7 @@ export function TileStyles() {
   return <style>{TILE_CSS}</style>;
 }
 
-/** Image 5 — 3×3 dark gallery (Music Production, Human-Robot Interaction, Ethics, …). */
+/** Image 5 — 3×3 dark gallery (Music Production, Human-Robot Interaction, Photography, …). */
 export function CategoriesGrid({ style }: { style?: CSSProperties }) {
   return (
     <div style={{ width: "100%", background: "#000", padding: "clamp(12px, 2vw, 24px)", ...style }}>
@@ -97,8 +98,8 @@ export function CategoriesGrid({ style }: { style?: CSSProperties }) {
         <Tile src="/experience-screen3/hri-7eff3147.webp" alt="Human-Robot Interaction" label="Human-Robot Interaction" href="/experience/human-robot-interaction" style={{ gridColumn: "2", gridRow: "1 / 3" }} />
         <Tile src="/experience-screen3/data-visualization-fb352c8b.mp4" poster="/experience-screen3/data-visualization-poster-298ad945.jpg" isVideo alt="Data Visualization" label="Data Visualization" href="/experience/data-visualization" style={{ gridColumn: "3", gridRow: "1" }} />
         <Tile src="/experience-screen3/digital-fabrication-0070749c.webp" alt="Digital Fabrication" label="Digital Fabrication" href="/experience/digital-fabrication" style={{ gridColumn: "1", gridRow: "2" }} />
-        <Tile src="/experience-screen3/ethics.svg" alt="Ethics" label="Ethics" href="/experience/ethics" style={{ gridColumn: "3", gridRow: "2" }} />
-        <Tile src="/experience-screen3/xr-d4098b87.webp" alt="VR / AR / XR / MR" label="VR / AR / XR / MR" href="/experience/xr" style={{ gridColumn: "1", gridRow: "3" }} />
+        <Tile src="/experience-screen3/photography-5abf5689.webp" alt="Photography" label="Photography" href="/experience/photography" style={{ gridColumn: "3", gridRow: "2" }} />
+        <Tile src="/experience-screen3/xr-d4098b87.webp" alt="Immersive Technologies" label="Immersive Technologies" href="/experience/immersive-technologies" style={{ gridColumn: "1", gridRow: "3" }} />
         <Tile src="/experience-screen3/visual-arts-crafting-6b251eff.webp" alt="Visual Arts & Crafting" label="Visual Arts & Crafting" href="/experience/visual-arts-crafting" style={{ gridColumn: "2", gridRow: "3" }} />
         <Tile src="/experience-screen4/community-education-ced63005.webp" alt="Community-Centered Education Prototypes" label="Community-Centered Education Prototypes" href="/experience/community-education" style={{ gridColumn: "3", gridRow: "3" }} />
       </div>
@@ -117,8 +118,8 @@ export function ProjectsGrid({ style }: { style?: CSSProperties }) {
         <Tile src="/experience-screen4/app-development.svg" alt="App Development" label="App Development" href="/experience/app-development" style={{ gridColumn: "1", gridRow: "2 / 4" }} />
         <Tile src="/experience-screen4/filmmaking.mp4" poster="/experience-screen4/filmmaking-poster.jpg" isVideo alt="Filmmaking" label="Filmmaking" href="/experience/filmmaking" style={{ gridColumn: "2", gridRow: "2" }} />
         <Tile src="/experience-screen4/web-development-fdd1f636.webp" alt="Web Development" label="Web Development" href="/experience/web-development" style={{ gridColumn: "3", gridRow: "2 / 4" }} />
-        <Tile src="/experience-screen4/electronics-4ddf0a91.webp" alt="Electronics" label="Electronics" href="/experience/electronics" style={{ gridColumn: "4", gridRow: "2" }} />
-        <Tile src="/experience-screen4/research.svg" alt="Research" label="Research" href="/experience/research" style={{ gridColumn: "2", gridRow: "3" }} />
+        <Tile src="/experience-screen4/electronics-4ddf0a91.webp" alt="Physical Computing & Hardware" label="Physical Computing & Hardware" href="/experience/physical-computing-hardware" style={{ gridColumn: "4", gridRow: "2" }} />
+        <Tile src="/experience-screen4/research.svg" alt="AI Governance Research" label="AI Governance Research" href="/experience/ai-governance-research" style={{ gridColumn: "2", gridRow: "3" }} />
         <Tile src="/experience-screen3/uxui.svg" alt="UX/UI" label="UX/UI Implementation" href="/experience/uxui" style={{ gridColumn: "4", gridRow: "3" }} />
       </div>
     </div>
