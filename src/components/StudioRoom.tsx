@@ -204,17 +204,25 @@ export default function StudioRoom() {
       <style>{`
         .studio { position: relative; margin-top: var(--site-nav-h); height: calc(100svh - var(--site-nav-h)); min-height: 320px; background: ${ROOM.wall}; }
         .studio__stage { position: absolute; inset: 0; overflow: hidden; }
-        /* Landscape: cover the stage, centred (may crop a little top/bottom on very wide screens). */
+        /* Landscape: fit the WHOLE room inside the stage (never cropped), centred.
+           Leftover space is the wall colour; the image edges fade into it so there's no hard seam. */
         .studio__scene {
           position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-          width: max(100%, calc((100svh - var(--site-nav-h)) * ${ROOM.w} / ${ROOM.h}));
+          width: min(100%, calc((100svh - var(--site-nav-h)) * ${ROOM.w} / ${ROOM.h}));
           aspect-ratio: ${ROOM.w} / ${ROOM.h};
+        }
+        .studio__room {
+          -webkit-mask-image: linear-gradient(to right, transparent 0, #000 2.5%, #000 97.5%, transparent 100%), linear-gradient(to bottom, #000 0, #000 96%, transparent 100%);
+          -webkit-mask-composite: source-in;
+          mask-image: linear-gradient(to right, transparent 0, #000 2.5%, #000 97.5%, transparent 100%), linear-gradient(to bottom, #000 0, #000 96%, transparent 100%);
+          mask-composite: intersect;
         }
         /* Portrait / narrow (taller than 4:3): keep full height, pan sideways. */
         @media (max-aspect-ratio: 4/3) {
           .studio__stage { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
           .studio__stage::-webkit-scrollbar { display: none; }
           .studio__scene { left: 0; top: 0; transform: none; height: 100%; width: auto; }
+          .studio__room { -webkit-mask-image: none; mask-image: none; }
         }
         .studio__room { position: absolute; inset: 0; width: 100%; height: 100%; display: block; user-select: none; }
         .studio__asset { position: absolute; }
