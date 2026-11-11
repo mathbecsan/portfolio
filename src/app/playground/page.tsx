@@ -1,20 +1,17 @@
 import type { Metadata } from "next";
-import SiteNav, { PageHero } from "@/components/SiteNav";
-import ComingSoon from "@/components/ComingSoon";
+import SiteNav from "@/components/SiteNav";
+import StudioRoom from "@/components/StudioRoom";
 
-export const metadata: Metadata = { title: "Interactive Studio — Mathias Becerra" };
+export const metadata: Metadata = {
+  title: "Interactive Studio — Mathias Becerra",
+  description: "An illustrated studio to explore fun facts about Mathias, one object at a time.",
+};
 
 export default function PlaygroundPage() {
   return (
-    <main style={{ background: "#FFF3DE", minHeight: "100vh" }}>
+    <main style={{ background: "#FCEEDF", minHeight: "100svh" }}>
       <SiteNav current="Interactive Studio" />
-      <PageHero
-        eyebrow="Playground"
-        title="Interactive Studio"
-        intro="A playground of experiments, prototypes, and interactive toys you can try right in the browser."
-        accent="#005CAA"
-      />
-      <ComingSoon message="The studio doors open soon — experiments and interactive prototypes are being built." />
+      <StudioRoom />
     </main>
   );
 }
