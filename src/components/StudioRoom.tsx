@@ -61,6 +61,27 @@ const ASSETS: Asset[] = [
       cta: "Wake me up!",
     },
   },
+
+  // ── Personal objects (from Downloads/Assets for Playground) ──
+  // Trimmed to their visible bounds; x/y/w/h place each on a surface in room pixels.
+  // Top shelf (y≈237) · lower shelf (y≈396) · sideboard (y≈566) · coffee table (y≈790) · desk (y≈560) · floor
+  { id: "llama", label: "Llama keepsake", x: 89, y: 86, w: 92, h: 153, src: "/studio/objects/llama-6f990cbe.webp" },
+  { id: "headphones", label: "Headphones", x: 221, y: 99.9, w: 128, h: 139.1, src: "/studio/objects/headphones-e1218f26.webp" },
+  { id: "playlist", label: "Playlist card", x: 404, y: 115, w: 92, h: 124, src: "/studio/objects/playlist-5753ac19.webp" },
+  { id: "town-square", label: "Town square keepsake", x: 81, y: 289.3, w: 118, h: 108.7, src: "/studio/objects/town-square-9a532d1a.webp" },
+  { id: "flashcard", label: "Language flashcard", x: 236, y: 315, w: 108, h: 83, src: "/studio/objects/flashcard-7075b581.webp" },
+  { id: "origami-dog", label: "Origami dog", x: 384, y: 283.7, w: 132, h: 114.3, src: "/studio/objects/origami-dog-e3f3ffcb.webp" },
+  { id: "team-photo", label: "Team photo", x: 75, y: 457.7, w: 150, h: 110.3, src: "/studio/objects/team-photo-4cb979ca.webp" },
+  { id: "passport", label: "Passport and boarding pass", x: 308, y: 455.3, w: 104, h: 114.7, src: "/studio/objects/passport-38214c47.webp" },
+  { id: "mug", label: "Mug of tea", x: 546, y: 726, w: 78, h: 66, src: "/studio/objects/mug-d6f2d260.webp" },
+  { id: "notebook", label: "Sketch notebook", x: 671, y: 681, w: 128, h: 119, src: "/studio/objects/notebook-f7161628.webp" },
+  { id: "letter", label: "Letter from a mentor", x: 844, y: 683.3, w: 112, h: 116.7, src: "/studio/objects/letter-d2f5b815.webp" },
+  { id: "house-key", label: "House key", x: 998, y: 728, w: 84, h: 67, src: "/studio/objects/house-key-0ecfefa9.webp" },
+  { id: "badge", label: "Research badge", x: 1379, y: 462.7, w: 122, h: 103.3, src: "/studio/objects/badge-987752e9.webp" },
+  { id: "recipe", label: "Family recipe card", x: 1521, y: 471.7, w: 118, h: 90.3, src: "/studio/objects/recipe-ad924141.webp" },
+  { id: "backpack", label: "Backpack", x: 31, y: 758.3, w: 128, h: 146.7, src: "/studio/objects/backpack-1f37e912.webp" },
+  { id: "sneakers", label: "Sneakers", x: 615, y: 845.7, w: 150, h: 84.3, src: "/studio/objects/sneakers-6ab51ba8.webp" },
+  { id: "dumbbells", label: "Dumbbells", x: 1464, y: 824.3, w: 112, h: 80.7, src: "/studio/objects/dumbbells-88b8bb72.webp" },
 ];
 
 // Horizontal point (room pixels) the mobile view starts centred on — Reachy for now.
@@ -152,7 +173,7 @@ function RoomAsset({ a }: { a: Asset }) {
 
   if (!a.action) {
     return (
-      <div className="studio__asset" style={style} data-asset={a.id} role="img" aria-label={a.label}>
+      <div className="studio__asset" style={style} data-asset={a.id} role="img" aria-label={a.label} title={a.label}>
         {img}
       </div>
     );
@@ -231,10 +252,12 @@ export default function StudioRoom() {
           padding: 0; border: 0; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
           transition: transform 0.35s cubic-bezier(0.22,1,0.36,1); transform-origin: 50% 100%;
         }
+        .studio__asset { transition: transform 0.35s cubic-bezier(0.22,1,0.36,1); transform-origin: 50% 100%; }
         .studio__asset--interactive:not([data-acting]):hover { transform: translateY(-2%) scale(1.03); }
+        .studio__asset:not(.studio__asset--interactive):hover { transform: translateY(-3%) scale(1.04); }
         /* soft warm glow that follows the object's outline on hover / keyboard focus */
-        .studio__asset--interactive img { transition: filter 0.3s ease; }
-        .studio__asset--interactive:hover img,
+        .studio__asset img { transition: filter 0.3s ease; }
+        .studio__asset:hover img,
         .studio__asset--interactive:focus-visible img {
           filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 10px rgba(251, 191, 36, 0.75)) drop-shadow(0 0 22px rgba(251, 191, 36, 0.4));
         }
