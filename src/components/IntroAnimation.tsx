@@ -122,16 +122,16 @@ export default function IntroAnimation({ onComplete }: IntroAnimationProps) {
     const add = (fn: () => void, ms: number) =>
       timers.current.push(setTimeout(fn, ms));
 
-    // Phase 1 — grid draws + shapes fly in (0–3 000 ms)
+    // Phase 1 — grid draws + shapes fly in (0–1 500 ms)
     add(() => setGridActive(true), 50);
-    add(() => setShapesIn(true),   600);
+    add(() => setShapesIn(true),   350);
 
     // Phase 2 — real logo image fades + rises in
-    add(() => setLogoIn(true), 3000);
+    add(() => setLogoIn(true), 1500);
 
     // Phase 3 — exit
-    add(() => setExiting(true), 5200);
-    add(() => onComplete(),     6100);
+    add(() => setExiting(true), 2900);
+    add(() => onComplete(),     3500);
 
     return () => timers.current.forEach(clearTimeout);
   }, [onComplete]);
@@ -143,7 +143,7 @@ export default function IntroAnimation({ onComplete }: IntroAnimationProps) {
       opacity:   exiting ? 0 : 1,
       transform: exiting ? "scale(1.06)" : "scale(1)",
       transition: exiting
-        ? "opacity 0.9s ease, transform 0.9s cubic-bezier(0.4,0,0.2,1)"
+        ? "opacity 0.6s ease, transform 0.6s cubic-bezier(0.4,0,0.2,1)"
         : "none",
     }}>
 
@@ -210,7 +210,7 @@ export default function IntroAnimation({ onComplete }: IntroAnimationProps) {
         pointerEvents: "none",
       }}>
         <img
-          src="/brand-logo.png"
+          src="/brand-logo.webp"
           alt="MATHBECSAN"
           style={{
             width: "min(72vw, 700px)",

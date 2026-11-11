@@ -1,6 +1,7 @@
 "use client";
 import { useState, type MouseEvent } from "react";
 import BauhausScrollOrnament from "@/components/BauhausScrollOrnament";
+import { CategoriesGrid, ProjectsGrid, TileStyles } from "@/components/ExperienceGallery";
 
 
 const TOPICS  = ["Mentoring", "Collaboration", "Freelance", "Research", "Just saying hi!"];
@@ -20,30 +21,6 @@ const VIDEO_CARDS = [
   { src: "/experience-screen5/link-5.svg", label: "Pregrado en el Extranjero", accent: "#E31E24", url: "https://www.youtube.com/watch?v=ywOGJ8Qfo1o" },
   { src: "/experience-screen5/link-6.svg", label: "Abundant Technologies",     accent: "#005CAA", url: "https://www.youtube.com/watch?v=1FEWTn7qaqk" },
 ];
-
-function Tile({ src, alt, label, isVideo = false, href, style = {} }: {
-  src: string; alt: string; label: string; isVideo?: boolean; href?: string; style?: React.CSSProperties;
-}) {
-  const inner = (
-    <>
-      {isVideo
-        ? <video src={src} autoPlay muted loop playsInline style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-        : <img src={src} alt={alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-      }
-      <div className="tile-overlay">
-        <span className="tile-label">{label}</span>
-      </div>
-    </>
-  );
-  if (href) {
-    return (
-      <a href={href} style={{ position: "relative", overflow: "hidden", display: "block", textDecoration: "none", cursor: "pointer", ...style }}>
-        {inner}
-      </a>
-    );
-  }
-  return <div style={{ position: "relative", overflow: "hidden", ...style }}>{inner}</div>;
-}
 
 export default function ExperiencePage() {
   const [topic,   setTopic]   = useState("Mentoring");
@@ -103,7 +80,7 @@ export default function ExperiencePage() {
             textDecoration: "none",
           }}
         >
-          <img
+          <img loading="lazy" decoding="async"
             src="/experience-screen1/mathbecsanbrandnewlogo.svg"
             alt="MATHBECSAN"
             style={{ height: 26, width: "auto", display: "block" }}
@@ -130,7 +107,7 @@ export default function ExperiencePage() {
         onMouseEnter={e => { (e.currentTarget as HTMLElement).style.filter = "brightness(1.08) saturate(1.15)"; (e.currentTarget as HTMLElement).style.transform = "scaleY(1.04)"; }}
         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.filter = ""; (e.currentTarget as HTMLElement).style.transform = ""; }}
       >
-        <img src="/experience-screen1/group-4.svg" alt="" style={{ width: "100%", height: "120px", objectFit: "cover", objectPosition: "top", display: "block" }} />
+        <img loading="lazy" decoding="async" src="/experience-screen1/group-4.svg" alt="" style={{ width: "100%", height: "120px", objectFit: "cover", objectPosition: "top", display: "block" }} />
       </div>
 
       {/* ── Center Content ── */}
@@ -152,7 +129,7 @@ export default function ExperiencePage() {
           onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-4px) scale(1.02)"; (e.currentTarget as HTMLElement).style.filter = "drop-shadow(0 8px 24px rgba(230,51,41,0.35))"; }}
           onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.filter = ""; }}
         >
-          <img
+          <img loading="lazy" decoding="async"
             src="/experience-screen1/download-resume.svg"
             alt="Download My Resume"
             style={{ width: "100%", height: "auto", display: "block" }}
@@ -167,13 +144,13 @@ export default function ExperiencePage() {
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-4px) scale(1.04)"; (e.currentTarget as HTMLElement).style.filter = "drop-shadow(0 8px 20px rgba(59,130,246,0.4))"; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.filter = ""; }}
           >
-            <img
+            <img loading="lazy" decoding="async"
               src="/experience-screen1/hire-me.svg"
               alt="Hire Me!"
               style={{ width: "100%", height: "auto", display: "block" }}
             />
           </a>
-          <img
+          <img loading="lazy" decoding="async"
             src="/experience-screen1/arrow-circle.svg"
             alt=""
             style={{ width: 80, height: 80, display: "block", cursor: "pointer", transition: "transform 0.25s ease, filter 0.25s ease" }}
@@ -192,7 +169,7 @@ export default function ExperiencePage() {
           maxHeight: 120,
         }}
       >
-        <img
+        <img loading="lazy" decoding="async"
           src="/experience-screen1/group-1.svg"
           alt=""
           style={{
@@ -215,7 +192,7 @@ export default function ExperiencePage() {
           justifyContent: "flex-end",
         }}
       >
-        <img
+        <img loading="lazy" decoding="async"
           src="/experience-interim/work-experience-timeline.svg"
           alt="Work Experience Timeline"
           style={{ width: "78%", height: "auto", display: "block" }}
@@ -224,7 +201,7 @@ export default function ExperiencePage() {
 
       {/* ── Screen 2: Top Bauhaus Strips ── */}
       <div style={{ width: "100%", overflow: "hidden", lineHeight: 0 }}>
-        <img
+        <img loading="lazy" decoding="async"
           src="/experience-screen2/group-4.svg"
           alt=""
           style={{ width: "100%", height: "auto", display: "block" }}
@@ -233,105 +210,27 @@ export default function ExperiencePage() {
 
       {/* ── Screen 2: Timeline ── */}
       <div style={{ width: "100%", background: "#FFF3DE", padding: "clamp(30px, 5vw, 200px) 0", overflowX: "auto" }}>
-        <img
+        <img loading="lazy" decoding="async"
           src="/experience-screen2/timeline.svg"
           alt="Work Experience Timeline"
           style={{ width: "135%", minWidth: 1100, height: "auto", display: "block", marginLeft: "3%" }}
         />
       </div>
 
-      {/* ── Screen 3: Dark Gallery ── */}
-      <style>{`
-        .tile-overlay {
-          position: absolute;
-          inset: 0;
-          background: rgba(0,0,0,0);
-          backdrop-filter: blur(0px);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: background 0.3s ease, backdrop-filter 0.3s ease;
-        }
-        .tile-overlay:hover {
-          background: rgba(0,0,0,0.45);
-          backdrop-filter: blur(6px);
-        }
-        .tile-label {
-          opacity: 0;
-          color: #fff;
-          font-family: monospace;
-          font-weight: 900;
-          font-size: clamp(14px, 2vw, 24px);
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-          transition: opacity 0.3s ease;
-        }
-        .tile-overlay:hover .tile-label {
-          opacity: 1;
-        }
-      `}</style>
-
-      <div style={{ width: "100%", background: "#000", padding: "clamp(12px, 2vw, 24px)" }}>
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          gridTemplateRows: "30vh 30vh 30vh",
-          gap: "3px",
-        }}>
-
-          <Tile src="/experience-screen3/musicproduction.mp4" alt="Music Production" label="Music Production"  isVideo href="/experience/music-production" style={{ gridColumn: "1", gridRow: "1" }} />
-          <Tile src="/experience-screen3/graphicdesign.svg"   alt="Graphic Design"   label="Graphic Design"   href="/experience/graphic-design"   style={{ gridColumn: "2", gridRow: "1 / 3" }} />
-          <Tile src="/experience-screen3/design.png"          alt="Design"           label="Design"           href="/experience/design"            style={{ gridColumn: "3", gridRow: "1" }} />
-          <Tile src="/experience-screen3/sketches.svg"        alt="Sketches"         label="Sketches"         href="/experience/sketches"          style={{ gridColumn: "1", gridRow: "2" }} />
-          <Tile src="/experience-screen3/ethics.svg"          alt="Ethics"           label="Ethics"           href="/experience/ethics"            style={{ gridColumn: "3", gridRow: "2" }} />
-          <Tile src="/experience-screen3/logodesigns.png"     alt="Logo Designs"     label="Logo Designs"     href="/experience/logo-designs"      style={{ gridColumn: "1", gridRow: "3" }} />
-          <Tile src="/experience-screen3/others.svg"          alt="Others"           label="Others"           href="/experience/others"            style={{ gridColumn: "2", gridRow: "3" }} />
-          <Tile src="/experience-screen3/uxui.svg"            alt="UX/UI"            label="UX/UI Implementation" href="/experience/uxui"          style={{ gridColumn: "3", gridRow: "3" }} />
-
-        </div>
-      </div>
-
-      {/* ── Screen 4: Projects Gallery ── */}
-      <div style={{ width: "100%", background: "#000", padding: "clamp(12px, 2vw, 24px)", paddingTop: 3 }}>
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr 1fr",
-          gridTemplateRows: "28vh 28vh 28vh",
-          gap: "3px",
-        }}>
-
-          {/* Row 1, Cols 1–2 — Logo Story */}
-          <Tile src="/experience-screen4/logostory.mp4" alt="MATHBECSAN" label="Logo Story" isVideo href="/experience/logo-story"
-            style={{ gridColumn: "1 / 3", gridRow: "1" }} />
-          <Tile src="/experience-screen4/3d-modelling.svg" alt="3D Modelling" label="3D Modelling" href="/experience/3d-modelling"
-            style={{ gridColumn: "3", gridRow: "1" }} />
-          <Tile src="/experience-screen4/game-development.svg" alt="Game Development" label="Game Development" href="/experience/game-development"
-            style={{ gridColumn: "4", gridRow: "1" }} />
-          <Tile src="/experience-screen4/app-development.svg" alt="App Development" label="App Development" href="/experience/app-development"
-            style={{ gridColumn: "1", gridRow: "2 / 4" }} />
-          <Tile src="/experience-screen4/filmmaking.mov" alt="Filmmaking" label="Filmmaking" isVideo href="/experience/filmmaking"
-            style={{ gridColumn: "2", gridRow: "2" }} />
-          <Tile src="/experience-screen4/web-development.svg" alt="Web Development" label="Web Development" href="/experience/web-development"
-            style={{ gridColumn: "3", gridRow: "2 / 4" }} />
-          <Tile src="/experience-screen4/electronics.svg" alt="Electronics" label="Electronics" href="/experience/electronics"
-            style={{ gridColumn: "4", gridRow: "2" }} />
-          <Tile src="/experience-screen4/research.svg" alt="Research" label="Research" href="/experience/research"
-            style={{ gridColumn: "2", gridRow: "3" }} />
-          <Tile src="/experience-screen4/miscellaneous.svg" alt="Miscellaneous" label="Miscellaneous" href="/experience/miscellaneous"
-            style={{ gridColumn: "4", gridRow: "3" }} />
-
-        </div>
-      </div>
+      {/* ── Screens 3 & 4: Galleries (shared with homepage) ── */}
+      <TileStyles />
+      <CategoriesGrid />
+      <ProjectsGrid style={{ paddingTop: 3 }} />
 
       {/* ── Interim 4–5: Media Releases ── */}
       <div style={{ width: "100%", overflow: "hidden", lineHeight: 0 }}>
-        <img src="/experience-interim45/group.svg" alt="" style={{ width: "100%", height: "auto", display: "block" }} />
+        <img loading="lazy" decoding="async" src="/experience-interim45/group.svg" alt="" style={{ width: "100%", height: "auto", display: "block" }} />
       </div>
       <div style={{ width: "100%", background: "#FFF3DE", padding: "clamp(32px, 5vw, 60px) 0", display: "flex", justifyContent: "flex-start" }}>
-        <img src="/experience-interim45/media-releases.svg" alt="Media Releases" style={{ width: "55%", height: "auto", display: "block" }} />
+        <img loading="lazy" decoding="async" src="/experience-interim45/media-releases.svg" alt="Media Releases" style={{ width: "55%", height: "auto", display: "block" }} />
       </div>
       <div style={{ width: "100%", overflow: "hidden", lineHeight: 0, transform: "scaleY(-1)" }}>
-        <img src="/experience-interim45/group-1.svg" alt="" style={{ width: "100%", height: "auto", display: "block" }} />
+        <img loading="lazy" decoding="async" src="/experience-interim45/group-1.svg" alt="" style={{ width: "100%", height: "auto", display: "block" }} />
       </div>
 
       {/* ── Screen 5: Video Interviews & Presentations ── */}
@@ -352,7 +251,7 @@ export default function ExperiencePage() {
 
         {/* Header */}
         <div style={{ marginBottom: "clamp(24px, 3vw, 40px)" }}>
-          <img src="/experience-screen5/header.svg" alt="Video Interviews & Presentations"
+          <img loading="lazy" decoding="async" src="/experience-screen5/header.svg" alt="Video Interviews & Presentations"
             style={{ width: "clamp(320px, 70%, 780px)", height: "auto", display: "block" }} />
         </div>
 
@@ -363,7 +262,7 @@ export default function ExperiencePage() {
               className="video-card"
               style={{ display: "block", textDecoration: "none" }}
             >
-              <img src={card.src} alt={card.label} />
+              <img loading="lazy" decoding="async" src={card.src} alt={card.label} />
               <div className="vc-overlay" />
             </a>
           ))}
@@ -373,13 +272,13 @@ export default function ExperiencePage() {
 
       {/* ── Interim 5–6: Press Features ── */}
       <div style={{ width: "100%", overflow: "hidden", lineHeight: 0 }}>
-        <img src="/experience-interim56/group.svg" alt="" style={{ width: "100%", height: "auto", display: "block" }} />
+        <img loading="lazy" decoding="async" src="/experience-interim56/group.svg" alt="" style={{ width: "100%", height: "auto", display: "block" }} />
       </div>
       <div style={{ width: "100%", background: "#FFF3DE", padding: "clamp(32px, 5vw, 60px) 0", display: "flex", justifyContent: "flex-end" }}>
-        <img src="/experience-interim56/press-features.svg" alt="Press Features" style={{ width: "55%", height: "auto", display: "block" }} />
+        <img loading="lazy" decoding="async" src="/experience-interim56/press-features.svg" alt="Press Features" style={{ width: "55%", height: "auto", display: "block" }} />
       </div>
       <div style={{ width: "100%", overflow: "hidden", lineHeight: 0, transform: "scaleY(-1)" }}>
-        <img src="/experience-interim56/group-1.svg" alt="" style={{ width: "100%", height: "auto", display: "block" }} />
+        <img loading="lazy" decoding="async" src="/experience-interim56/group-1.svg" alt="" style={{ width: "100%", height: "auto", display: "block" }} />
       </div>
 
       {/* ── Screen 6: Press Features ── */}
@@ -410,51 +309,51 @@ export default function ExperiencePage() {
 
           {/* Left — Website Featurings */}
           <div>
-            <img src="/experience-screen6/websitefeaturings.svg" alt="Website Featurings" className="press-header" style={{ width: "100%", height: "auto", display: "block", marginBottom: 24 }} />
+            <img loading="lazy" decoding="async" src="/experience-screen6/websitefeaturings.svg" alt="Website Featurings" className="press-header" style={{ width: "100%", height: "auto", display: "block", marginBottom: 24 }} />
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-              <a href="https://abundant-intelligences.net/news/redefining-digital-inclusion-from-peru-to-the-world-virtual-talk-with-mathias-becerra-sanchez/" target="_blank" rel="noopener noreferrer" className="press-card"><img src="/experience-screen6/abundantintelligences.svg" alt="Redefining Digital Inclusion" /></a>
-              <a href="https://undergradresearch.stanford.edu/people/mathias-becerra-sanchez" target="_blank" rel="noopener noreferrer" className="press-card"><img src="/experience-screen6/vpuefellowundergraduateresearch.svg" alt="Undergraduate Research Profile" /></a>
-              <a href="https://silicon.stanford.edu/2025-silicon-unicode-interns/" target="_blank" rel="noopener noreferrer" className="press-card"><img src="/experience-screen6/siliconunicode.svg" alt="Silicon Unicode Interns 2025" /></a>
-              <a href="https://www.ampglobalyouth.org/global-youth-visionaries/" target="_blank" rel="noopener noreferrer" className="press-card"><img src="/experience-screen6/globalyouthvisionares.svg" alt="Global Youth Visionaries" /></a>
+              <a href="https://abundant-intelligences.net/news/redefining-digital-inclusion-from-peru-to-the-world-virtual-talk-with-mathias-becerra-sanchez/" target="_blank" rel="noopener noreferrer" className="press-card"><img loading="lazy" decoding="async" src="/experience-screen6/abundantintelligences.svg" alt="Redefining Digital Inclusion" /></a>
+              <a href="https://undergradresearch.stanford.edu/people/mathias-becerra-sanchez" target="_blank" rel="noopener noreferrer" className="press-card"><img loading="lazy" decoding="async" src="/experience-screen6/vpuefellowundergraduateresearch.svg" alt="Undergraduate Research Profile" /></a>
+              <a href="https://silicon.stanford.edu/2025-silicon-unicode-interns/" target="_blank" rel="noopener noreferrer" className="press-card"><img loading="lazy" decoding="async" src="/experience-screen6/siliconunicode.svg" alt="Silicon Unicode Interns 2025" /></a>
+              <a href="https://www.ampglobalyouth.org/global-youth-visionaries/" target="_blank" rel="noopener noreferrer" className="press-card"><img loading="lazy" decoding="async" src="/experience-screen6/globalyouthvisionares.svg" alt="Global Youth Visionaries" /></a>
             </div>
           </div>
 
           {/* Right — Social Media Featurings */}
           <div>
-            <img src="/experience-screen6/SocialMediaFeaturing.svg" alt="Social Media Featurings" className="press-header" style={{ width: "100%", height: "auto", display: "block", marginBottom: 24 }} />
+            <img loading="lazy" decoding="async" src="/experience-screen6/SocialMediaFeaturing.svg" alt="Social Media Featurings" className="press-header" style={{ width: "100%", height: "auto", display: "block", marginBottom: 24 }} />
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               {/* Instagram header + LinkedIn header */}
-              <img src="/experience-screen6/Instagram.svg" alt="Instagram" style={{ width: "100%", height: "auto", display: "block" }} />
-              <img src="/experience-screen6/Linkedin.svg" alt="LinkedIn" style={{ width: "100%", height: "auto", display: "block" }} />
+              <img loading="lazy" decoding="async" src="/experience-screen6/Instagram.svg" alt="Instagram" style={{ width: "100%", height: "auto", display: "block" }} />
+              <img loading="lazy" decoding="async" src="/experience-screen6/Linkedin.svg" alt="LinkedIn" style={{ width: "100%", height: "auto", display: "block" }} />
               {/* Instagram posts */}
-              <a href="https://www.instagram.com/p/DQuISp-EREc/" target="_blank" rel="noopener noreferrer" className="press-card"><img src="/experience-screen6/scienceclubsinternational.svg" alt="Science Clubs International" /></a>
-              <a href="https://www.linkedin.com/posts/tsmullaney_new-white-paper-over-6000-of-the-activity-7432847139535241216-dw5x" target="_blank" rel="noopener noreferrer" className="press-card"><img src="/experience-screen6/HAIpaper.svg" alt="HAI Paper Acknowledgment" /></a>
-              <a href="https://www.instagram.com/p/DXq0wv6G6nv/" target="_blank" rel="noopener noreferrer" className="press-card"><img src="/experience-screen6/stanfordperuVSO.svg" alt="Stanford Peru VSO" /></a>
-              <a href="https://www.linkedin.com/feed/update/urn:li:activity:7439346856062693376/" target="_blank" rel="noopener noreferrer" className="press-card"><img src="/experience-screen6/africacenterfellows.svg" alt="Africa Center Fellows" /></a>
-              <a href="https://www.instagram.com/abundantintelligences/" target="_blank" rel="noopener noreferrer" className="press-card"><img src="/experience-screen6/abundanttechnologies.svg" alt="Abundant Technologies" /></a>
-              <a href="https://www.linkedin.com/feed/update/urn:li:activity:7439375355313844225/" target="_blank" rel="noopener noreferrer" className="press-card"><img src="/experience-screen6/Mwirelabs.svg" alt="MWIRE Labs" /></a>
+              <a href="https://www.instagram.com/p/DQuISp-EREc/" target="_blank" rel="noopener noreferrer" className="press-card"><img loading="lazy" decoding="async" src="/experience-screen6/scienceclubsinternational.svg" alt="Science Clubs International" /></a>
+              <a href="https://www.linkedin.com/posts/tsmullaney_new-white-paper-over-6000-of-the-activity-7432847139535241216-dw5x" target="_blank" rel="noopener noreferrer" className="press-card"><img loading="lazy" decoding="async" src="/experience-screen6/HAIpaper.svg" alt="HAI Paper Acknowledgment" /></a>
+              <a href="https://www.instagram.com/p/DXq0wv6G6nv/" target="_blank" rel="noopener noreferrer" className="press-card"><img loading="lazy" decoding="async" src="/experience-screen6/stanfordperuVSO.svg" alt="Stanford Peru VSO" /></a>
+              <a href="https://www.linkedin.com/feed/update/urn:li:activity:7439346856062693376/" target="_blank" rel="noopener noreferrer" className="press-card"><img loading="lazy" decoding="async" src="/experience-screen6/africacenterfellows.svg" alt="Africa Center Fellows" /></a>
+              <a href="https://www.instagram.com/abundantintelligences/" target="_blank" rel="noopener noreferrer" className="press-card"><img loading="lazy" decoding="async" src="/experience-screen6/abundanttechnologies.svg" alt="Abundant Technologies" /></a>
+              <a href="https://www.linkedin.com/feed/update/urn:li:activity:7439375355313844225/" target="_blank" rel="noopener noreferrer" className="press-card"><img loading="lazy" decoding="async" src="/experience-screen6/Mwirelabs.svg" alt="MWIRE Labs" /></a>
             </div>
           </div>
 
         </div>
 
         {/* Articles & Publications */}
-        <img src="/experience-screen6/articlesandpublications.svg" alt="Articles & Publications" className="press-header" style={{ width: "100%", height: "auto", display: "block", marginBottom: 24 }} />
+        <img loading="lazy" decoding="async" src="/experience-screen6/articlesandpublications.svg" alt="Articles & Publications" className="press-header" style={{ width: "100%", height: "auto", display: "block", marginBottom: 24 }} />
         <a href="https://drclas.harvard.edu/revista" target="_blank" rel="noopener noreferrer" className="press-card" style={{ maxWidth: 700 }}>
-          <img src="/experience-screen6/harvardarticle.svg" alt="Harvard DRCLAS Revista" />
+          <img loading="lazy" decoding="async" src="/experience-screen6/harvardarticle.svg" alt="Harvard DRCLAS Revista" />
         </a>
 
       </div>
 
       {/* ── Interim 6–7: News & Updates ── */}
       <div style={{ width: "100%", overflow: "hidden", lineHeight: 0 }}>
-        <img src="/experience-interim67/group.svg" alt="" style={{ width: "100%", height: "auto", display: "block" }} />
+        <img loading="lazy" decoding="async" src="/experience-interim67/group.svg" alt="" style={{ width: "100%", height: "auto", display: "block" }} />
       </div>
       <div style={{ width: "100%", background: "#FFF3DE", padding: "clamp(32px, 5vw, 60px) 0", display: "flex", justifyContent: "flex-start" }}>
-        <img src="/experience-interim67/news-updates.svg" alt="News & Updates" style={{ width: "55%", height: "auto", display: "block" }} />
+        <img loading="lazy" decoding="async" src="/experience-interim67/news-updates.svg" alt="News & Updates" style={{ width: "55%", height: "auto", display: "block" }} />
       </div>
       <div style={{ width: "100%", overflow: "hidden", lineHeight: 0, transform: "scaleY(-1)" }}>
-        <img src="/experience-interim67/group-1.svg" alt="" style={{ width: "100%", height: "auto", display: "block" }} />
+        <img loading="lazy" decoding="async" src="/experience-interim67/group-1.svg" alt="" style={{ width: "100%", height: "auto", display: "block" }} />
       </div>
 
       {/* ── Screen 7: News ── */}
@@ -474,7 +373,7 @@ export default function ExperiencePage() {
 
         {/* Top-right Bauhaus corner */}
         <div style={{ position: "absolute", top: 0, right: 0, width: "clamp(180px,28vw,340px)", pointerEvents: "none" }}>
-          <img src="/experience-screen7/bauhaus-corner-1.svg" alt="" style={{ width: "100%", height: "auto", display: "block" }} />
+          <img loading="lazy" decoding="async" src="/experience-screen7/bauhaus-corner-1.svg" alt="" style={{ width: "100%", height: "auto", display: "block" }} />
         </div>
 
         {/* Bottom-right dots */}
@@ -553,7 +452,7 @@ export default function ExperiencePage() {
             </div>
           </div>
         </div>
-        <img src="/second-screen/word-2.svg" aria-hidden alt="" style={{ position: "absolute", bottom: 0, left: 0, width: "clamp(80px,14vw,220px)", zIndex: 0 }} />
+        <img loading="lazy" decoding="async" src="/second-screen/word-2.svg" aria-hidden alt="" style={{ position: "absolute", bottom: 0, left: 0, width: "clamp(80px,14vw,220px)", zIndex: 0 }} />
 
         <div style={{ position: "relative", zIndex: 1, maxWidth: 1100, margin: "0 auto", padding: "clamp(56px,8vw,100px) clamp(28px,6vw,80px) clamp(48px,7vw,80px)" }}>
           <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start", gap: "clamp(24px,4vw,56px)", marginBottom: "clamp(24px,4vw,40px)" }}>

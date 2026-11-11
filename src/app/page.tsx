@@ -10,7 +10,8 @@ function easeInOutCubic(t: number) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
 
-const DURATION = 2600;
+const DURATION = 1000;
+const SEEN_KEY = "mb-intro-seen";
 
 export default function Home() {
   const [stage, setStage] = useState<Stage>("preloader");
@@ -20,7 +21,21 @@ export default function Home() {
   const startRef = useRef<number | null>(null);
 
   useEffect(() => {
+    if (stage === "home") {
+      try { sessionStorage.setItem(SEEN_KEY, "1"); } catch {}
+    }
+  }, [stage]);
+
+  useEffect(() => {
     if (stage !== "preloader") return;
+
+    // Returning in the same tab session (e.g. back from /experience): skip the intro.
+    let seen = false;
+    try { seen = !!sessionStorage.getItem(SEEN_KEY); } catch {}
+    if (seen) {
+      const skip = setTimeout(() => setStage("home"), 0);
+      return () => clearTimeout(skip);
+    }
 
     const delay = setTimeout(() => {
       function tick(now: number) {
@@ -41,7 +56,7 @@ export default function Home() {
         }
       }
       rafRef.current = requestAnimationFrame(tick);
-    }, 300);
+    }, 100);
 
     return () => {
       clearTimeout(delay);

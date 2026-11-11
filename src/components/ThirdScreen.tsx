@@ -43,8 +43,8 @@ export default function ThirdScreen() {
               boxShadow: "0 12px 40px rgba(0,0,0,0.18)",
             }}
           >
-            <img
-              src="/screen3/mathias-profile2.png"
+            <img loading="lazy" decoding="async"
+              src="/screen3/mathias-profile2.webp"
               alt="Mathias Becerra"
               style={{
                 width: "100%",
@@ -56,7 +56,7 @@ export default function ThirdScreen() {
               }}
             />
             {/* Stanford S — badge over the bottom-right corner */}
-            <img
+            <img loading="lazy" decoding="async"
               src="/screen3/image-136.svg"
               alt="Stanford"
               style={{
@@ -82,14 +82,14 @@ export default function ThirdScreen() {
           }}
         >
           {/* "I AM A SENIOR MAJORING IN" */}
-          <img
+          <img loading="lazy" decoding="async"
             src="/screen3/senior-majoring.svg"
             alt="I am a senior majoring in"
             style={{ width: "clamp(380px, 100%, 720px)", height: "auto" }}
           />
 
           {/* "SYMBOLIC SYSTEMS" */}
-          <img
+          <img loading="lazy" decoding="async"
             src="/screen3/symbolic-systems.svg"
             alt="Symbolic Systems"
             style={{ width: "clamp(320px, 88%, 720px)", height: "auto" }}
@@ -114,7 +114,7 @@ export default function ThirdScreen() {
             >
               (HCI
             </span>
-            <img
+            <img loading="lazy" decoding="async"
               src="/screen3/hci-logo.svg"
               alt="HCI"
               style={{ width: "clamp(20px,2.4vw,30px)", height: "auto" }}
@@ -129,7 +129,7 @@ export default function ThirdScreen() {
             >
               /
             </span>
-            <img
+            <img loading="lazy" decoding="async"
               src="/screen3/hai-logo.svg"
               alt="HAI"
               style={{ width: "clamp(20px,2.4vw,30px)", height: "auto" }}

@@ -4,9 +4,8 @@ import { useEffect, useRef, useState, type RefObject } from "react";
 import * as THREE from "three";
 import { data } from "../brain-data";
 import ThirdScreen from "./ThirdScreen";
-import FourthScreen from "./FourthScreen";
 import FifthScreen from "./FifthScreen";
-import SixthScreen from "./SixthScreen";
+import { CategoriesGrid, ProjectsGrid, TileStyles } from "./ExperienceGallery";
 import SeventhScreen from "./SeventhScreen";
 import EighthScreen from "./EighthScreen";
 import ScrollReveal from "./ScrollReveal";
@@ -17,7 +16,7 @@ const NAV = [
   { label: "About", href: "#about" },
   { label: "Process", href: "#process" },
   { label: "Experience", href: "/experience" },
-  { label: "Impact", href: "#impact" },
+  { label: "Work", href: "#work" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -500,7 +499,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
           {/* Brand logo */}
           <a href="#home">
             <img
-              src="/brand-logo.png"
+              src="/brand-logo.webp"
               alt="MATHBECSAN"
               style={{
                 height: "clamp(100px,20vw, 200px)",
@@ -779,8 +778,8 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
                 : "none",
             }}
           >
-            <img
-              src="/profile-picture.png"
+            <img loading="lazy" decoding="async"
+              src="/profile-picture.webp"
               alt="Mathias Becerra"
               style={{
                 width: "150%",
@@ -830,7 +829,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
               }}
             >
               {ROLES.map((role, i) => (
-                <img
+                <img loading="lazy" decoding="async"
                   key={role.src}
                   src={role.src}
                   alt={role.label}
@@ -868,7 +867,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
               }}
             >
               From Lambayeque, Peru.
-              <img
+              <img loading="lazy" decoding="async"
                 src="/first-screen/peruflag.svg"
                 alt="Peru flag"
                 style={{
@@ -960,42 +959,22 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
 
       <ScrollReveal from="bottom"><ThirdScreen /></ScrollReveal>
 
-      {/* ── Full-width black divider — Artistic Inspirations ── */}
-      <section
-        style={{
-          background: "#0d0d0d",
-          textAlign: "center",
-          padding: "clamp(48px, 8vw, 96px) 24px clamp(20px, 3vw, 36px)",
-        }}
-      >
-        <h2
-          style={{
-            fontFamily: "var(--font-bebas), sans-serif",
-            fontWeight: 400,
-            fontSize: "clamp(32px, 6vw, 72px)",
-            letterSpacing: "0.06em",
-            textTransform: "uppercase",
-            color: "#f0ede6",
-            margin: 0,
-          }}
-        >
-          Artistic Inspirations
-        </h2>
-        <p
-          style={{
-            fontFamily: "var(--font-geist-sans), sans-serif",
-            fontSize: "clamp(14px, 1.4vw, 20px)",
-            color: "rgba(240,237,230,0.7)",
-            marginTop: "clamp(10px, 1.5vw, 18px)",
-          }}
-        >
-          The artists and ideas that shape how I design.
-        </p>
+      {/* ── Experience gallery (moved from /experience) ── */}
+      <section id="work" style={{ background: "#000", scrollMarginTop: 0 }}>
+        <div style={{ textAlign: "center", padding: "clamp(48px, 8vw, 96px) 24px clamp(20px, 3vw, 36px)", background: "#0d0d0d" }}>
+          <h2 style={{ fontFamily: "var(--font-bebas), sans-serif", fontWeight: 400, fontSize: "clamp(32px, 6vw, 72px)", letterSpacing: "0.06em", textTransform: "uppercase", color: "#f0ede6", margin: 0 }}>
+            Selected Work
+          </h2>
+          <p style={{ fontFamily: "var(--font-geist-sans), sans-serif", fontSize: "clamp(14px, 1.4vw, 20px)", color: "rgba(240,237,230,0.7)", marginTop: "clamp(10px, 1.5vw, 18px)" }}>
+            Projects across design, engineering, and storytelling.
+          </p>
+        </div>
+        <TileStyles />
+        <ScrollReveal from="bottom" delay={60}><ProjectsGrid /></ScrollReveal>
+        <ScrollReveal from="bottom" delay={60}><CategoriesGrid style={{ paddingTop: 3 }} /></ScrollReveal>
       </section>
 
-      <ScrollReveal from="bottom" delay={60}><FourthScreen /></ScrollReveal>
       <ScrollReveal from="bottom" delay={60}><FifthScreen /></ScrollReveal>
-      <ScrollReveal from="bottom" delay={60}><SixthScreen /></ScrollReveal>
       <ScrollReveal from="bottom" delay={60}><SeventhScreen /></ScrollReveal>
       <ScrollReveal from="bottom" delay={60}><EighthScreen /></ScrollReveal>
 

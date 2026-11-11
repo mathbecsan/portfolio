@@ -55,16 +55,16 @@ export default function SecondScreen() {
 
       {/* ── Corner / edge decorations ── */}
       {/* Top-left */}
-      <img src="/second-screen/word-1.svg" aria-hidden alt=""
+      <img loading="lazy" decoding="async" src="/second-screen/word-1.svg" aria-hidden alt=""
         style={{ position:"absolute", top:0, left:0, width:"clamp(70px,11vw,170px)", height:"auto", zIndex:0, display:"block" }} />
       {/* Top-right stripe */}
-      <img src="/second-screen/word-4.svg" aria-hidden alt=""
+      <img loading="lazy" decoding="async" src="/second-screen/word-4.svg" aria-hidden alt=""
         style={{ position:"absolute", top:0, right:0, height:"clamp(70px,11vw,160px)", width:"auto", zIndex:0, display:"block" }} />
       {/* Bottom-left */}
-      <img src="/second-screen/word-2.svg" aria-hidden alt=""
+      <img loading="lazy" decoding="async" src="/second-screen/word-2.svg" aria-hidden alt=""
         style={{ position:"absolute", bottom:0, left:0, width:"clamp(110px,18vw,280px)", height:"auto", zIndex:0, display:"block" }} />
       {/* Bottom-right */}
-      <img src="/second-screen/word-3.svg" aria-hidden alt=""
+      <img loading="lazy" decoding="async" src="/second-screen/word-3.svg" aria-hidden alt=""
         style={{ position:"absolute", bottom:0, right:0, width:"clamp(110px,18vw,280px)", height:"auto", zIndex:0, display:"block" }} />
 
       {/* ── Main text ── */}

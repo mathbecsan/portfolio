@@ -6,7 +6,7 @@ const LOGOS = [
   { src: "/screen7/logo-stanfordperu.png", alt: "Stanford Peru",              bg: "#5c1420",     url: "https://continuingstudies.stanford.edu"             },
   { src: "/screen7/logo-image133.svg",     alt: "BreakthroughTech AI",        bg: "#0d1f2d",     url: "https://breakthroughtech.org"                      },
   { src: "/screen7/logo-undp.png",         alt: "UNDP",                       bg: "#fff",        url: "https://www.undp.org"                              },
-  { src: "/screen7/logo-ai4all.png",       alt: "AI4ALL",                     bg: "#fff",        url: "https://ai-4-all.org"                              },
+  { src: "/screen7/logo-ai4all.webp",       alt: "AI4ALL",                     bg: "#fff",        url: "https://ai-4-all.org"                              },
   { src: "/screen7/logo-scienceclubs.svg", alt: "Science Clubs International",bg: "#28b5c8",     url: "https://www.scienceclubsinternational.org"          },
   { src: "/screen7/logo-breakthrough.png", alt: "BreakthroughTech",           bg: "transparent", url: "https://breakthroughtech.org"                      },
   { src: "/screen7/logo-image134.svg",     alt: "CodePath",                   bg: "#fff",        url: "https://codepath.org"                              },
@@ -62,7 +62,7 @@ export default function SeventhScreen() {
 
       {/* ── Top Bauhaus strip ── */}
       <div style={{ lineHeight: 0 }}>
-        <img src="/screen7/bauhaus-top.svg" alt="" aria-hidden="true"
+        <img loading="lazy" decoding="async" src="/screen7/bauhaus-top.svg" alt="" aria-hidden="true"
           style={{ width: "100%", height: "clamp(90px, 13vw, 180px)", objectFit: "cover", objectPosition: "center top", display: "block" }} />
       </div>
 
@@ -90,7 +90,7 @@ export default function SeventhScreen() {
               <a key={i} className="s7-logo-link" href={logo.url}
                 target="_blank" rel="noopener noreferrer"
                 style={{ background: logo.bg }} title={logo.alt}>
-                <img src={logo.src} alt={logo.alt} />
+                <img loading="lazy" decoding="async" src={logo.src} alt={logo.alt} />
               </a>
             ))}
           </div>
@@ -99,7 +99,7 @@ export default function SeventhScreen() {
 
       {/* ── Bottom Bauhaus strip ── */}
       <div style={{ lineHeight: 0 }}>
-        <img src="/screen7/bauhaus-top.svg" alt="" aria-hidden="true"
+        <img loading="lazy" decoding="async" src="/screen7/bauhaus-top.svg" alt="" aria-hidden="true"
           style={{ width: "100%", height: "clamp(90px, 13vw, 180px)", objectFit: "cover", objectPosition: "center top", display: "block", transform: "scaleY(-1)" }} />
       </div>
     </section>

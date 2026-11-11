@@ -3,7 +3,7 @@
 export default function FifthScreen() {
   return (
     <section id="process" style={{ overflow: "hidden", scrollMarginTop: 0 }}>
-      <img
+      <img loading="lazy" decoding="async"
         src="/screen5/bauhaus-editorial-booklet.svg"
         alt="Design Process — Bauhaus Editorial Booklet"
         style={{ width: "100%", height: "auto", display: "block" }}
