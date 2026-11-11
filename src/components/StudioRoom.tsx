@@ -224,6 +224,12 @@ export default function StudioRoom() {
           transition: transform 0.35s cubic-bezier(0.22,1,0.36,1); transform-origin: 50% 100%;
         }
         .studio__asset--interactive:not([data-acting]):hover { transform: translateY(-2%) scale(1.03); }
+        /* soft warm glow that follows the object's outline on hover / keyboard focus */
+        .studio__asset--interactive img { transition: filter 0.3s ease; }
+        .studio__asset--interactive:hover img,
+        .studio__asset--interactive:focus-visible img {
+          filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 10px rgba(251, 191, 36, 0.75)) drop-shadow(0 0 22px rgba(251, 191, 36, 0.4));
+        }
         .studio__asset--interactive:focus-visible { outline: 3px solid var(--bauhaus-red); outline-offset: 4px; border-radius: 12px; }
         .studio__asset--interactive[data-acting] { cursor: default; }
 

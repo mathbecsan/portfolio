@@ -23,7 +23,7 @@ export const FEATURED: Featured[] = [
 const R = "var(--bauhaus-red)", Y = "var(--bauhaus-yellow)", B = "var(--bauhaus-blue)", C = "var(--cream)", K = "var(--ink)";
 
 /* Six simple compositions so placeholders read as a set, not copies. */
-function PlaceholderArt({ n }: { n: number }) {
+export function PlaceholderArt({ n }: { n: number }) {
   const arts = [
     <><rect width="400" height="300" fill={C} /><circle cx="150" cy="150" r="90" fill={R} /><rect x="230" y="60" width="110" height="110" fill={B} /><rect x="230" y="190" width="110" height="20" fill={K} /></>,
     <><rect width="400" height="300" fill={K} /><path d="M80 260a120 120 0 0 1 240 0z" fill={Y} /><circle cx="300" cy="80" r="34" fill={R} /><rect x="60" y="50" width="12" height="120" fill={C} /><rect x="84" y="50" width="12" height="120" fill={C} /></>,
