@@ -5,12 +5,13 @@ import * as THREE from "three";
 import { data } from "../brain-data";
 import ThirdScreen from "./ThirdScreen";
 import FifthScreen from "./FifthScreen";
-import { CategoriesGrid, ProjectsGrid, TileStyles } from "./ExperienceGallery";
+import FeaturedProjects from "./FeaturedProjects";
 import SeventhScreen from "./SeventhScreen";
 import EighthScreen from "./EighthScreen";
 import ScrollReveal from "./ScrollReveal";
 import BauhausScrollOrnament from "./BauhausScrollOrnament";
 import SiteNav from "./SiteNav";
+import PronounceButton from "./PronounceButton";
 
 
 const GREETINGS = [
@@ -507,12 +508,15 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
           >
             I&apos;M
           </p>
-          <h1
-            className="font-sans font-bold text-[#f0ede6] leading-none tracking-tight"
-            style={{ fontSize: "clamp(44px, 7.5vw, 118px)" }}
-          >
-            MATHIAS
-          </h1>
+          <div className="flex items-center" style={{ gap: "clamp(12px, 1.6vw, 24px)" }}>
+            <h1
+              className="font-sans font-bold text-[#f0ede6] leading-none tracking-tight"
+              style={{ fontSize: "clamp(44px, 7.5vw, 118px)" }}
+            >
+              MATHIAS
+            </h1>
+            <PronounceButton />
+          </div>
           <p
             className="mt-4 font-sans tracking-[0.3em] uppercase text-[#f0ede6]/90"
             style={{
@@ -889,20 +893,8 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
 
       <ScrollReveal from="bottom"><ThirdScreen /></ScrollReveal>
 
-      {/* ── Experience gallery (moved from /experience) ── */}
-      <section id="work" style={{ background: "#000", scrollMarginTop: 0 }}>
-        <div style={{ textAlign: "center", padding: "clamp(48px, 8vw, 96px) 24px clamp(20px, 3vw, 36px)", background: "#0d0d0d" }}>
-          <h2 style={{ fontFamily: "var(--font-bebas), sans-serif", fontWeight: 400, fontSize: "clamp(32px, 6vw, 72px)", letterSpacing: "0.06em", textTransform: "uppercase", color: "#f0ede6", margin: 0 }}>
-            Selected Work
-          </h2>
-          <p style={{ fontFamily: "var(--font-geist-sans), sans-serif", fontSize: "clamp(14px, 1.4vw, 20px)", color: "rgba(240,237,230,0.7)", marginTop: "clamp(10px, 1.5vw, 18px)" }}>
-            Projects across design, engineering, and storytelling.
-          </p>
-        </div>
-        <TileStyles />
-        <ScrollReveal from="bottom" delay={60}><ProjectsGrid /></ScrollReveal>
-        <ScrollReveal from="bottom" delay={60}><CategoriesGrid style={{ paddingTop: 3 }} /></ScrollReveal>
-      </section>
+      {/* ── Selected Work: up to 6 featured projects (edit FEATURED in FeaturedProjects.tsx) ── */}
+      <ScrollReveal from="bottom" delay={60}><FeaturedProjects /></ScrollReveal>
 
       <ScrollReveal from="bottom" delay={60}><FifthScreen /></ScrollReveal>
       <ScrollReveal from="bottom" delay={60}><SeventhScreen /></ScrollReveal>
