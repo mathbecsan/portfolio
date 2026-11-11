@@ -3,6 +3,7 @@ import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
 import { useEffect, useRef, useState } from "react";
+import ComingSoon from "@/components/ComingSoon";
 
 // Duplicated so Swiper v12 loop never runs out of content during wrap transitions
 const SCREENS = [
@@ -124,14 +125,16 @@ function SwiperCarousel() {
 }
 
 // ── Action Button ─────────────────────────────────────────────────────────
-function ActionBtn({ img, label, href, active }: typeof ACTIONS[0]) {
+function ActionBtn({ img, label, href, active, onSoon }: typeof ACTIONS[0] & { onSoon: (label: string) => void }) {
   const [hovered, setHovered] = useState(false);
   return (
     <a
-      href={active ? href : undefined}
+      href={active ? href : "#"}
+      onClick={active ? undefined : (e) => { e.preventDefault(); onSoon(label); }}
+      aria-label={active ? label : `${label} (coming soon)`}
       style={{
         display: "block", textDecoration: "none", position: "relative",
-        cursor: active ? "pointer" : "default",
+        cursor: "pointer",
         transform: hovered ? "translateY(-3px) scale(1.02)" : "none",
         transition: "transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s ease",
         boxShadow: hovered && active
@@ -162,9 +165,32 @@ function ActionBtn({ img, label, href, active }: typeof ACTIONS[0]) {
 }
 
 // ── Page ─────────────────────────────────────────────────────────────────
+// ── Coming Soon dialog for cards without published content ──────────────
+function ComingSoonDialog({ label, onClose }: { label: string; onClose: () => void }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+  return (
+    <div role="dialog" aria-modal="true" aria-label={`${label}: coming soon`} onClick={onClose}
+      style={{ position: "fixed", inset: 0, zIndex: 100, background: "rgba(13,13,13,0.6)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+      <div onClick={(e) => e.stopPropagation()}
+        style={{ position: "relative", background: "#FFF3DE", borderRadius: 14, maxWidth: 440, width: "100%", maxHeight: "90vh", overflowY: "auto", padding: "28px 20px 8px", boxShadow: "0 24px 64px rgba(0,0,0,0.3)" }}>
+        <button onClick={onClose} aria-label="Close"
+          style={{ position: "absolute", top: 10, right: 12, border: 0, background: "transparent", fontSize: 26, lineHeight: 1, cursor: "pointer", color: "#1F2937" }}>×</button>
+        <p style={{ fontFamily: "monospace", fontWeight: 800, fontSize: 13, letterSpacing: "0.16em", textTransform: "uppercase", color: "#1F2937", textAlign: "center", margin: 0 }}>{label}</p>
+        <ComingSoon compact message="This part of the Speak.io story is on its way." />
+      </div>
+    </div>
+  );
+}
+
 export default function AppDevelopmentPage() {
+  const [soon, setSoon] = useState<string | null>(null);
   return (
     <main style={{ background: "#FFFFFF", minHeight: "100vh", overflowX: "hidden" }}>
+      {soon && <ComingSoonDialog label={soon} onClose={() => setSoon(null)} />}
 
       {/* ── Nav ── */}
       <nav style={{
@@ -245,7 +271,7 @@ export default function AppDevelopmentPage() {
           alignSelf: "center",
           position: "relative", zIndex: 2,
         }}>
-          {ACTIONS.map(a => <ActionBtn key={a.label} {...a} />)}
+          {ACTIONS.map(a => <ActionBtn key={a.label} {...a} onSoon={setSoon} />)}
         </div>
 
       </div>

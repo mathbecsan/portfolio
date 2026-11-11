@@ -10,15 +10,9 @@ import SeventhScreen from "./SeventhScreen";
 import EighthScreen from "./EighthScreen";
 import ScrollReveal from "./ScrollReveal";
 import BauhausScrollOrnament from "./BauhausScrollOrnament";
+import { SITE_LINKS } from "./SiteNav";
 
-const NAV = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Process", href: "#process" },
-  { label: "Experience", href: "/experience" },
-  { label: "Work", href: "#work" },
-  { label: "Contact", href: "#contact" },
-];
+const NAV = SITE_LINKS;
 
 const GREETINGS = [
   { text: "Allinllachu!", lang: "Quechua", script: "Latin" },
@@ -433,6 +427,9 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
 
         /* Nav link hover */
         .nav-link { position:relative; text-decoration:none; padding:4px 0; overflow:hidden; }
+        .home-nav-links { scrollbar-width:none; -webkit-overflow-scrolling:touch; padding:2px 0; }
+        .home-nav-links::-webkit-scrollbar { display:none; }
+        .home-nav-links > a { flex-shrink:0; white-space:nowrap; }
         .nav-link::after {
           content:''; position:absolute; bottom:0; left:0; width:100%; height:1.5px;
           background:#E63329; transform:scaleX(0); transform-origin:right;
@@ -495,7 +492,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
         />
 
         {/* Nav — plain links, no background image */}
-        <nav className="relative z-10 flex justify-between items-center mb-auto pb-4">
+        <nav className="relative z-10 flex flex-col items-start gap-2 md:flex-row md:justify-between md:items-center mb-auto pb-4">
           {/* Brand logo */}
           <a href="#home">
             <img
@@ -509,7 +506,7 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
             />
           </a>
           <div
-            className="flex gap-7 font-sans text-[#f0ede6]/90 tracking-[0.18em] uppercase"
+            className="home-nav-links flex items-center gap-5 md:gap-7 max-w-full overflow-x-auto font-sans text-[#f0ede6]/90 tracking-[0.18em] uppercase"
             style={{ fontSize: "clamp(11px, 1vw, 14px)" }}
           >
             {NAV.map((n) =>

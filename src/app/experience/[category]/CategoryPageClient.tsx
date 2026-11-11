@@ -1,5 +1,7 @@
 "use client";
 import { use } from "react";
+import ComingSoon from "@/components/ComingSoon";
+import SiteNav from "@/components/SiteNav";
 
 // ── Category metadata ─────────────────────────────────────────────────────
 const CATEGORIES: Record<string, { title: string; description: string; accent: string; thumb: string }> = {
@@ -39,21 +41,7 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
   return (
     <main style={{ background: "#FFF3DE", minHeight: "100vh" }}>
 
-      {/* ── Nav ── */}
-      <nav style={{
-        position: "fixed", top: 0, left: 0, right: 0, zIndex: 50,
-        padding: "14px 40px", display: "flex", alignItems: "center", justifyContent: "space-between",
-        background: "rgba(255,243,222,0.92)", backdropFilter: "blur(8px)",
-        borderBottom: "1.5px solid rgba(31,41,55,0.08)",
-      }}>
-        <a href="/experience" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-          <img src="/experience-screen1/mathbecsanbrandnewlogo.svg" alt="MATHBECSAN" style={{ height: 26, width: "auto" }} />
-          <span style={{ fontFamily: "monospace", fontSize: 11, color: "#1F2937", opacity: 0.5, letterSpacing: "0.15em" }}>← Experience</span>
-        </a>
-        <span style={{ fontFamily: "monospace", fontSize: 11, color: "#1F2937", opacity: 0.4, letterSpacing: "0.22em", textTransform: "uppercase" }}>
-          {title}
-        </span>
-      </nav>
+      <SiteNav current="Projects" />
 
       {/* ── Hero ── */}
       <div style={{ paddingTop: 58 }}>
@@ -86,27 +74,8 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
             To add a project, copy the card below and fill in your details.
             ────────────────────────────────────────────────────────────────── */}
 
-        {/* Empty state */}
-        <div style={{
-          border: `2px dashed ${accent}40`,
-          borderRadius: 8,
-          padding: "clamp(48px,6vw,80px) 40px",
-          textAlign: "center",
-          background: "rgba(255,255,255,0.4)",
-        }}>
-          <div style={{ width: 48, height: 48, borderRadius: "50%", background: accent, margin: "0 auto 16px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <span style={{ color: "#fff", fontSize: 24, fontWeight: 900 }}>+</span>
-          </div>
-          <p style={{ fontFamily: "monospace", fontWeight: 700, fontSize: 16, color: "#1F2937", margin: "0 0 8px", letterSpacing: "0.05em" }}>
-            No projects yet
-          </p>
-          <p style={{ fontFamily: "Georgia, serif", fontSize: 14, color: "rgba(31,41,55,0.5)", margin: 0, maxWidth: 400, marginLeft: "auto", marginRight: "auto", lineHeight: 1.6 }}>
-            Add your case studies, projects, and work to this section by editing{" "}
-            <code style={{ background: "rgba(31,41,55,0.08)", padding: "2px 6px", borderRadius: 3, fontFamily: "monospace", fontSize: 12 }}>
-              src/app/experience/[category]/page.tsx
-            </code>
-          </p>
-        </div>
+        {/* Empty state — shown until this category has published projects */}
+        <ComingSoon />
 
         {/* ── PROJECT CARD TEMPLATE (copy & uncomment to add projects) ──────
         <div style={{
