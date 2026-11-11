@@ -2,7 +2,7 @@ import CategoryPageClient from "./CategoryPageClient";
 
 const CATEGORY_KEYS = [
   "music-production", "human-robot-interaction", "data-visualization", "digital-fabrication", "photography",
-  "immersive-technologies", "visual-arts-crafting", "uxui", "logo-story", "physical-digital-animation",
+  "immersive-technologies", "visual-arts-crafting", "uxui", "personal-artifacts", "physical-digital-animation",
   "game-development", "app-development", "filmmaking", "web-development",
   "physical-computing-hardware", "ai-governance-research", "community-education",
 ];

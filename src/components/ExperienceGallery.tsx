@@ -107,12 +107,12 @@ export function CategoriesGrid({ style }: { style?: CSSProperties }) {
   );
 }
 
-/** Image 4 — 4×3 projects gallery (Logo Story, Physical and Digital Animation, App Development, …). */
+/** Image 4 — 4×3 projects gallery (Personal Artifacts, Physical and Digital Animation, App Development, …). */
 export function ProjectsGrid({ style }: { style?: CSSProperties }) {
   return (
     <div style={{ width: "100%", background: "#000", padding: "clamp(12px, 2vw, 24px)", ...style }}>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gridTemplateRows: "28vh 28vh 28vh", gap: "3px" }}>
-        <Tile src="/experience-screen4/logostory.mp4" poster="/experience-screen4/logostory-poster.jpg" isVideo alt="MATHBECSAN" label="Logo Story" href="/experience/logo-story" style={{ gridColumn: "1 / 3", gridRow: "1" }} />
+        <Tile src="/experience-screen4/logostory.mp4" poster="/experience-screen4/logostory-poster.jpg" isVideo alt="Personal Artifacts" label="Personal Artifacts" href="/experience/personal-artifacts" style={{ gridColumn: "1 / 3", gridRow: "1" }} />
         <Tile src="/experience-screen4/physical-digital-animation-99397d83.webp" alt="Physical and Digital Animation" label="Physical and Digital Animation" href="/experience/physical-digital-animation" style={{ gridColumn: "3", gridRow: "1" }} />
         <Tile src="/experience-screen4/game-development-761817d4.webp" alt="Game Development" label="Game Development" href="/experience/game-development" style={{ gridColumn: "4", gridRow: "1" }} />
         <Tile src="/experience-screen4/app-development.svg" alt="App Development" label="App Development" href="/experience/app-development" style={{ gridColumn: "1", gridRow: "2 / 4" }} />
