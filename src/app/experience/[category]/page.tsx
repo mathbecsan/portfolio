@@ -1,8 +1,8 @@
 import CategoryPageClient from "./CategoryPageClient";
 
 const CATEGORY_KEYS = [
-  "music-production", "graphic-design", "design", "sketches", "ethics",
-  "logo-designs", "others", "uxui", "logo-story", "3d-modelling",
+  "music-production", "human-robot-interaction", "design", "sketches", "ethics",
+  "xr", "others", "uxui", "logo-story", "3d-modelling",
   "game-development", "app-development", "filmmaking", "web-development",
   "electronics", "research", "miscellaneous",
 ];

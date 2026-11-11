@@ -4,11 +4,11 @@ import { use } from "react";
 // ── Category metadata ─────────────────────────────────────────────────────
 const CATEGORIES: Record<string, { title: string; description: string; accent: string; thumb: string }> = {
   "music-production":  { title: "Music Production",    description: "Original compositions, audio engineering, and sound design projects.", accent: "#1F2937", thumb: "/experience-screen3/musicproduction.mp4" },
-  "graphic-design":    { title: "Graphic Design",       description: "Branding, illustration, and visual identity work.",                    accent: "#E63329", thumb: "/experience-screen3/graphicdesign.svg"   },
+  "human-robot-interaction": { title: "Human-Robot Interaction", description: "Designing how people and robots communicate, collaborate, and build trust.", accent: "#E63329", thumb: "/experience-screen3/human-robot-interaction.webp" },
   "design":            { title: "Design",               description: "Explorations in visual language, layout, and conceptual design.",      accent: "#FBBF24", thumb: "/experience-screen3/design.png"          },
   "sketches":          { title: "Sketches",             description: "Concept sketches, ideation, and illustration studies.",               accent: "#3B82F6", thumb: "/experience-screen3/sketches.svg"         },
   "ethics":            { title: "Ethics",               description: "Research and projects at the intersection of technology and ethics.",  accent: "#1F2937", thumb: "/experience-screen3/ethics.svg"           },
-  "logo-designs":      { title: "Logo Designs",         description: "Brand marks, logotypes, and identity systems.",                       accent: "#E63329", thumb: "/experience-screen3/logodesigns.webp"      },
+  "xr":                { title: "VR / AR / XR / MR",    description: "Immersive experiences across virtual, augmented, extended, and mixed reality.", accent: "#E63329", thumb: "/experience-screen3/xr.webp" },
   "others":            { title: "Others",               description: "Miscellaneous creative projects and experiments.",                    accent: "#FBBF24", thumb: "/experience-screen3/others.svg"            },
   "uxui":              { title: "UX/UI Implementation", description: "End-to-end product design and front-end engineering projects.",       accent: "#3B82F6", thumb: "/experience-screen3/uxui.svg"             },
   "logo-story":        { title: "Logo Story",           description: "The evolution of the MATHBECSAN brand identity.",                    accent: "#1F2937", thumb: "/experience-screen4/logostory.mp4"         },

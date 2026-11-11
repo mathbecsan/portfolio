@@ -88,17 +88,17 @@ export function TileStyles() {
   return <style>{TILE_CSS}</style>;
 }
 
-/** Image 5 — 3×3 dark gallery (Music Production, Graphic Design, Ethics, …). */
+/** Image 5 — 3×3 dark gallery (Music Production, Human-Robot Interaction, Ethics, …). */
 export function CategoriesGrid({ style }: { style?: CSSProperties }) {
   return (
     <div style={{ width: "100%", background: "#000", padding: "clamp(12px, 2vw, 24px)", ...style }}>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gridTemplateRows: "30vh 30vh 30vh", gap: "3px" }}>
         <Tile src="/experience-screen3/musicproduction.mp4" poster="/experience-screen3/musicproduction-poster.jpg" isVideo alt="Music Production" label="Music Production" href="/experience/music-production" style={{ gridColumn: "1", gridRow: "1" }} />
-        <Tile src="/experience-screen3/graphicdesign.svg" alt="Graphic Design" label="Graphic Design" href="/experience/graphic-design" style={{ gridColumn: "2", gridRow: "1 / 3" }} />
+        <Tile src="/experience-screen3/human-robot-interaction.webp" alt="Human-Robot Interaction" label="Human-Robot Interaction" href="/experience/human-robot-interaction" style={{ gridColumn: "2", gridRow: "1 / 3" }} />
         <Tile src="/experience-screen3/design.png" alt="Design" label="Design" href="/experience/design" style={{ gridColumn: "3", gridRow: "1" }} />
         <Tile src="/experience-screen3/sketches.svg" alt="Sketches" label="Sketches" href="/experience/sketches" style={{ gridColumn: "1", gridRow: "2" }} />
         <Tile src="/experience-screen3/ethics.svg" alt="Ethics" label="Ethics" href="/experience/ethics" style={{ gridColumn: "3", gridRow: "2" }} />
-        <Tile src="/experience-screen3/logodesigns.webp" alt="Logo Designs" label="Logo Designs" href="/experience/logo-designs" style={{ gridColumn: "1", gridRow: "3" }} />
+        <Tile src="/experience-screen3/xr.webp" alt="VR / AR / XR / MR" label="VR / AR / XR / MR" href="/experience/xr" style={{ gridColumn: "1", gridRow: "3" }} />
         <Tile src="/experience-screen3/others.svg" alt="Others" label="Others" href="/experience/others" style={{ gridColumn: "2", gridRow: "3" }} />
         <Tile src="/experience-screen3/uxui.svg" alt="UX/UI" label="UX/UI Implementation" href="/experience/uxui" style={{ gridColumn: "3", gridRow: "3" }} />
       </div>
