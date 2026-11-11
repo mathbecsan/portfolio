@@ -210,7 +210,7 @@ export default function ExperiencePage() {
       {/* ── Screen 2: Timeline ── */}
       <div style={{ width: "100%", background: "#FFF3DE", padding: "clamp(30px, 5vw, 200px) 0", overflowX: "auto" }}>
         <img loading="lazy" decoding="async"
-          src="/experience-screen2/timeline.svg"
+          src="/experience-screen2/timeline-4e99a868.svg"
           alt="Work Experience Timeline"
           style={{ width: "135%", minWidth: 1100, height: "auto", display: "block", marginLeft: "3%" }}
         />

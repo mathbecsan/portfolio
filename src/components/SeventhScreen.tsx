@@ -7,7 +7,7 @@ const LOGOS: { src: string; alt: string; bg: string; url: string | null }[] = [
   { src: "/screen7/logo-google.png",        alt: "Google",                      bg: "#fff",        url: "https://about.google" },
   { src: "/screen7/logo-uwc.png",           alt: "UWC",                         bg: "#3ab5a4",     url: "https://www.uwc.org" },
   { src: "/screen7/logo-stanfordperu.png",  alt: "Stanford Peru",               bg: "#5c1420",     url: "https://www.instagram.com/stanfordperu/" },
-  { src: "/screen7/logo-image133.svg",      alt: "Science Clubs International", bg: "#0d1f2d",     url: "https://scienceclubs.org" },
+  { src: "/screen7/logo-image133.svg",      alt: "Science Clubs International", bg: "#0d1f2d",     url: "https://www.scienceclubsint.org/" },
   { src: "/screen7/logo-undp.png",          alt: "UNDP",                        bg: "#fff",        url: "https://www.undp.org" },
   { src: "/screen7/logo-ai4all.webp",       alt: "AI4ALL",                      bg: "#fff",        url: "https://ai-4-all.org" },
   { src: "/screen7/logo-scienceclubs.svg",  alt: "CodePath",                    bg: "#28b5c8",     url: "https://codepath.org" },
