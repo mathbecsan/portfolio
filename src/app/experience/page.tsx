@@ -1,7 +1,6 @@
 "use client";
 import { useState, type MouseEvent } from "react";
 import BauhausScrollOrnament from "@/components/BauhausScrollOrnament";
-import { CategoriesGrid, ProjectsGrid, TileStyles } from "@/components/ExperienceGallery";
 
 
 const TOPICS  = ["Mentoring", "Collaboration", "Freelance", "Research", "Just saying hi!"];
@@ -216,11 +215,6 @@ export default function ExperiencePage() {
           style={{ width: "135%", minWidth: 1100, height: "auto", display: "block", marginLeft: "3%" }}
         />
       </div>
-
-      {/* ── Screens 3 & 4: Galleries (shared with homepage) ── */}
-      <TileStyles />
-      <CategoriesGrid />
-      <ProjectsGrid style={{ paddingTop: 3 }} />
 
       {/* ── Interim 4–5: Media Releases ── */}
       <div style={{ width: "100%", overflow: "hidden", lineHeight: 0 }}>
