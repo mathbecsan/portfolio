@@ -6,6 +6,7 @@ import { data } from "../brain-data";
 import ThirdScreen from "./ThirdScreen";
 import FifthScreen from "./FifthScreen";
 import FeaturedProjects from "./FeaturedProjects";
+import BlogPreview from "./BlogPreview";
 import SeventhScreen from "./SeventhScreen";
 import EighthScreen from "./EighthScreen";
 import ScrollReveal from "./ScrollReveal";
@@ -895,6 +896,9 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
 
       {/* ── Selected Work: up to 6 featured projects (edit FEATURED in FeaturedProjects.tsx) ── */}
       <ScrollReveal from="bottom" delay={60}><FeaturedProjects /></ScrollReveal>
+
+      {/* ── From the blog: 3 latest posts (edit RECENT_POSTS in BlogPreview.tsx) ── */}
+      <ScrollReveal from="bottom" delay={60}><BlogPreview /></ScrollReveal>
 
       <ScrollReveal from="bottom" delay={60}><FifthScreen /></ScrollReveal>
       <ScrollReveal from="bottom" delay={60}><SeventhScreen /></ScrollReveal>
