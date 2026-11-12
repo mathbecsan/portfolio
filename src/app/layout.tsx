@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Bebas_Neue } from "next/font/google";
+import IntroSeenMarker from "@/components/IntroSeenMarker";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -37,7 +38,10 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${bebasNeue.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-[#0d0d0d] text-[#f0ede6]">{children}</body>
+      <body className="min-h-full bg-[#0d0d0d] text-[#f0ede6]">
+        <IntroSeenMarker />
+        {children}
+      </body>
     </html>
   );
 }

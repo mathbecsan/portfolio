@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import IntroAnimation from "@/components/IntroAnimation";
 import HomeScreen from "@/components/HomeScreen";
 
@@ -11,7 +11,14 @@ function easeInOutCubic(t: number) {
 }
 
 const DURATION = 1000;
-const SEEN_KEY = "mb-intro-seen";
+const SEEN_KEY = "mb-intro-seen"; // also set by components/IntroSeenMarker.tsx
+
+/** True once the intro has played (or any other page was visited) in this tab session.
+ *  Read synchronously on client-side navigations, so returning home never flashes the
+ *  preloader; prerendered HTML and hydration use `false`. */
+const noopSubscribe = () => () => {};
+const readSeen = () => { try { return sessionStorage.getItem(SEEN_KEY) === "1"; } catch { return false; } };
+function useIntroSeen() { return useSyncExternalStore(noopSubscribe, readSeen, () => false); }
 
 export default function Home() {
   const [stage, setStage] = useState<Stage>("preloader");
@@ -19,6 +26,8 @@ export default function Home() {
   const [wipePhase, setWipePhase] = useState<"idle" | "in" | "out">("idle");
   const rafRef = useRef<number | null>(null);
   const startRef = useRef<number | null>(null);
+  const seen = useIntroSeen();
+  const view: Stage = seen ? "home" : stage;
 
   useEffect(() => {
     if (stage === "home") {
@@ -27,15 +36,8 @@ export default function Home() {
   }, [stage]);
 
   useEffect(() => {
-    if (stage !== "preloader") return;
-
-    // Returning in the same tab session (e.g. back from /experience): skip the intro.
-    let seen = false;
-    try { seen = !!sessionStorage.getItem(SEEN_KEY); } catch {}
-    if (seen) {
-      const skip = setTimeout(() => setStage("home"), 0);
-      return () => clearTimeout(skip);
-    }
+    // Already seen this session (e.g. coming back from another page): no intro.
+    if (stage !== "preloader" || seen) return;
 
     const delay = setTimeout(() => {
       function tick(now: number) {
@@ -62,7 +64,7 @@ export default function Home() {
       clearTimeout(delay);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [stage]);
+  }, [stage, seen]);
 
   const wipeInActive = wipePhase === "in" || wipePhase === "out";
   const wipeOutActive = wipePhase === "out";
@@ -70,15 +72,15 @@ export default function Home() {
   return (
     <>
       {/* ── Layer 0: Home screen ─────────────────────────── */}
-      <HomeScreen visible={stage === "home"} />
+      <HomeScreen visible={view === "home"} />
 
       {/* ── Layer 1: Logo intro animation ────────────────── */}
-      {stage === "intro" && (
+      {view === "intro" && (
         <IntroAnimation onComplete={() => setStage("home")} />
       )}
 
       {/* ── Layer 2: Preloader ───────────────────────────── */}
-      {stage === "preloader" && (
+      {view === "preloader" && (
         <div className="fixed inset-0 overflow-hidden select-none cursor-default" style={{ zIndex: 50 }}>
           <div className="absolute inset-0 bg-[#0d0d0d]" />
 

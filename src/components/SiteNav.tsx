@@ -19,24 +19,45 @@ export const SITE_LINKS = [
 
 export type SiteSection = (typeof SITE_LINKS)[number]["label"];
 
+/* Page transitions are directional, following the tab order (Home → … → Contact):
+ * a tab to the right slides content in from the right ("nav-forward"); a tab to the
+ * left, or the logo, slides it back ("nav-back"). See globals.css › Page transitions. */
+const HOME_INDEX = -1;
+const indexOf = (s?: SiteSection) => (s ? SITE_LINKS.findIndex((l) => l.label === s) : HOME_INDEX);
+const direction = (from: number, to: number) => (to > from ? ["nav-forward"] : to < from ? ["nav-back"] : undefined);
+
 export default function SiteNav({ current, variant = "bar" }: { current?: SiteSection; variant?: "bar" | "hero" }) {
+  const here = indexOf(current);
+  const onHome = variant === "hero";
   return (
-    <nav className={`site-nav site-nav--${variant}`} aria-label="Main">
-      <Link href={variant === "hero" ? "#home" : "/"} className="site-nav__logo" aria-label="MATHBECSAN — home">
+    // The nav keeps its place during page transitions (view-transition-name: site-nav).
+    <nav className={`site-nav site-nav--${variant}`} aria-label="Main" style={{ viewTransitionName: "site-nav" }}>
+      <Link
+        href={onHome ? "#home" : "/"}
+        className="site-nav__logo"
+        aria-label={onHome ? "MATHBECSAN" : "MATHBECSAN — back to home"}
+        title={onHome ? undefined : "Back to home"}
+        transitionTypes={onHome ? undefined : direction(here, HOME_INDEX)}
+      >
         {/* Hero uses the full artwork; the bar uses a tightly cropped wordmark so it stays legible at bar height. */}
-        <img src={variant === "hero" ? "/brand-logo.webp" : "/brand-logo-wordmark.webp"} alt="MATHBECSAN" />
+        <img src={onHome ? "/brand-logo.webp" : "/brand-logo-wordmark.webp"} alt="MATHBECSAN" />
+        {!onHome && <span className="site-nav__home" aria-hidden="true">← Home</span>}
       </Link>
       <div className="site-nav__links">
-        {SITE_LINKS.map((l) => {
+        {SITE_LINKS.map((l, i) => {
           const isCta = "cta" in l && l.cta;
+          const active = l.label === current;
           return (
             <Link
               key={l.label}
               href={l.href}
               className={isCta ? "site-nav__cta" : "site-nav__link"}
-              aria-current={l.label === current ? "page" : undefined}
+              aria-current={active ? "page" : undefined}
+              transitionTypes={direction(here, i)}
             >
               {isCta ? `${l.label} ✦` : l.label}
+              {/* One indicator, shared across pages, so it glides from the old tab to the new one. */}
+              {active && <span className="site-nav__ind" aria-hidden="true" style={{ viewTransitionName: "nav-indicator" }} />}
             </Link>
           );
         })}
