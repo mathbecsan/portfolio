@@ -79,9 +79,21 @@ const ASSETS: Asset[] = [
   { id: "house-key", label: "House key", x: 998, y: 728, w: 84, h: 67, src: "/studio/objects/house-key-0ecfefa9.webp" },
   { id: "badge", label: "Research badge", x: 1379, y: 462.7, w: 122, h: 103.3, src: "/studio/objects/badge-987752e9.webp" },
   { id: "recipe", label: "Family recipe card", x: 1521, y: 471.7, w: 118, h: 90.3, src: "/studio/objects/recipe-ad924141.webp" },
-  { id: "backpack", label: "Backpack", x: 31, y: 758.3, w: 128, h: 146.7, src: "/studio/objects/backpack-1f37e912.webp" },
+  { id: "backpack", label: "Backpack", x: 160, y: 773.3, w: 128, h: 146.7, src: "/studio/objects/backpack-1f37e912.webp" },
   { id: "sneakers", label: "Sneakers", x: 615, y: 845.7, w: 150, h: 84.3, src: "/studio/objects/sneakers-6ab51ba8.webp" },
-  { id: "dumbbells", label: "Dumbbells", x: 1464, y: 824.3, w: 112, h: 80.7, src: "/studio/objects/dumbbells-88b8bb72.webp" },
+  { id: "dumbbells", label: "Dumbbells", x: 1416, y: 824.3, w: 112, h: 80.7, src: "/studio/objects/dumbbells-88b8bb72.webp" },
+  // ── Second batch (Nov 2026) ──
+  // Shelves, sideboard, desk and sofa:
+  { id: "language-books", label: "Language learning books", x: 514, y: 172.3, w: 112, h: 66.7, src: "/studio/objects/language-books-785b15f7.webp" },
+  { id: "envelope", label: "Sealed envelope", x: 524, y: 358.7, w: 62, h: 39.3, src: "/studio/objects/envelope-c560ea45.webp" },
+  { id: "marionette", label: "Marionette", x: 421, y: 448.7, w: 58, h: 119.3, src: "/studio/objects/marionette-3bb85eeb.webp" },
+  { id: "origami-humanoid", label: "Origami figure", x: 1215, y: 413.7, w: 70, h: 146.3, src: "/studio/objects/origami-humanoid-465842ea.webp" },
+  { id: "plush", label: "Sonic plush", x: 584, y: 528.3, w: 112, h: 111.7, src: "/studio/objects/plush-30768680.webp" },
+  // Coat stands stand on the floor in the front corners (listed last so they draw in front);
+  // the draped motion-capture suit hangs from the right stand's top hook.
+  { id: "hat-stand", label: "Coat stand with hat and shirt", x: 19, y: 571.7, w: 118, h: 356.3, src: "/studio/objects/hat-stand-2a392416.webp" },
+  { id: "coat-stand", label: "Coat stand", x: 1558, y: 580.3, w: 108, h: 347.7, src: "/studio/objects/coat-stand-7356f0c5.webp" },
+  { id: "mocap-suit", label: "Motion-capture suit", x: 1584.9, y: 608.1, w: 67.2, h: 201.7, src: "/studio/objects/mocap-suit-ef3481b7.webp" },
 ];
 
 // Horizontal point (room pixels) the mobile view starts centred on — Reachy for now.
