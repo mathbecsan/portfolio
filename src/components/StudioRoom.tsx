@@ -65,62 +65,58 @@ const ASSETS: Asset[] = [
 
   // ── Room objects (Downloads/Assets for Playground + its assets/ subfolder) ──
   // Listed in paint order: wall → shelves → sideboard → desk → sofa → coffee table → floor → coat stands.
-  // Wall: print, floor lamp (pole hidden behind the sofa), ceiling mobile, pinned postcards
+  // Wall: geometric print and pinned postcards
   { id: "print", label: "Geometric print", x: 708, y: 172, w: 140, h: 193.0, src: "/studio/objects/print-19ad0dd1.webp" },
-  { id: "floor-lamp", label: "Floor lamp", x: 585, y: 288, w: 110, h: 217.8, src: "/studio/objects/floor-lamp-c9b534a1.webp", clipBottom: 478 },
-  { id: "mobile", label: "Hanging mobile", x: 935, y: 0, w: 230, h: 229.2, src: "/studio/objects/mobile-55ef1abc.webp" },
   { id: "postcard-lighthouse", label: "Lighthouse postcard", x: 866, y: 262, w: 72, h: 67.9, src: "/studio/objects/postcard-lighthouse-68545016.webp" },
   { id: "postcard-archway", label: "Archway postcard", x: 952, y: 298, w: 62, h: 67.4, src: "/studio/objects/postcard-archway-cecc32d3.webp" },
   { id: "postcard-mountain", label: "Mountain postcard", x: 866, y: 344, w: 72, h: 62.9, src: "/studio/objects/postcard-mountain-8a100d0c.webp" },
-  { id: "flashcard", label: "Language flashcard", x: 1046, y: 248, w: 70, h: 53.8, src: "/studio/objects/flashcard-7075b581.webp" },
-  { id: "postcard-robot", label: "Robot sketch", x: 1200, y: 254, w: 60, h: 65.5, src: "/studio/objects/postcard-robot-0024dda9.webp" },
-  // Top shelf (y≈237); the plant drapes over its left end
+  // Top shelf (y≈237); the plant's pot sits on the left end, vines hanging over the edge
   { id: "llama", label: "Llama keepsake", x: 124.0, y: 119.2, w: 72, h: 119.8, src: "/studio/objects/llama-6f990cbe.webp" },
   { id: "projector", label: "Film projector", x: 216.0, y: 141.0, w: 98, h: 98.0, src: "/studio/objects/projector-32d5b8a3.webp" },
   { id: "language-books", label: "Language learning books", x: 333.0, y: 177.1, w: 104, h: 61.9, src: "/studio/objects/language-books-785b15f7.webp" },
   { id: "little-robot", label: "Little robot", x: 459.0, y: 167.8, w: 52, h: 71.2, src: "/studio/objects/little-robot-5dc07c6a.webp" },
-  { id: "playlist", label: "Playlist card", x: 540.0, y: 158.1, w: 60, h: 80.9, src: "/studio/objects/playlist-5753ac19.webp" },
-  { id: "plant", label: "Trailing plant", x: 2, y: 193.5, w: 100, h: 197.7, src: "/studio/objects/plant-88c5eee0.webp" },
-  // Lower shelf (y≈396); the marionette hangs from its underside
+  { id: "plant", label: "Trailing plant", x: 22, y: 161.9, w: 100, h: 197.7, src: "/studio/objects/plant-88c5eee0.webp" },
+  // Lower shelf (y≈396)
   { id: "vinyl", label: "Vinyl record", x: 70.0, y: 302.9, w: 84, h: 95.1, src: "/studio/objects/vinyl-17e339f3.webp" },
   { id: "camera", label: "Camera", x: 167.0, y: 331.7, w: 76, h: 66.3, src: "/studio/objects/camera-1e7466f6.webp" },
   { id: "headphones", label: "Headphones", x: 256.0, y: 291.5, w: 98, h: 106.5, src: "/studio/objects/headphones-e1218f26.webp" },
   { id: "controller", label: "Game controller", x: 368.0, y: 341.4, w: 84, h: 56.6, src: "/studio/objects/controller-e4f1f596.webp" },
-  { id: "origami-humanoid", label: "Origami figure", x: 472.0, y: 314.4, w: 40, h: 83.6, src: "/studio/objects/origami-humanoid-465842ea.webp" },
-  { id: "marionette", label: "Marionette", x: 529, y: 410, w: 46, h: 94.6, src: "/studio/objects/marionette-3bb85eeb.webp" },
+  { id: "vr-headset", label: "VR headset", x: 473, y: 334.7, w: 108, h: 63.3, src: "/studio/objects/vr-headset-0595c11b.webp" },
+  { id: "origami-humanoid", label: "Origami figure", x: 515, y: 155.4, w: 40, h: 83.6, src: "/studio/objects/origami-humanoid-465842ea.webp" },
+  { id: "marionette", label: "Marionette", x: 567, y: 144.4, w: 46, h: 94.6, src: "/studio/objects/marionette-3bb85eeb.webp" },
   // Sideboard (y≈566)
-  { id: "family-photo", label: "Family photo", x: 39.0, y: 467.2, w: 112, h: 100.8, src: "/studio/objects/family-photo-451451b3.webp" },
-  { id: "team-photo", label: "Team photo", x: 155.0, y: 494.4, w: 100, h: 73.6, src: "/studio/objects/team-photo-4cb979ca.webp" },
-  { id: "globe", label: "Globe", x: 258.0, y: 484.6, w: 64, h: 83.4, src: "/studio/objects/globe-c2d4fc80.webp" },
-  { id: "town-square", label: "Town square keepsake", x: 326.0, y: 496.2, w: 78, h: 71.8, src: "/studio/objects/town-square-9a532d1a.webp" },
-  { id: "passport", label: "Passport and boarding pass", x: 409.0, y: 499.6, w: 62, h: 68.4, src: "/studio/objects/passport-38214c47.webp" },
+  { id: "family-photo", label: "Family photo", x: 122, y: 481.6, w: 96, h: 86.4, src: "/studio/objects/family-photo-451451b3.webp" },
+  { id: "team-photo", label: "Team photo", x: 222, y: 504.7, w: 86, h: 63.3, src: "/studio/objects/team-photo-4cb979ca.webp" },
+  { id: "globe", label: "Globe", x: 311, y: 497.6, w: 54, h: 70.4, src: "/studio/objects/globe-c2d4fc80.webp" },
+  { id: "town-square", label: "Town square keepsake", x: 368, y: 509.1, w: 64, h: 58.9, src: "/studio/objects/town-square-9a532d1a.webp" },
+  { id: "passport", label: "Passport and boarding pass", x: 431, y: 515, w: 48, h: 53, src: "/studio/objects/passport-38214c47.webp" },
   // Desk (y≈525–600): creative setup
-  { id: "pencil-pot", label: "Pencil pot", x: 1210.0, y: 490.5, w: 36, h: 77.5, src: "/studio/objects/pencil-pot-a8e80d02.webp" },
-  { id: "monitor", label: "Computer monitor", x: 1285.0, y: 440.8, w: 130, h: 111.2, src: "/studio/objects/monitor-296ecfce.webp" },
-  { id: "tablet", label: "Drawing tablet", x: 1311.0, y: 516.1, w: 108, h: 61.9, src: "/studio/objects/tablet-e66de9b7.webp" },
-  { id: "stylus", label: "Stylus", x: 1440.0, y: 519.9, w: 24, h: 55.1, src: "/studio/objects/stylus-055980ac.webp" },
-  { id: "printer-3d", label: "3D printer", x: 1506.0, y: 432.4, w: 108, h: 129.6, src: "/studio/objects/printer-3d-5abe6156.webp" },
-  { id: "circuit-board", label: "Circuit board", x: 1489.0, y: 555.2, w: 92, h: 42.8, src: "/studio/objects/circuit-board-54e37958.webp" },
+  { id: "pencil-pot", label: "Pencil pot", x: 1204, y: 490.5, w: 36, h: 77.5, src: "/studio/objects/pencil-pot-a8e80d02.webp" },
+  { id: "monitor", label: "Computer monitor", x: 1259, y: 444.2, w: 126, h: 107.8, src: "/studio/objects/monitor-296ecfce.webp" },
+  { id: "tablet", label: "Drawing tablet", x: 1286, y: 520.4, w: 104, h: 59.6, src: "/studio/objects/tablet-e66de9b7.webp" },
+  { id: "stylus", label: "Stylus", x: 1396, y: 519.9, w: 24, h: 55.1, src: "/studio/objects/stylus-055980ac.webp" },
+  { id: "printer-3d", label: "3D printer", x: 1424, y: 442, w: 100, h: 120, src: "/studio/objects/printer-3d-5abe6156.webp" },
+  { id: "circuit-board", label: "Circuit board", x: 1414, y: 559.1, w: 88, h: 40.9, src: "/studio/objects/circuit-board-54e37958.webp" },
   // Sofa: plush on the left cushion, letters on the right
   { id: "plush", label: "Sonic plush", x: 584.0, y: 528.3, w: 112, h: 111.7, src: "/studio/objects/plush-30768680.webp" },
   { id: "letter", label: "Letter from a mentor", x: 820.0, y: 556.7, w: 80, h: 83.3, src: "/studio/objects/letter-d2f5b815.webp" },
   { id: "envelope", label: "Sealed envelope", x: 921.0, y: 603.2, w: 58, h: 36.8, src: "/studio/objects/envelope-c560ea45.webp" },
   // Coffee table (y≈780): back row, then front row
-  { id: "origami-dog", label: "Origami dog", x: 514.0, y: 705.3, w: 92, h: 79.7, src: "/studio/objects/origami-dog-e3f3ffcb.webp" },
-  { id: "mug", label: "Mug of tea", x: 871.0, y: 735.9, w: 58, h: 49.1, src: "/studio/objects/mug-d6f2d260.webp" },
-  { id: "house-key", label: "House key", x: 618.0, y: 764.0, w: 64, h: 51.0, src: "/studio/objects/house-key-0ecfefa9.webp" },
-  { id: "sketchbook", label: "Sketchbook", x: 715.0, y: 724.2, w: 110, h: 90.8, src: "/studio/objects/sketchbook-f6896e6c.webp" },
-  { id: "pencil", label: "Red pencil", x: 854.0, y: 795.1, w: 72, h: 14.9, src: "/studio/objects/pencil-c175259d.webp" },
-  { id: "recipe", label: "Family recipe card", x: 969.0, y: 755.2, w: 82, h: 62.8, src: "/studio/objects/recipe-ad924141.webp" },
+  { id: "origami-dog", label: "Origami dog", x: 514, y: 705.3, w: 92, h: 79.7, src: "/studio/objects/origami-dog-e3f3ffcb.webp" },
+  { id: "mug", label: "Mug of tea", x: 871, y: 735.9, w: 58, h: 49.1, src: "/studio/objects/mug-d6f2d260.webp" },
+  { id: "house-key", label: "House key", x: 1038, y: 757, w: 64, h: 51, src: "/studio/objects/house-key-0ecfefa9.webp" },
+  { id: "badge", label: "Research badge", x: 647, y: 722.1, w: 66, h: 55.9, src: "/studio/objects/badge-987752e9.webp" },
+  { id: "sketchbook", label: "Sketchbook", x: 705, y: 724.2, w: 110, h: 90.8, src: "/studio/objects/sketchbook-f6896e6c.webp" },
+  { id: "pencil", label: "Red pencil", x: 838, y: 796.8, w: 64, h: 13.2, src: "/studio/objects/pencil-c175259d.webp" },
+  { id: "recipe", label: "Family recipe card", x: 934, y: 755.2, w: 82, h: 62.8, src: "/studio/objects/recipe-ad924141.webp" },
   // Floor
-  { id: "backpack", label: "Backpack", x: 160.0, y: 773.3, w: 128, h: 146.7, src: "/studio/objects/backpack-1f37e912.webp" },
+  { id: "backpack", label: "Backpack", x: 290, y: 777.9, w: 124, h: 142.1, src: "/studio/objects/backpack-1f37e912.webp" },
   { id: "sneakers", label: "Sneakers", x: 615.0, y: 845.7, w: 150, h: 84.3, src: "/studio/objects/sneakers-6ab51ba8.webp" },
-  { id: "dumbbells", label: "Dumbbells", x: 1416.0, y: 824.3, w: 112, h: 80.7, src: "/studio/objects/dumbbells-88b8bb72.webp" },
-  // Coat stands in the front corners (drawn last, in front); badge hangs on the left stand, suit on the right
-  { id: "hat-stand", label: "Coat stand with hat and shirt", x: 19, y: 571.7, w: 118, h: 356.3, src: "/studio/objects/hat-stand-2a392416.webp" },
-  { id: "coat-stand", label: "Coat stand", x: 1558, y: 580.3, w: 108, h: 347.7, src: "/studio/objects/coat-stand-7356f0c5.webp" },
-  { id: "badge", label: "Research badge", x: 79, y: 640, w: 58, h: 49.1, src: "/studio/objects/badge-987752e9.webp" },
-  { id: "mocap-suit", label: "Motion-capture suit", x: 1584.9, y: 608.1, w: 67.2, h: 201.7, src: "/studio/objects/mocap-suit-ef3481b7.webp" },
+  { id: "dumbbells", label: "Dumbbells", x: 162, y: 855.1, w: 104, h: 74.9, src: "/studio/objects/dumbbells-88b8bb72.webp" },
+  // Coat stands in the front corners (drawn last, in front); the suit hangs on the right one
+  { id: "hat-stand", label: "Coat stand with hat and shirt", x: 0, y: 444.9, w: 160, h: 483.1, src: "/studio/objects/hat-stand-2a392416.webp" },
+  { id: "coat-stand", label: "Coat stand", x: 1520, y: 458, w: 146, h: 470, src: "/studio/objects/coat-stand-7356f0c5.webp" },
+  { id: "mocap-suit", label: "Motion-capture suit", x: 1556.3, y: 495.6, w: 90.8, h: 272.6, src: "/studio/objects/mocap-suit-ef3481b7.webp" },
 ];
 
 // Horizontal point (room pixels) the mobile view starts centred on — Reachy for now.
