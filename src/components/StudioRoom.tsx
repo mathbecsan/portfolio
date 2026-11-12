@@ -91,12 +91,12 @@ const ASSETS: Asset[] = [
   { id: "town-square", label: "Town square keepsake", x: 368, y: 509.1, w: 64, h: 58.9, src: "/studio/objects/town-square-9a532d1a.webp" },
   { id: "passport", label: "Passport and boarding pass", x: 431, y: 515, w: 48, h: 53, src: "/studio/objects/passport-38214c47.webp" },
   // Desk (y≈525–600): creative setup
-  { id: "pencil-pot", label: "Pencil pot", x: 1204, y: 490.5, w: 36, h: 77.5, src: "/studio/objects/pencil-pot-a8e80d02.webp" },
-  { id: "monitor", label: "Computer monitor", x: 1259, y: 444.2, w: 126, h: 107.8, src: "/studio/objects/monitor-296ecfce.webp" },
-  { id: "tablet", label: "Drawing tablet", x: 1286, y: 520.4, w: 104, h: 59.6, src: "/studio/objects/tablet-e66de9b7.webp" },
-  { id: "stylus", label: "Stylus", x: 1396, y: 519.9, w: 24, h: 55.1, src: "/studio/objects/stylus-055980ac.webp" },
-  { id: "printer-3d", label: "3D printer", x: 1424, y: 442, w: 100, h: 120, src: "/studio/objects/printer-3d-5abe6156.webp" },
-  { id: "circuit-board", label: "Circuit board", x: 1414, y: 559.1, w: 88, h: 40.9, src: "/studio/objects/circuit-board-54e37958.webp" },
+  { id: "pencil-pot", label: "Pencil pot", x: 1210, y: 490.5, w: 36, h: 77.5, src: "/studio/objects/pencil-pot-a8e80d02.webp" },
+  { id: "monitor", label: "Computer monitor", x: 1285, y: 440.8, w: 130, h: 111.2, src: "/studio/objects/monitor-296ecfce.webp" },
+  { id: "tablet", label: "Drawing tablet", x: 1311, y: 516.1, w: 108, h: 61.9, src: "/studio/objects/tablet-e66de9b7.webp" },
+  { id: "stylus", label: "Stylus", x: 1440, y: 519.9, w: 24, h: 55.1, src: "/studio/objects/stylus-055980ac.webp" },
+  { id: "printer-3d", label: "3D printer", x: 1506, y: 432.4, w: 108, h: 129.6, src: "/studio/objects/printer-3d-5abe6156.webp" },
+  { id: "circuit-board", label: "Circuit board", x: 1489, y: 555.2, w: 92, h: 42.8, src: "/studio/objects/circuit-board-54e37958.webp" },
   // Sofa: plush on the left cushion, letters on the right
   { id: "plush", label: "Sonic plush", x: 584.0, y: 528.3, w: 112, h: 111.7, src: "/studio/objects/plush-30768680.webp" },
   { id: "letter", label: "Letter from a mentor", x: 820.0, y: 556.7, w: 80, h: 83.3, src: "/studio/objects/letter-d2f5b815.webp" },
@@ -113,10 +113,9 @@ const ASSETS: Asset[] = [
   { id: "backpack", label: "Backpack", x: 290, y: 777.9, w: 124, h: 142.1, src: "/studio/objects/backpack-1f37e912.webp" },
   { id: "sneakers", label: "Sneakers", x: 615.0, y: 845.7, w: 150, h: 84.3, src: "/studio/objects/sneakers-6ab51ba8.webp" },
   { id: "dumbbells", label: "Dumbbells", x: 162, y: 855.1, w: 104, h: 74.9, src: "/studio/objects/dumbbells-88b8bb72.webp" },
-  // Coat stands in the front corners (drawn last, in front); the suit hangs on the right one
-  { id: "hat-stand", label: "Coat stand with hat and shirt", x: 0, y: 444.9, w: 160, h: 483.1, src: "/studio/objects/hat-stand-2a392416.webp" },
-  { id: "coat-stand", label: "Coat stand", x: 1520, y: 458, w: 146, h: 470, src: "/studio/objects/coat-stand-7356f0c5.webp" },
-  { id: "mocap-suit", label: "Motion-capture suit", x: 1556.3, y: 495.6, w: 90.8, h: 272.6, src: "/studio/objects/mocap-suit-ef3481b7.webp" },
+  // Coat stand in the front-left corner (drawn last, in front) with the motion-capture suit hanging on it
+  { id: "coat-stand", label: "Coat stand", x: 0, y: 458, w: 146, h: 470, src: "/studio/objects/coat-stand-7356f0c5.webp" },
+  { id: "mocap-suit", label: "Motion-capture suit", x: 36.4, y: 495.6, w: 90.8, h: 272.6, src: "/studio/objects/mocap-suit-ef3481b7.webp" },
 ];
 
 // Horizontal point (room pixels) the mobile view starts centred on — Reachy for now.

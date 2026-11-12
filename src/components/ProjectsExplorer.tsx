@@ -18,6 +18,9 @@ const LATEST: { title: string; summary: string; field?: string; date?: string; i
   field: "Coming soon",
 };
 
+// Shown in the hero stats. Update as projects are added.
+const PROJECT_COUNT = "30+";
+
 const DISCIPLINE_COLOR: Record<Discipline, string> = {
   "Engineering": "var(--bauhaus-blue)",
   "Design": "var(--bauhaus-red)",
@@ -132,8 +135,8 @@ export default function ProjectsExplorer() {
                 Filter by discipline or search, then open a field to see its work.
               </p>
               <div className="px-stats">
-                <div className="px-stat" style={{ "--c": "var(--bauhaus-red)" } as CSSProperties}><b>{FIELDS.length}</b><span>Fields</span></div>
-                <div className="px-stat" style={{ "--c": "var(--bauhaus-blue)" } as CSSProperties}><b>{DISCIPLINES.length}</b><span>Disciplines</span></div>
+                <div className="px-stat" style={{ "--c": "var(--bauhaus-red)" } as CSSProperties}><b>{PROJECT_COUNT}</b><span>Projects</span></div>
+                <div className="px-stat" style={{ "--c": "var(--bauhaus-blue)" } as CSSProperties}><b>{FIELDS.length}</b><span>Fields</span></div>
               </div>
             </div>
 

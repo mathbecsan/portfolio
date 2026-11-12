@@ -14,7 +14,7 @@ export const SITE_LINKS = [
   { label: "Interactive Studio", href: "/playground" },
   { label: "Blog",               href: "/blog" },
   { label: "News",               href: "/news" },
-  { label: "Contact",            href: "/#contact" },
+  { label: "Contact",            href: "/contact" },
 ] as const;
 
 export type SiteSection = (typeof SITE_LINKS)[number]["label"];
