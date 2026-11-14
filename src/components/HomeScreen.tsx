@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type RefObject } from "react";
 import * as THREE from "three";
 import { data } from "../brain-data";
 import ThirdScreen from "./ThirdScreen";
+import WhyWorkWithMe from "./WhyWorkWithMe";
 import FifthScreen from "./FifthScreen";
 import FeaturedProjects from "./FeaturedProjects";
 import BlogPreview from "./BlogPreview";
@@ -893,6 +894,9 @@ export default function HomeScreen({ visible }: { visible: boolean }) {
       </section>
 
       <ScrollReveal from="bottom"><ThirdScreen /></ScrollReveal>
+
+      {/* ── Why people work with me (edit REASONS in WhyWorkWithMe.tsx) ── */}
+      <ScrollReveal from="bottom" delay={60}><WhyWorkWithMe /></ScrollReveal>
 
       {/* ── Selected Work: up to 6 featured projects (edit FEATURED in FeaturedProjects.tsx) ── */}
       <ScrollReveal from="bottom" delay={60}><FeaturedProjects /></ScrollReveal>

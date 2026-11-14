@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type MouseEvent } from "react";
+import FirstStep from "./FirstStep";
 
 export const TOPICS  = ["Mentoring", "Collaboration", "Freelance", "Research", "Just saying hi!"];
 
@@ -51,6 +52,9 @@ export default function EighthScreen() {
           mathbecsan@gmail.com
         </a>
       </div>
+
+      {/* ── Take the first step forward ── */}
+      <FirstStep />
 
       {/* ── Bauhaus strip between email and LET'S TALK ── */}
       <div style={{

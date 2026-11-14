@@ -6,7 +6,6 @@
  *   still-N.jpg             frames from the final cut
  *   outtake-N.mp4/.jpg      discarded takes / bloopers (with sound)
  *   bts-N.jpg               behind-the-scenes photos
- *   scene-N.mp4/.jpg        short silent scene clips for the index mosaic
  * To add a film: drop its media in /public/films/<slug>/ and add an entry. */
 
 export type Credit = { role: string; names: string[] };
@@ -30,7 +29,6 @@ export type Film = {
   stills: Media[];
   outtakes: (Media & { poster: string })[];
   bts: Media[];
-  scenes: (Media & { poster: string })[]; // short silent clips for the index mosaic
 };
 
 const base = (slug: string) => `/films/${slug}`;
@@ -88,12 +86,6 @@ export const FILMS: Film[] = [
       { src: `${base("overthinking")}/outtake-5.mp4`, poster: `${base("overthinking")}/outtake-5.jpg`, caption: "Silhouette exit, discarded" },
       { src: `${base("overthinking")}/outtake-6.mp4`, poster: `${base("overthinking")}/outtake-6.jpg`, caption: "Another angle on the note" },
     ],
-    scenes: [
-      { src: `${base("overthinking")}/scene-2.mp4`, poster: `${base("overthinking")}/scene-2.jpg`, caption: "Third floor" },
-      { src: `${base("overthinking")}/scene-3.mp4`, poster: `${base("overthinking")}/scene-3.jpg`, caption: "The yellow note" },
-      { src: `${base("overthinking")}/scene-4.mp4`, poster: `${base("overthinking")}/scene-4.jpg`, caption: "Rehearsing the smile" },
-      { src: `${base("overthinking")}/scene-6.mp4`, poster: `${base("overthinking")}/scene-6.jpg`, caption: "Left behind" },
-    ],
     bts: [
       { src: `${base("overthinking")}/bts-1.jpg`, caption: "Colin behind the camera, all of us inside one elevator" },
     ],
@@ -146,12 +138,6 @@ export const FILMS: Film[] = [
     ],
     outtakes: [
       { src: `${base("playback")}/outtake-1.mp4`, poster: `${base("playback")}/outtake-1.jpg`, caption: "A toast that went sideways" },
-    ],
-    scenes: [
-      { src: `${base("playback")}/scene-1.mp4`, poster: `${base("playback")}/scene-1.jpg`, caption: "TrueFrameAI" },
-      { src: `${base("playback")}/scene-2.mp4`, poster: `${base("playback")}/scene-2.jpg`, caption: "Metropolis, still flickering" },
-      { src: `${base("playback")}/scene-3.mp4`, poster: `${base("playback")}/scene-3.jpg`, caption: "The seller" },
-      { src: `${base("playback")}/scene-4.mp4`, poster: `${base("playback")}/scene-4.jpg`, caption: "The disc" },
     ],
     bts: [
       { src: `${base("playback")}/bts-1.jpg`, caption: "Between setups" },
