@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import styles from "./film.module.css";
 
 /* Silent looping preview. Autoplays when on screen (unless the viewer prefers
@@ -108,5 +109,24 @@ export function Outtakes({ clips }: { clips: Clip[] }) {
         </div>
       )}
     </>
+  );
+}
+
+/* Mosaic tile for the Filmmaking index: a silent loop that reveals the film's
+ * title on hover/focus and links to the film's page. */
+export function MosaicTile({ href, src, poster, title, label, main, className, style }: {
+  href: string; src: string; poster: string; title: string; label: string;
+  main?: boolean; className?: string; style?: React.CSSProperties;
+}) {
+  return (
+    <Link href={href} className={`${styles.tile} ${main ? styles.tileMain : ""} ${className ?? ""}`} style={style}
+      aria-label={`${title}: ${label}. Open the film page`}>
+      <LoopVideo src={src} poster={poster} alt="" />
+      <span className={styles.tileVeil} aria-hidden="true">
+        <span className={styles.tileLabel}>{label}</span>
+        <span className={styles.tileTitle}>{title}</span>
+        <span className={styles.tileGo}>View film →</span>
+      </span>
+    </Link>
   );
 }

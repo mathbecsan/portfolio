@@ -36,6 +36,7 @@ export default async function FilmPage({ params }: { params: Promise<{ film: str
           </div>
           <p className={styles.eyebrow}>Short film · {f.year}</p>
           <h1 className={styles.heroTitle}>{f.title}</h1>
+          <p className={styles.heroLog}>{f.logline}</p>
           <FilmPlayer youtubeId={f.youtubeId} poster={f.poster} title={f.title} />
         </div>
       </header>
